@@ -1,5 +1,4 @@
 'use client';
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
@@ -9,19 +8,9 @@ import Typography from '@mui/material/Typography';
 export default function Page() {
   const { isAuth, email } = useAuth();
   const router = useRouter();
-  let username = '';
+  let username = email!.split('@')[0];
 
-  if (email) {
-    username = email!.split('@')[0];
-  }
-
-  useEffect(() => {
-    if (isAuth) {
-      router.push('/');
-    }
-  }, [isAuth, router]);
-
-  return (
+  return isAuth ? (
     <main className="main">
       <div className="container">
         <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2}>
@@ -36,5 +25,7 @@ export default function Page() {
         </Stack>
       </div>
     </main>
+  ) : (
+    router.push('/welcome')
   );
 }
