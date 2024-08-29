@@ -1,14 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const initialState = {
-  data: null,
+  data: [],
+  openHistoryPanel: false,
 };
 
-const mainReducer = (state = initialState, action: { type: any; payload: any }) => {
+const mainReducer = (state = initialState, action: { type: string; payload: boolean | string }) => {
   switch (action.type) {
-    case 'UPDATE_INPUT': {
-      return { ...state, data: action.payload };
+    case 'SAVE_HISTORY_DATA': {
+      const mergedArray = [action.payload].concat(state.data);
+      return { ...state, data: mergedArray };
     }
-
+    case 'TOGGLE_HISTORY_PANEL': {
+      return { ...state, openHistoryPanel: action.payload };
+    }
     default:
       return state;
   }

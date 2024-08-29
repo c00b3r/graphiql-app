@@ -1,0 +1,67 @@
+body {
+  margin: 0;
+}
+
+.h2 {
+  margin-top: 0;
+}
+
+.response-wrapper {
+  margin-top: 10px;
+}
+
+.response-data {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  width: 500px;
+  overflow-y: scroll;
+}
+
+.h3-width {
+  width: 150px;
+}
+
+.graphiql-input-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.headers-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.query_wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.graphiql-overflow {
+  /* overflow: hidden; */
+  height: 100vh;
+}
+
+.textarea {
+  width: 550px;
+}
+
+.textarea-query {
+  height: 200px;
+}
+
+.textarea-variables {
+  height: 50px;
+}
+
+.headers-element {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.header_button {
+  width: 66px;
+}
