@@ -7,12 +7,9 @@ export default function RestFull() {
   const [responseBody, setResponseBody] = useState<string>('');
   const [status, setStatus] = useState<number>();
   const [requestBody, setRequestBody] = useState<string>('');
-  const headerRow = (
-    <>
-      <input type="text" placeholder="Key" />
-      <input type="text" placeholder="Value" />
-    </>
-  );
+  const [headers, setHeaders] = useState<{ [key: string]: string }>({});
+  const [headerKey, setHeaderKey] = useState<string>('');
+  const [headerValue, setHeaderValue] = useState<string>('');
 
   const onChangeEndpointHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrlToSend(e.target.value);
@@ -26,17 +23,38 @@ export default function RestFull() {
     setRequestBody(e.target.value);
   };
 
+  const onChangeHeaderKey = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHeaderKey(e.target.value);
+  };
+
+  const onChangeHeaderValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHeaderValue(e.target.value);
+  };
+
+  const addHeader = () => {
+    if (headerKey && headerValue) {
+      setHeaders((prevHeaders) => ({ ...prevHeaders, [headerKey]: headerValue }));
+      setHeaderKey('');
+      setHeaderValue('');
+    }
+  };
+
   const onSubmitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      const fetchHeaders = new Headers();
+
+      for (const [key, value] of Object.entries(headers)) {
+        fetchHeaders.append(key, value);
+      }
+
       const fetchOption: RequestInit = {
         method: method,
+        headers: fetchHeaders,
       };
 
       if (method === 'POST' || method === 'PUT') {
-        fetchOption.headers = {
-          'Content-Type': 'application/json',
-        };
+        fetchHeaders.set('Content-Type', 'application/json');
         fetchOption.body = requestBody;
       }
 
@@ -62,7 +80,7 @@ export default function RestFull() {
         setResponseBody(JSON.stringify(data, null, 2));
       } else {
         const text = await response.text();
-        setResponseBody(`Response is not JSON:\n\n${text}`);
+        setResponseBody(`Response is not JSON\n\n${text}`);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -85,8 +103,26 @@ export default function RestFull() {
           <button style={{ cursor: 'pointer' }}>Send</button>
         </form>
         <div className="manage-header-container">
-          <button style={{ marginBottom: '10px', cursor: 'pointer' }}>Add Header</button>
-          <div>{headerRow}</div>
+          <button onClick={addHeader} style={{ marginBottom: '10px', cursor: 'pointer' }}>
+            Add Header
+          </button>
+          <div>
+            <input
+              type="text"
+              placeholder="Header Key"
+              value={headerKey}
+              onChange={onChangeHeaderKey}
+              style={{ marginRight: '5px' }}
+            />
+            <input type="text" placeholder="Header Value" value={headerValue} onChange={onChangeHeaderValue} />
+          </div>
+          <div>
+            {Object.entries(headers).map(([key, value]) => (
+              <p key={key}>
+                {key}: {value}
+              </p>
+            ))}
+          </div>
         </div>
         <div className="body-container">
           <p>JSON:</p>
