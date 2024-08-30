@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   const handleScroll = () => {
     const offset = window.scrollY;
-    console.log(offset, 'lol');
+
     if (offset > 50) {
       setIsScrolled(true);
     } else {
@@ -29,6 +29,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body>
         <Provider store={store}>
           <div className="wrapper">

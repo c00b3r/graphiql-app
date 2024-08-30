@@ -3,7 +3,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Image from 'next/image';
-import rssLogo from '../../public/rss-logo.svg';
+import rssLogo from '../../../public/rss-logo.svg';
 
 export const Footer = () => {
   return (

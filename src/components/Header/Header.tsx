@@ -9,7 +9,7 @@ import { removeUser } from '../../reducers/reducers/userSlice';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import ColorToggleButton from '../ToggleBtn/ToggleBtn';
-import icon from '../../public/icons.png';
+import icon from '../../../public/icons.png';
 
 interface HeaderProps {
   isScrolled: boolean;

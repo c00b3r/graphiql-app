@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 export default function Page() {
   const { isAuth, email } = useAuth();
   const router = useRouter();
-  let username = email!.split('@')[0];
+  const username = email ? email.split('@')[0] : 'User';
 
   return isAuth ? (
     <main className="main">
