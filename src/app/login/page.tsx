@@ -8,7 +8,7 @@ export default function LoginPage() {
         Sing In Page
         <Login />
         <p>
-          Not Registered Yet? <Link href="/singup">Create an account</Link>
+          Not Registered Yet? <Link href="/signup">Create an account</Link>
         </p>
       </div>
     </main>

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { SingUp } from '@/components/SignUp/SingUp';
 
-export default function SingUpPage() {
+export default function SignUpPage() {
   const router = useRouter();
   const { isAuth } = useAuth();
 
