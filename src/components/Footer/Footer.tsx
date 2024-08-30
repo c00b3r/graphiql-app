@@ -16,7 +16,7 @@ export const Footer = () => {
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
                 <GitHubIcon></GitHubIcon>
                 <Link href="https://github.com/huntertigerx" color="black" underline="hover" target="_blank">
-                  {'hunterTigerX'}
+                  {'HunterTigerX'}
                 </Link>
               </Stack>
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>

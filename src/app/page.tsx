@@ -19,7 +19,7 @@ export default function Page() {
           </Typography>
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
             <Link href="/rest">REST Client</Link>
-            <Link href="/graphiql">GraphiQL Client</Link>
+            <Link href="/GRAPHQL">GraphiQL Client</Link>
             <Link href="/history">History</Link>
           </Stack>
         </Stack>
