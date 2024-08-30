@@ -3,9 +3,10 @@ import React, { useState } from 'react';
 
 export default function RestFull() {
   const [urlToSend, setUrlToSend] = useState<string>('');
-  const [method, setMethod] = useState<string>('get');
+  const [method, setMethod] = useState<string>('GET');
   const [responseBody, setResponseBody] = useState<string>('');
   const [status, setStatus] = useState<number>();
+  const [requestBody, setRequestBody] = useState<string>('');
   const headerRow = (
     <>
       <input type="text" placeholder="Key" />
@@ -21,18 +22,35 @@ export default function RestFull() {
     setMethod(e.target.value);
   };
 
+  const onChangeRequestBody = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setRequestBody(e.target.value);
+  };
+
   const onSubmitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch(urlToSend, {
+      const fetchOption: RequestInit = {
         method: method,
-      });
+      };
 
+      if (method === 'POST' || method === 'PUT') {
+        fetchOption.headers = {
+          'Content-Type': 'application/json',
+        };
+        fetchOption.body = requestBody;
+      }
+
+      const response = await fetch(urlToSend, fetchOption);
       const status = response.status;
       setStatus(status);
 
       if (!response.ok && response.statusText) {
-        setResponseBody(`HTTP Error ${status}: ${response.statusText}`);
+        if (response.status === 400) {
+          const errorText = await response.text();
+          setResponseBody(`HTTP Error ${status}: ${response.statusText}\n${errorText}`);
+        } else {
+          setResponseBody(`HTTP Error ${status}: ${response.statusText}`);
+        }
         return;
       }
 
@@ -64,15 +82,19 @@ export default function RestFull() {
             <option>DELETE</option>
           </select>
           <input type="text" placeholder="Enter URL" value={urlToSend} onChange={(e) => onChangeEndpointHandler(e)} />
-          <button>Send</button>
+          <button style={{ cursor: 'pointer' }}>Send</button>
         </form>
         <div className="manage-header-container">
           <button style={{ marginBottom: '10px', cursor: 'pointer' }}>Add Header</button>
           <div>{headerRow}</div>
         </div>
         <div className="body-container">
-          <p>JSON</p>
-          <textarea style={{ width: '400px', height: '100px', resize: 'none' }}></textarea>
+          <p>JSON:</p>
+          <textarea
+            value={requestBody}
+            onChange={onChangeRequestBody}
+            style={{ width: '400px', height: '100px', resize: 'none' }}
+          ></textarea>
         </div>
       </div>
       <div className="response-container">
