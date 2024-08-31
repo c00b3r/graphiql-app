@@ -1,4 +1,4 @@
-import { IResults } from './interfaces';
+import { IResults } from '../interfaces';
 import { dataFromUrl } from './urlConverter';
 
 export function extractQueryName(url: string) {

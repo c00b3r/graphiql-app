@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useDispatch, useSelector } from 'react-redux';
-import { extractQueryName } from '@/methods/extractQName';
+import { extractQueryName } from '@/methods/graphql/extractQName';
 import { Link } from '@mui/material';
 import { saveHistoryData, toggleHistoryPanel } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
@@ -8,7 +8,6 @@ import { mockQueryPoke } from '@/mocks/query';
 import { mockVariablesPoke } from '@/mocks/variables';
 import { mockHeadersPoke } from '@/mocks/headers';
 import { mockEndpointUrlPoke, mockSdlUrl } from '@/mocks/urls';
-import './history.css';
 import { IState, IPostData } from '@/app/GRAPHQL/interfaces';
 
 export default function HistoryModule() {
@@ -29,6 +28,13 @@ export default function HistoryModule() {
   // dispatch(saveHistoryData(postData));
   // };
 
+  function removeBaseUrl(fullUrl: string) {
+    const url = new URL(fullUrl);
+    const pathWithParams = `${url.pathname}${url.search}`;
+    return pathWithParams;
+  }
+
+
   return (
     <>
       <div className="history-wrapper">
@@ -40,10 +46,9 @@ export default function HistoryModule() {
               return (
                 <li key={`historyKey${index}`}>
                   <Link
-                    component="button"
                     underline="none"
                     color="black"
-                    // href={``}
+                    href={removeBaseUrl(item)}
                     key={`historyKey${index + 1}`}
                     onClick={closeWindow}
                   >

@@ -11,6 +11,11 @@ export interface IHeaders {
   value: string;
 }
 
+export interface IResponse {
+  result: string | false;
+  code: number;
+}
+
 export interface IPostData {
   endpointUrl: string;
   sdlUrl: string;
@@ -20,8 +25,14 @@ export interface IPostData {
 }
 
 export interface IStateMain {
-  data: [];
+  data: string[];
+  endpointUrlInput: string;
+  sdlUrlInput: string;
+  headersKeys: string;
+  queryInput: string;
+  variablesInput: string;
   openHistoryPanel: boolean;
+  searchResults: IResponse
 }
 
 export interface IState {
