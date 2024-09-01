@@ -1,21 +1,23 @@
 import { dataFromUrl } from '@/methods/graphql/urlConverter';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Input } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { IResults } from '@/methods/interfaces';
 import { updateSDL } from '@/reducers/actions/actions';
+import { IState } from '@/app/GRAPHQL/interfaces';
 
 export default function SDLUrlInput() {
-  const [sdlUrl, setSdlUrl] = useState('');
+  // const [sdlUrl, setSdlUrl] = useState('');
   const dispatch = useDispatch<AppDispatch>();
-  // const sdlUrlInput = useSelector((state: IState) => state.main.sdlUrlInput);
+  const sdlUrl = useSelector((state: IState) => state.main.sdlUrlInput);
 
   useEffect(() => {
     const currentUrl = window.location.href;
     const partialData: IResults | boolean = dataFromUrl(currentUrl, false);
     if (partialData && partialData.endpointUrl !== '') {
-      setSdlUrl(`${partialData.endpointUrl}?sdl`);
+      dispatch(updateSDL(`${partialData.endpointUrl}?sdl`))
+      // setSdlUrl(`${partialData.endpointUrl}?sdl`);
     }
   }, []);
 
@@ -28,7 +30,7 @@ export default function SDLUrlInput() {
           value={sdlUrl}
           onChange={(e) => {
             dispatch(updateSDL(e.target.value));
-            setSdlUrl(e.target.value);
+            // setSdlUrl(e.target.value);
           }}
         />
       </div>

@@ -32,9 +32,19 @@ export interface IStateMain {
   queryInput: string;
   variablesInput: string;
   openHistoryPanel: boolean;
-  searchResults: IResponse
+  searchResults: IResponse;
 }
 
 export interface IState {
   main: IStateMain;
 }
+
+
+export interface IHistoryData {
+  name: string;
+  data: IPostData;
+  index: number;
+  url: string;
+}
+
+

@@ -53,7 +53,6 @@ const mainReducer = (
       return { ...state, searchResults: action.payload };
     }
     case 'UPDATE_ALL_DATA_FROM_URL': {
-      console.log('UPDATE_ALL_DATA_FROM_URL');
       const partialData: IResults | boolean = dataFromUrl(action.payload as string, false);
       const submitData: IPostData = {
         endpointUrl: '',

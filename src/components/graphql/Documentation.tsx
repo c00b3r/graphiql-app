@@ -8,7 +8,7 @@ export default function DocumentationGQL() {
     setDocumentationVisible(false);
     setDocumentation(null);
   }
-  
+
   return (
     <>
       {documentationVisible && (

@@ -1,7 +1,6 @@
 import { IHeaders } from '@/app/GRAPHQL/interfaces';
 import { IResults } from '../interfaces';
 
-
 // http://localhost:5137/GRAPHQL/{endpointUrlBase64encoded}/{bodyBase64encoded}?header1=header1value&header2=header2value...
 export function urlConverter(endpointUrl: string, headers: IHeaders[], query: string, variables: string | object) {
   let resultUrl = '';
@@ -19,7 +18,7 @@ export function urlConverter(endpointUrl: string, headers: IHeaders[], query: st
     try {
       resultUrl += btoa(JSON.stringify(body));
     } catch {
-      resultUrl += (JSON.stringify(body));
+      resultUrl += JSON.stringify(body);
     }
   }
   if (headers) {
@@ -92,6 +91,15 @@ export function dataFromUrl(data: string, history: boolean) {
     }
   }
   return results;
+}
+
+export function makeNewUrl(currentUrl: string, convertedDataToUrl: string) {
+  const currentUrlParsed = new URL(currentUrl);
+  const protocol = `${currentUrlParsed.protocol ? currentUrlParsed.protocol + '//' : 'https://'}`;
+  const hostname = currentUrlParsed.hostname;
+  const port = currentUrlParsed.port ? ':'+currentUrlParsed.port : '';
+  const newUrl = `${protocol}${hostname}${port}/GRAPHQL/${convertedDataToUrl}`
+  return newUrl
 }
 
 // export function urlConverter(endpointUrl: string, body: string, headers: IHeaders[]) {

@@ -6,15 +6,17 @@ body {
   margin-top: 0;
 }
 
-
 .response-wrapper {
   margin-top: 10px;
+}
+
+.response-data-filled {
+  height: 500px;
 }
 
 .response-data {
   display: flex;
   flex-direction: column;
-  height: 500px;
   width: 500px;
   overflow-y: scroll;
 }
@@ -68,11 +70,32 @@ body {
 }
 
 .header-buttons-wrapper {
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 }
 
 .variables-wrapper {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+}
+
+.history-wrapper {
+  min-width: 200px;
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, .15);
+  box-shadow: 0 0 8px rgba(0, 0, 0, .15);
+  display: flex;
+  flex-direction: column;
+}
+
+.graphql_page_wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.close_hiwtory_block {
+  margin: 10px 10px 0px auto;
+}
+
+.close_hiwtory_block:hover {
+  cursor: pointer;
 }

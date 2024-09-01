@@ -11,3 +11,14 @@ export function extractQueryName(url: string) {
   }
   return false;
 }
+
+export function extractQueryNameSmall(query: string) {
+  try {
+    const regex = /query\s+(\w+)\s*\(/;
+    const match = query.match(regex);
+    return match ? match[1] : 'unnamed query';
+  }
+  catch {
+    return 'unnamed query';
+  }
+}

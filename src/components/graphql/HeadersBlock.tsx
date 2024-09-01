@@ -1,44 +1,47 @@
 import { IHeaders, IState } from '@/app/GRAPHQL/interfaces';
-import { dataFromUrl, urlConverter } from '@/methods/graphql/urlConverter';
+import { dataFromUrl, makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Button, Input } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
 import { IResults } from '@/methods/interfaces';
 import { updateHeaders } from '@/reducers/actions/actions';
 
 export default function HeadersBlock() {
   const dispatch = useDispatch<AppDispatch>();
-  const [headers, setHeaders] = useState<IHeaders[]>([{ key: '', value: '' }]);
+//   const [headers, setHeaders] = useState<IHeaders[]>([{ key: '', value: '' }]);
   const [headersVisible, showHeaders] = useState(true);
   const [enabledEditButtons, setEditButtons] = useState<number[]>([]);
   const [newHeaderKey, setNewHeaderKey] = useState<string>('');
   const [newHeaderValue, setNewHeaderValue] = useState<string>('');
 
+  const headersStringified = useSelector((state: IState) => state.main.headersKeys);
+  const headers: IHeaders[] = headersStringified !== '' ? JSON.parse(headersStringified) : [{ key: '', value: '' }]
   const endpointUrlInput = useSelector((state: IState) => state.main.endpointUrlInput);
   const query = useSelector((state: IState) => state.main.queryInput);
   const variables = useSelector((state: IState) => state.main.variablesInput);
-  const router = useRouter();
 
   useEffect(() => {
     const currentUrl = window.location.href;
     const partialData: IResults | boolean = dataFromUrl(currentUrl, false);
     if (partialData) {
-      setHeaders(partialData.headers);
+    //   setHeaders(partialData.headers);
+    dispatch(updateHeaders(partialData.headers))
     }
   }, []);
 
   const changeUrlOnBlur = async (newHeaders: IHeaders[]) => {
     dispatch(updateHeaders(newHeaders));
-    const newUrl = urlConverter(endpointUrlInput, newHeaders, query, variables);
-    router.push(`/GRAPHQL/${newUrl}`);
-    // не будет работать как надо пока в стор не будут заполнятся данные
+    const currentUrl = window.location.href;
+    const convertedDataToUrl = urlConverter(endpointUrlInput, newHeaders, query, variables);
+    const newUrl = makeNewUrl(currentUrl, convertedDataToUrl);
+    window.history.pushState({}, '', newUrl);
   };
 
   const removeHeader = (index: number) => {
     const newHeaders = headers.filter((_, i) => i !== index);
-    setHeaders(newHeaders);
+    // setHeaders(newHeaders);
+    dispatch(updateHeaders(newHeaders))
     changeUrlOnBlur(newHeaders);
   };
 
@@ -50,7 +53,8 @@ export default function HeadersBlock() {
     } else {
       keyValueFromArray.value = value;
     }
-    setHeaders(newHeaders);
+    dispatch(updateHeaders(newHeaders))
+    // setHeaders(newHeaders);
   };
 
   const clearHeaderInput = () => {
@@ -72,7 +76,8 @@ export default function HeadersBlock() {
 
   const addHeader = () => {
     const newHeaders = [...headers, { key: newHeaderKey, value: newHeaderValue }];
-    setHeaders(newHeaders);
+    // setHeaders(newHeaders);
+    dispatch(updateHeaders(newHeaders))
     clearHeaderInput();
     changeUrlOnBlur(newHeaders);
   };
