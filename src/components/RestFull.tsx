@@ -1,7 +1,12 @@
 'use client';
 import React, { useState } from 'react';
+import { addToHistory } from '@/reducers/actions/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/reducers/root/rootReduces';
 
 export default function RestFull() {
+  const dispatch = useDispatch();
+  const history = useSelector((state: RootState) => state.restFull.history);
   const [urlToSend, setUrlToSend] = useState<string>('');
   const [method, setMethod] = useState<string>('GET');
   const [responseBody, setResponseBody] = useState<string>('');
@@ -37,6 +42,18 @@ export default function RestFull() {
       setHeaderKey('');
       setHeaderValue('');
     }
+  };
+
+  const handleHistoryClick = (item: {
+    method: string;
+    url: string;
+    body: string;
+    headers: { [key: string]: string };
+  }) => {
+    setMethod(item.method);
+    setUrlToSend(item.url);
+    setRequestBody(item.body);
+    setHeaders(item.headers);
   };
 
   const onSubmitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -82,6 +99,10 @@ export default function RestFull() {
         const text = await response.text();
         setResponseBody(`Response is not JSON\n\n${text}`);
       }
+
+      dispatch(
+        addToHistory({ method, url: urlToSend, body: requestBody, headers: Object.fromEntries(fetchHeaders.entries()) })
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         setResponseBody(`Error: ${error.message}`);
@@ -139,6 +160,17 @@ export default function RestFull() {
         </p>
         <p>Body (JSON):</p>
         <textarea readOnly value={responseBody} style={{ width: '400px', height: '200px', resize: 'none' }}></textarea>
+      </div>
+      <div className="history-container">
+        <h2>Request History</h2>
+        {history.length === 0 && <p>No history available</p>}
+        <ol>
+          {history.map((item, index) => (
+            <li key={index} onClick={() => handleHistoryClick(item)} style={{ cursor: 'pointer', marginBottom: '5px' }}>
+              {item.method} {item.url}
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   );
