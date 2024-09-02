@@ -6,24 +6,24 @@ import Typography from '@mui/material/Typography';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '@/reducers/reducers/userSlice';
+import { setUser, setLoadingUser } from '@/reducers/reducers/userSlice';
+import Loader from '@/components/Loader/Loader';
 
 export default function Page() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
-
   const user = useSelector((state: RootState) => state.user.userName);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     const auth = getAuth();
+
+    dispatch(setLoadingUser(true));
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const userName = user.email!.split('@')[0];
         const token = await user.getIdToken();
-
-        setLoading(false);
 
         dispatch(
           setUser({
@@ -36,13 +36,16 @@ export default function Page() {
       } else {
         router.push('/welcome');
       }
+
+      dispatch(setLoadingUser(false));
+      setInitialLoading(false);
     });
 
     return () => unsubscribe();
   }, [router, dispatch]);
 
-  if (loading) {
-    return <main className="main">Loading...</main>;
+  if (initialLoading) {
+    return <Loader />;
   }
 
   return (
@@ -53,7 +56,7 @@ export default function Page() {
             Welcome Back, {user}!
           </Typography>
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-            <Link href="/rest">REST Client</Link>
+            <Link href="/restfull">REST Client</Link>
             <Link href="/GRAPHQL">GraphiQL Client</Link>
             <Link href="/history">History</Link>
           </Stack>

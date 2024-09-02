@@ -1,16 +1,17 @@
 'use client';
 import styles from './Header.module.css';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth';
-import { removeUser } from '../../reducers/reducers/userSlice';
+import { setUser, removeUser } from '../../reducers/reducers/userSlice';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
+import Loader from '../Loader/Loader';
 import ColorToggleButton from '../ToggleBtn/ToggleBtn';
 import icon from '../../../public/icons.png';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
@@ -18,20 +19,54 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
-  const { isAuth } = useAuth();
   const dispatch = useDispatch();
   const router = useRouter();
   const auth = getAuth();
+  const user = useSelector((state: RootState) => state.user);
+  const [initialLoading, setInitialLoading] = useState(true);
 
-  const handleSignOut = async () => {
+  useEffect(() => {
+    const auth = getAuth();
+
+    setInitialLoading(true);
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userName = user.email!.split('@')[0];
+        const token = await user.getIdToken();
+
+        dispatch(
+          setUser({
+            userName: userName,
+            email: user.email,
+            id: user.uid,
+            token: token,
+          })
+        );
+      } else {
+        dispatch(removeUser());
+      }
+
+      setInitialLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [dispatch]);
+
+  const handleLogOut = async () => {
     try {
       await signOut(auth);
       dispatch(removeUser());
       router.push('/welcome');
     } catch (error) {
+      alert('Error signing out');
       console.error('Error signing out: ', error);
     }
   };
+
+  if (initialLoading) {
+    return <Loader />;
+  }
 
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
@@ -44,8 +79,8 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
           </IconButton>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={6}>
             <ColorToggleButton />
-            {isAuth ? (
-              <Link href="/welcome" onClick={handleSignOut}>
+            {user.isAuthenticated ? (
+              <Link href="/welcome" onClick={handleLogOut}>
                 Sign Out
               </Link>
             ) : (
