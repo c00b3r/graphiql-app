@@ -13,7 +13,6 @@ export default function EndpointUrlInput() {
   const query = useSelector((state: IState) => state.main.queryInput);
   const variables = useSelector((state: IState) => state.main.variablesInput);
 
-
   const changeUrlOnBlur = async () => {
     const currentUrl = window.location.href;
     const convertedDataToUrl = urlConverter(endpointUrl, headers !== '' ? JSON.parse(headers) : '', query, variables);

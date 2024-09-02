@@ -3,9 +3,8 @@ import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import gqlPrettier from 'graphql-prettier';
-import { IState } from '@/app/GRAPHQL/interfaces';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
-
+import { IState } from '@/interfaces/interfaces';
 
 export default function GqlQueryInput() {
   const dispatch = useDispatch<AppDispatch>();

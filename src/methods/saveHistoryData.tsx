@@ -7,7 +7,7 @@ export const saveHistory = (url: string, client: string, sdlUrl: string) => {
         const newData = {
           url,
           client,
-          sdlUrl
+          sdlUrl,
         };
         const mergedArray = [newData].concat(historyArray);
         localStorage.setItem('history_data', JSON.stringify(mergedArray));

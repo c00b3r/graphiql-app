@@ -1,22 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Link } from '@mui/material';
-import { saveHistoryData, updateAllDataWhenPageLoads } from '@/reducers/actions/actions';
+import { useDispatch } from 'react-redux';
+import { Link } from '@mui/material';
+import { updateAllDataWhenPageLoads } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
-import { mockQueryPoke } from '@/mocks/query';
-import { mockVariablesPoke } from '@/mocks/variables';
-import { mockHeadersPoke } from '@/mocks/headers';
-import { mockEndpointUrlPoke, mockSdlUrl } from '@/mocks/urls';
-import { IState, IPostData, IHistoryData } from '@/app/GRAPHQL/interfaces';
 import { useEffect, useState } from 'react';
 import { dataFromUrl } from '@/methods/graphql/urlConverter';
-import { IResults } from '@/methods/interfaces';
+import { IHistoryData, IResults, mockHistoryArrayElement } from '@/interfaces/interfaces';
 
-interface mockHistoryArrayElement {
-  url: string;
-  client: string;
-  sdlUrl: string;
-}
+
 
 const mockHistoryElement: IHistoryData = {
   name: '',
@@ -57,7 +48,7 @@ export default function HistoryModule() {
             const mockCopy = JSON.stringify(mockHistoryElement);
             const newElement: IHistoryData = JSON.parse(mockCopy);
             try {
-              const partialData: IResults | boolean = dataFromUrl(element.url);
+              const partialData: IResults | false = dataFromUrl(element.url);
               if (partialData) {
                 newElement.data.endpointUrl = partialData.endpointUrl;
                 newElement.data.sdlUrl = element.sdlUrl !== '' ? element.sdlUrl : `${partialData.endpointUrl}?sdl`;
@@ -100,7 +91,8 @@ export default function HistoryModule() {
             {historyData.map((item, index) => {
               return (
                 <li key={`historyKey${index}`}>
-                  {item.clientName}<span> </span>
+                  {item.clientName}
+                  <span> </span>
                   <Link
                     underline="none"
                     color="black"

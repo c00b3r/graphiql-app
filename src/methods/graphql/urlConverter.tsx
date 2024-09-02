@@ -1,5 +1,4 @@
-import { IHeaders } from '@/app/GRAPHQL/interfaces';
-import { IResults } from '../interfaces';
+import { IHeaders, IResults } from '@/interfaces/interfaces';
 import { Base64 } from 'js-base64';
 
 // http://localhost:5137/GRAPHQL/{endpointUrlBase64encoded}/{bodyBase64encoded}?header1=header1value&header2=header2value...

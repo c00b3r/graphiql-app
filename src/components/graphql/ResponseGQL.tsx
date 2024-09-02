@@ -1,4 +1,4 @@
-import { IState } from '@/app/GRAPHQL/interfaces';
+import { IState } from '@/interfaces/interfaces';
 import JsonViewer from '@/methods/graphql/jsonViewer';
 import { useSelector } from 'react-redux';
 

@@ -1,4 +1,4 @@
-import { IHeaders, IResponse } from '@/app/GRAPHQL/interfaces';
+import { IHeaders, IResponse } from "@/interfaces/interfaces";
 
 export const saveHistoryData = (action: string) => {
   return (dispatch: (arg0: { type: string; payload: string }) => void) => {

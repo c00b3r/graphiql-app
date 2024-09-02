@@ -1,10 +1,10 @@
-import { IHeaders, IState } from '@/app/GRAPHQL/interfaces';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Button, Input } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateHeaders } from '@/reducers/actions/actions';
+import { IState, IHeaders } from '@/interfaces/interfaces';
 
 export default function HeadersBlock() {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,7 +19,6 @@ export default function HeadersBlock() {
   const endpointUrlInput = useSelector((state: IState) => state.main.endpointUrlInput);
   const query = useSelector((state: IState) => state.main.queryInput);
   const variables = useSelector((state: IState) => state.main.variablesInput);
-
 
   const changeUrlOnBlur = async (newHeaders: IHeaders[]) => {
     dispatch(updateHeaders(newHeaders));

@@ -1,7 +1,7 @@
 import { Alert } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { useSelector } from 'react-redux';
-import { IState } from '@/app/GRAPHQL/interfaces';
+import { IState } from '@/interfaces/interfaces';
 
 export default function Alerts() {
   const error = useSelector((state: IState) => state.main.error);

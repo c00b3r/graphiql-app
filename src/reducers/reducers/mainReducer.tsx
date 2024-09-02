@@ -1,6 +1,5 @@
-import { IErrors, IHeaders, IPostData, IStateMain } from '@/app/GRAPHQL/interfaces';
+import { IStateMain, IHeaders, IErrors, IResults, IPostData } from '@/interfaces/interfaces';
 import { dataFromUrl } from '@/methods/graphql/urlConverter';
-import { IResults } from '@/methods/interfaces';
 
 const initialState: IStateMain = {
   data: [],
@@ -13,7 +12,7 @@ const initialState: IStateMain = {
     result: false,
     code: 0,
   },
-  error: ''
+  error: '',
 };
 
 const mainReducer = (

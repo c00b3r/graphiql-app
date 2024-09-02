@@ -6,7 +6,6 @@ import { mockHeadersPoke, mockHeadersSwapi } from '@/mocks/headers';
 import { mockVariablesPoke } from '@/mocks/variables';
 import { mockEndpointUrlPoke, mockEndpointUrlSwapiNetlify } from '@/mocks/urls';
 import { Button } from '@mui/material';
-import { IHeaders, IState } from './interfaces';
 import ResponseGQL from '@/components/graphql/ResponseGQL';
 import SDLUrlInput from '@/components/graphql/SdlUrl';
 import EndpointUrlInput from '@/components/graphql/EndpointUrl';
@@ -22,6 +21,7 @@ import { saveHistory } from '@/methods/saveHistoryData';
 import Alerts from '@/components/Alert';
 import gqlPrettier from 'graphql-prettier';
 import './page.css';
+import { IState, IHeaders } from '@/interfaces/interfaces';
 
 export default function GraphQL() {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,7 +38,7 @@ export default function GraphQL() {
 
   useEffect(() => {
     const currentUrl = window.location.href;
-    console.log('123')
+    console.log('123');
     dispatch(updateAllDataWhenPageLoads(currentUrl));
   }, []);
 
@@ -48,7 +48,12 @@ export default function GraphQL() {
 
   const handleSubmitPoke = async () => {
     const currentUrl = window.location.href;
-    const convertedDataToUrl = urlConverter(mockEndpointUrlPoke, mockHeadersPoke, gqlPrettier(mockQueryPoke), mockVariablesPoke);
+    const convertedDataToUrl = urlConverter(
+      mockEndpointUrlPoke,
+      mockHeadersPoke,
+      gqlPrettier(mockQueryPoke),
+      mockVariablesPoke
+    );
     const newUrl = makeNewUrl(currentUrl, convertedDataToUrl);
     window.history.pushState({}, '', newUrl);
     dispatch(updateAllDataWhenPageLoads(newUrl));

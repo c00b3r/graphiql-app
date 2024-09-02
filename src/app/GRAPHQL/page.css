@@ -78,7 +78,6 @@ body {
   flex-direction: row;
 }
 
-
 .graphql_page_wrapper {
   display: flex;
   flex-direction: column;
@@ -99,11 +98,10 @@ body {
 }
 
 .alert-wrapper-sticky {
-  position: absolute  !important;
+  position: absolute !important;
   top: 0;
   width: 100vw;
 }
-
 
 ul {
   list-style-type: none;
