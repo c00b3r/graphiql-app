@@ -1,4 +1,4 @@
-import { IHeaders, IPostData, IStateMain } from '@/app/GRAPHQL/interfaces';
+import { IErrors, IHeaders, IPostData, IStateMain } from '@/app/GRAPHQL/interfaces';
 import { dataFromUrl } from '@/methods/graphql/urlConverter';
 import { IResults } from '@/methods/interfaces';
 
@@ -9,16 +9,16 @@ const initialState: IStateMain = {
   headersKeys: '',
   queryInput: '',
   variablesInput: '',
-  openHistoryPanel: false,
   searchResults: {
     result: false,
     code: 0,
   },
+  error: ''
 };
 
 const mainReducer = (
   state = initialState,
-  action: { type: string; payload: boolean | string | string[] | IHeaders[] }
+  action: { type: string; payload: boolean | string | string[] | IHeaders[] | IErrors }
 ) => {
   switch (action.type) {
     case 'UPDATE_HEADERS': {
@@ -28,13 +28,9 @@ const mainReducer = (
         headersKeys: JSON.stringify([...newHeaders]),
       };
     }
-
     case 'SAVE_HISTORY_DATA': {
       const mergedArray = [action.payload].concat(state.data);
       return { ...state, data: mergedArray };
-    }
-    case 'TOGGLE_HISTORY_PANEL': {
-      return { ...state, openHistoryPanel: action.payload };
     }
     case 'UPDATE_ENDPOINT': {
       return { ...state, endpointUrlInput: action.payload };
@@ -45,15 +41,17 @@ const mainReducer = (
     case 'UPDATE_QUERY': {
       return { ...state, queryInput: action.payload };
     }
-
     case 'UPDATE_VARIABLES': {
       return { ...state, variablesInput: action.payload };
     }
     case 'SAVE_RESPONSE': {
       return { ...state, searchResults: action.payload };
     }
+    case 'SHOW_ALERT': {
+      return { ...state, error: action.payload };
+    }
     case 'UPDATE_ALL_DATA_FROM_URL': {
-      const partialData: IResults | boolean = dataFromUrl(action.payload as string, false);
+      const partialData: IResults | boolean = dataFromUrl(action.payload as string);
       const submitData: IPostData = {
         endpointUrl: '',
         sdlUrl: '',
@@ -73,13 +71,15 @@ const mainReducer = (
       return {
         ...state,
         endpointUrlInput: submitData.endpointUrl,
-        sdlUrlInput: state.sdlUrlInput === '' ? `${state.endpointUrlInput}?sdl` : state.sdlUrlInput,
+        sdlUrlInput:
+          state.sdlUrlInput === '' && state.endpointUrlInput !== ''
+            ? `${state.endpointUrlInput}?sdl`
+            : state.sdlUrlInput,
         queryInput: submitData.query,
         headersKeys: JSON.stringify([...submitData.headers]),
         variablesInput: submitData.variables,
       };
     }
-
     default:
       return state;
   }

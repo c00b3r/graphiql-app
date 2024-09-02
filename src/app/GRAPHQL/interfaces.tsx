@@ -31,20 +31,18 @@ export interface IStateMain {
   headersKeys: string;
   queryInput: string;
   variablesInput: string;
-  openHistoryPanel: boolean;
   searchResults: IResponse;
+  error: string;
 }
 
 export interface IState {
   main: IStateMain;
 }
 
-
 export interface IHistoryData {
   name: string;
   data: IPostData;
   index: number;
   url: string;
+  clientName: string;
 }
-
-

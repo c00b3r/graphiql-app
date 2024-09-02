@@ -1,34 +1,25 @@
 import { IHeaders, IState } from '@/app/GRAPHQL/interfaces';
-import { dataFromUrl, makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
+import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Button, Input } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { IResults } from '@/methods/interfaces';
 import { updateHeaders } from '@/reducers/actions/actions';
 
 export default function HeadersBlock() {
   const dispatch = useDispatch<AppDispatch>();
-//   const [headers, setHeaders] = useState<IHeaders[]>([{ key: '', value: '' }]);
+  //   const [headers, setHeaders] = useState<IHeaders[]>([{ key: '', value: '' }]);
   const [headersVisible, showHeaders] = useState(true);
   const [enabledEditButtons, setEditButtons] = useState<number[]>([]);
   const [newHeaderKey, setNewHeaderKey] = useState<string>('');
   const [newHeaderValue, setNewHeaderValue] = useState<string>('');
 
   const headersStringified = useSelector((state: IState) => state.main.headersKeys);
-  const headers: IHeaders[] = headersStringified !== '' ? JSON.parse(headersStringified) : [{ key: '', value: '' }]
+  const headers: IHeaders[] = headersStringified !== '' ? JSON.parse(headersStringified) : [{ key: '', value: '' }];
   const endpointUrlInput = useSelector((state: IState) => state.main.endpointUrlInput);
   const query = useSelector((state: IState) => state.main.queryInput);
   const variables = useSelector((state: IState) => state.main.variablesInput);
 
-  useEffect(() => {
-    const currentUrl = window.location.href;
-    const partialData: IResults | boolean = dataFromUrl(currentUrl, false);
-    if (partialData) {
-    //   setHeaders(partialData.headers);
-    dispatch(updateHeaders(partialData.headers))
-    }
-  }, []);
 
   const changeUrlOnBlur = async (newHeaders: IHeaders[]) => {
     dispatch(updateHeaders(newHeaders));
@@ -40,8 +31,7 @@ export default function HeadersBlock() {
 
   const removeHeader = (index: number) => {
     const newHeaders = headers.filter((_, i) => i !== index);
-    // setHeaders(newHeaders);
-    dispatch(updateHeaders(newHeaders))
+    dispatch(updateHeaders(newHeaders));
     changeUrlOnBlur(newHeaders);
   };
 
@@ -53,8 +43,7 @@ export default function HeadersBlock() {
     } else {
       keyValueFromArray.value = value;
     }
-    dispatch(updateHeaders(newHeaders))
-    // setHeaders(newHeaders);
+    dispatch(updateHeaders(newHeaders));
   };
 
   const clearHeaderInput = () => {
@@ -76,8 +65,7 @@ export default function HeadersBlock() {
 
   const addHeader = () => {
     const newHeaders = [...headers, { key: newHeaderKey, value: newHeaderValue }];
-    // setHeaders(newHeaders);
-    dispatch(updateHeaders(newHeaders))
+    dispatch(updateHeaders(newHeaders));
     clearHeaderInput();
     changeUrlOnBlur(newHeaders);
   };

@@ -1,11 +1,17 @@
 import { IHeaders } from '@/app/GRAPHQL/interfaces';
 import { IResults } from '../interfaces';
+import { Base64 } from 'js-base64';
 
 // http://localhost:5137/GRAPHQL/{endpointUrlBase64encoded}/{bodyBase64encoded}?header1=header1value&header2=header2value...
 export function urlConverter(endpointUrl: string, headers: IHeaders[], query: string, variables: string | object) {
+  Base64.extendString();
   let resultUrl = '';
   if (endpointUrl) {
-    resultUrl += btoa(endpointUrl);
+    try {
+      resultUrl += Base64.btoa(endpointUrl);
+    } catch {
+      resultUrl += Base64.encode(endpointUrl);
+    }
   }
   if (variables || query) {
     const body = {
@@ -16,9 +22,9 @@ export function urlConverter(endpointUrl: string, headers: IHeaders[], query: st
       resultUrl += '/';
     }
     try {
-      resultUrl += btoa(JSON.stringify(body));
+      resultUrl += Base64.btoa(JSON.stringify(body));
     } catch {
-      resultUrl += JSON.stringify(body);
+      resultUrl += Base64.encode(JSON.stringify(body));
     }
   }
   if (headers) {
@@ -34,13 +40,8 @@ export function urlConverter(endpointUrl: string, headers: IHeaders[], query: st
 }
 
 // http://localhost:5137/GRAPHQL/{endpointUrlBase64encoded}/{bodyBase64encoded}?header1=header1value&header2=header2value...
-export function dataFromUrl(data: string, history: boolean) {
+export function dataFromUrl(data: string) {
   const dataSplitted = data.split('/');
-  if (history === false) {
-    if (dataSplitted.length > 6 || dataSplitted.length < 5) {
-      return false;
-    }
-  }
 
   const encodedData = dataSplitted.slice(4, dataSplitted.length);
   const results: IResults = {
@@ -66,8 +67,7 @@ export function dataFromUrl(data: string, history: boolean) {
         });
       }
       results.headers = headersObjArray;
-
-      const bodyEncoded = atob(bodyAndHeadersCodes[0]);
+      const bodyEncoded = Base64.decode(bodyAndHeadersCodes[0]);
       try {
         const isBody = JSON.parse(bodyEncoded);
         // Это был Body
@@ -78,7 +78,7 @@ export function dataFromUrl(data: string, history: boolean) {
         results.endpointUrl = bodyEncoded;
       }
     } else {
-      const QueryOrEndpoint = atob(encodedData[i]);
+      const QueryOrEndpoint = Base64.decode(encodedData[i]);
       try {
         const isBody = JSON.parse(QueryOrEndpoint);
         // Это был Body
@@ -97,48 +97,7 @@ export function makeNewUrl(currentUrl: string, convertedDataToUrl: string) {
   const currentUrlParsed = new URL(currentUrl);
   const protocol = `${currentUrlParsed.protocol ? currentUrlParsed.protocol + '//' : 'https://'}`;
   const hostname = currentUrlParsed.hostname;
-  const port = currentUrlParsed.port ? ':'+currentUrlParsed.port : '';
-  const newUrl = `${protocol}${hostname}${port}/GRAPHQL/${convertedDataToUrl}`
-  return newUrl
+  const port = currentUrlParsed.port ? ':' + currentUrlParsed.port : '';
+  const newUrl = `${protocol}${hostname}${port}/GRAPHQL/${convertedDataToUrl}`;
+  return newUrl;
 }
-
-// export function urlConverter(endpointUrl: string, body: string, headers: IHeaders[]) {
-//   const endpointUrlBase64encoded = btoa(endpointUrl);
-//   const bodyBase64encoded = btoa(body);
-//   const headersList = [];
-//   for (let i = 0; i < headers.length; i += 1) {
-//     headersList.push(`${headers[i].key.replaceAll(/\//gi, '%2F')}=${headers[i].value.replaceAll(/\//gi, '%2F')}`);
-//   }
-//   const headersResult = headersList.join('&');
-//   const newUrl = `${endpointUrlBase64encoded}/${bodyBase64encoded}?${headersResult}`;
-
-//   const mockData = `http://localhost:5137/GRAPHQL/${newUrl}`;
-//   dataFromUrl(mockData);
-//   return newUrl;
-// }
-
-// export function dataFromUrl(data: string) {
-// const dataSplitted = data.split('/');
-// const endpointUrlBase64coded = dataSplitted[dataSplitted.length - 2];
-// const bodyAndHeadersCodes = dataSplitted[dataSplitted.length - 1].split('?');
-// const bodyCoded = bodyAndHeadersCodes[0];
-// const headersCodedMerged = bodyAndHeadersCodes[1].replaceAll(/%2F/gi, '/');
-// const headersObjArray = [];
-// const headersCodedArray = headersCodedMerged.split('&');
-// for (let i = 0; i < headersCodedArray.length; i += 1) {
-//   const values = headersCodedArray[i].split('=');
-//   headersObjArray.push({
-//     key: values[0],
-//     value: values[1],
-//   });
-// }
-// const endpointUrl = atob(endpointUrlBase64coded);
-// const body = atob(bodyCoded);
-
-// const result = {
-//   endpointUrl,
-//   body,
-//   headersObjArray,
-// };
-// return result;
-// }

@@ -1,29 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { IState } from '@/app/GRAPHQL/interfaces';
-import { dataFromUrl, makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
+import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { updateVariables } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
-import { IResults } from '@/methods/interfaces';
 import { Button } from '@mui/material';
 
 export default function VariablesBlock() {
   const dispatch = useDispatch<AppDispatch>();
-  // const [variables, setVariables] = useState('');
   const [variablesVisible, showVariables] = useState(true);
   const query = useSelector((state: IState) => state.main.queryInput);
   const endpointUrl = useSelector((state: IState) => state.main.endpointUrlInput);
   const headers = useSelector((state: IState) => state.main.headersKeys);
   const variables = useSelector((state: IState) => state.main.variablesInput);
-
-  useEffect(() => {
-    const currentUrl = window.location.href;
-    const partialData: IResults | boolean = dataFromUrl(currentUrl, false);
-    if (partialData && partialData.variables) {
-      dispatch(updateVariables(partialData.variables))
-      // setVariables(partialData.variables);
-    }
-  }, []);
 
   const changeUrlOnBlur = async () => {
     const currentUrl = window.location.href;
@@ -53,7 +42,6 @@ export default function VariablesBlock() {
             value={variables}
             onChange={(e) => {
               dispatch(updateVariables(e.target.value));
-              // setVariables(e.target.value);
             }}
             onBlur={changeUrlOnBlur}
             rows={5}

@@ -2,6 +2,6 @@
 
 import GraphQL from '../page';
 
-export default function HistoryModule() {
+export default function GraphQLModule() {
   return <GraphQL></GraphQL>;
 }

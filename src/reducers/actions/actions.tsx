@@ -9,15 +9,6 @@ export const saveHistoryData = (action: string) => {
   };
 };
 
-export const toggleHistoryPanel = (action: boolean) => {
-  return (dispatch: (arg0: { type: string; payload: boolean }) => void) => {
-    dispatch({
-      type: 'TOGGLE_HISTORY_PANEL',
-      payload: action,
-    });
-  };
-};
-
 export const updateEndpoint = (action: string) => {
   return (dispatch: (arg0: { type: string; payload: string }) => void) => {
     dispatch({
@@ -74,6 +65,15 @@ export const saveResponse = (result: string | false, code: number) => {
     dispatch({
       type: 'SAVE_RESPONSE',
       payload: { result, code },
+    });
+  };
+};
+
+export const setAlertMessage = (error: string) => {
+  return (dispatch: (arg0: { type: string; payload: string }) => void) => {
+    dispatch({
+      type: 'SHOW_ALERT',
+      payload: error,
     });
   };
 };
