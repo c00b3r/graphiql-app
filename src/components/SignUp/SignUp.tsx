@@ -41,5 +41,5 @@ export const SingUp = () => {
       .catch(console.error);
   };
 
-  return <Form title="Sing up" handleClick={handleSignUp} />;
+  return <Form title="Sign up" handleClick={handleSignUp} />;
 };

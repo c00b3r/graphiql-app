@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import { Login } from '@/components/Login/Login';
 import Loader from '@/components/Loader/Loader';
+import { Stack } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,11 +25,15 @@ export default function LoginPage() {
   return (
     <main className="main">
       <div className="container">
-        Sign In Page
-        <Login />
-        <p>
-          Not Registered Yet? <Link href="/signup">Create an account</Link>
-        </p>
+        <Stack direction="column" justifyContent="space-between" alignItems="flex-start" spacing={3}>
+          <Typography variant="h3" component="p" fontWeight={600}>
+            Sign In
+          </Typography>
+          <Login />
+          <Typography variant="h6" component="p">
+            Not Registered Yet? <Link href="/signup">Create an account</Link>
+          </Typography>
+        </Stack>
       </div>
     </main>
   );

@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import { SingUp } from '@/components/SignUp/SignUp';
 import Loader from '@/components/Loader/Loader';
+import { Stack } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -23,11 +25,15 @@ export default function SignUpPage() {
   return (
     <main className="main">
       <div className="container">
-        Sign Up Page
-        <SingUp />
-        <p>
-          Already have an account? <Link href="/login">Log in</Link>
-        </p>
+        <Stack direction="column" justifyContent="space-between" alignItems="flex-start" spacing={3}>
+          <Typography variant="h3" component="p" fontWeight={600}>
+            Sign Up
+          </Typography>
+          <SingUp />
+          <Typography variant="h6" component="p">
+            Already have an account? <Link href="/login">Log in</Link>
+          </Typography>
+        </Stack>
       </div>
     </main>
   );
