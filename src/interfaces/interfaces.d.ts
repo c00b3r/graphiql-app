@@ -3,6 +3,8 @@ interface UserState {
   email: string | null;
   token: string | null;
   id: string | null;
+  loading: boolean;
+  isAuthenticated: boolean;
 }
 
 interface RootState {

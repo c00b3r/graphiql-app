@@ -5,6 +5,8 @@ const initialState = {
   email: null,
   id: null,
   token: null,
+  loading: false,
+  isAuthenticated: false,
 };
 
 const userSlice = createSlice({
@@ -16,15 +18,23 @@ const userSlice = createSlice({
       state.email = action.payload.email;
       state.token = action.payload.token;
       state.id = action.payload.id;
+      state.loading = false;
+      state.isAuthenticated = true;
     },
     removeUser(state) {
+      state.userName = null;
       state.email = null;
       state.id = null;
       state.token = null;
+      state.loading = false;
+      state.isAuthenticated = false;
+    },
+    setLoadingUser: (state, action) => {
+      state.loading = action.payload;
     },
   },
 });
 
-export const { setUser, removeUser } = userSlice.actions;
+export const { setUser, removeUser, setLoadingUser } = userSlice.actions;
 
 export default userSlice.reducer;
