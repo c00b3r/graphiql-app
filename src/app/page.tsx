@@ -1,8 +1,8 @@
 'use client';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,9 +56,15 @@ export default function Page() {
             Welcome Back, {user}!
           </Typography>
           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-            <Link href="/restfull">REST Client</Link>
-            <Link href="/GRAPHQL">GraphiQL Client</Link>
-            <Link href="/history">History</Link>
+            <Button variant="contained" size="large" href="/restfull">
+              REST Client
+            </Button>
+            <Button variant="contained" size="large" href="/GRAPHQL">
+              GraphiQL Client
+            </Button>
+            <Button variant="contained" size="large" href="/history">
+              History
+            </Button>
           </Stack>
         </Stack>
       </div>
