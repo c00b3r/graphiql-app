@@ -33,7 +33,7 @@ const HomePage = () => {
               <Button variant="contained" size="large" component={Link} href="/restfull">
                 REST Client
               </Button>
-              <Button variant="contained" size="large" component={Link} href="/graphql">
+              <Button variant="contained" size="large" component={Link} href="/GRAPHQL">
                 GraphiQL Client
               </Button>
               <Button variant="contained" size="large" component={Link} href="/history">
