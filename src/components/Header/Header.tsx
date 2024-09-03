@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
     try {
       await signOut(auth);
       dispatch(removeUser());
-      router.push('/welcome');
+      router.push('/');
     } catch (error) {
       alert('Error signing out');
       console.error('Error signing out: ', error);
@@ -74,15 +74,9 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
       <div className="container">
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <IconButton color="primary" aria-label="logo">
-            {user.isAuthenticated ? (
-              <Link href="/">
-                <Image src={icon} alt="Logo" style={{ width: '40px', height: '40px' }} />
-              </Link>
-            ) : (
-              <Link href="/welcome">
-                <Image src={icon} alt="Logo" style={{ width: '40px', height: '40px' }} />
-              </Link>
-            )}
+            <Link href="/">
+              <Image src={icon} alt="Logo" style={{ width: '40px', height: '40px' }} />
+            </Link>
           </IconButton>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={6}>
             <ColorToggleButton />
@@ -91,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
                 variant="outlined"
                 size="medium"
                 component={Link}
-                href="/welcome"
+                href="/"
                 onClick={handleLogOut}
                 className={`${styles.link} ${isScrolled ? styles.linkScrolled : ''}`}
               >

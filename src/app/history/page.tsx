@@ -1,10 +1,27 @@
 'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import { Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import Loader from '@/components/Loader/Loader';
 
 export default function HistoryPage() {
+  const router = useRouter();
+  const isAuth = useSelector((state: RootState) => state.user.isAuthenticated);
+
+  useEffect(() => {
+    if (!isAuth) {
+      router.push('/');
+    }
+  }, [isAuth, router]);
+
+  if (isAuth) {
+    return <Loader />;
+  }
+
   return (
     <main className="main">
       <div className="container">
