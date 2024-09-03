@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
 import { Form } from '../Form/Form';
 import { setUser } from '../../reducers/reducers/userSlice';
 import Alert from '@mui/material/Alert';
@@ -11,7 +12,6 @@ import Stack from '@mui/material/Stack';
 export const SingUp = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const auth = getAuth();
 
   const [error, setError] = useState<string | null>(null);
 

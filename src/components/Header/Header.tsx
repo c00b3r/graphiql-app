@@ -12,8 +12,9 @@ import { Button } from '@mui/material';
 import Loader from '../Loader/Loader';
 import ColorToggleButton from '../ToggleBtn/ToggleBtn';
 import icon from '../../../public/icons.png';
-import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { auth } from '@/firebase';
 
 interface HeaderProps {
   isScrolled: boolean;
@@ -22,13 +23,10 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const auth = getAuth();
   const user = useSelector((state: RootState) => state.user);
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getAuth();
-
     setInitialLoading(true);
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -61,7 +59,6 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
       router.push('/');
     } catch (error) {
       alert('Error signing out');
-      console.error('Error signing out: ', error);
     }
   };
 
