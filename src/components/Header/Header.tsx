@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
       dispatch(removeUser());
       router.push('/');
     } catch (error) {
-      alert('Error signing out');
+      alert(`Error: ${error}`);
     }
   };
 
