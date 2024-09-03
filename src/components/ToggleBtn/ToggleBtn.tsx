@@ -12,8 +12,12 @@ export default function ColorToggleButton() {
 
   return (
     <ToggleButtonGroup color="primary" value={alignment} exclusive onChange={handleChange} aria-label="Platform">
-      <ToggleButton value="en">EN</ToggleButton>
-      <ToggleButton value="ru">RU</ToggleButton>
+      <ToggleButton size="small" value="en">
+        EN
+      </ToggleButton>
+      <ToggleButton size="small" value="ru">
+        RU
+      </ToggleButton>
     </ToggleButtonGroup>
   );
 }

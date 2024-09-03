@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { setUser, removeUser } from '../../reducers/reducers/userSlice';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
+import { Button } from '@mui/material';
 import Loader from '../Loader/Loader';
 import ColorToggleButton from '../ToggleBtn/ToggleBtn';
 import icon from '../../../public/icons.png';
@@ -73,23 +74,50 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
       <div className="container">
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <IconButton color="primary" aria-label="logo">
-            <Link href="/">
-              <Image src={icon} alt="Logo" style={{ width: '40px', height: '40px' }} />
-            </Link>
+            {user.isAuthenticated ? (
+              <Link href="/">
+                <Image src={icon} alt="Logo" style={{ width: '40px', height: '40px' }} />
+              </Link>
+            ) : (
+              <Link href="/welcome">
+                <Image src={icon} alt="Logo" style={{ width: '40px', height: '40px' }} />
+              </Link>
+            )}
           </IconButton>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={6}>
             <ColorToggleButton />
             {user.isAuthenticated ? (
-              <Link href="/welcome" onClick={handleLogOut}>
+              <Button
+                variant="outlined"
+                size="medium"
+                component={Link}
+                href="/welcome"
+                onClick={handleLogOut}
+                className={`${styles.link} ${isScrolled ? styles.linkScrolled : ''}`}
+              >
                 Sign Out
-              </Link>
+              </Button>
             ) : (
-              <>
-                <Link href="/login">Sign In</Link>
-                <Link href="/signup" className={`${styles.link} ${isScrolled ? styles.linkScrolled : ''}`}>
+              <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  component={Link}
+                  href="/login"
+                  className={`${styles.link} ${isScrolled ? styles.linkScrolled : ''}`}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="medium"
+                  component={Link}
+                  href="/signup"
+                  className={`${styles.link} ${isScrolled ? styles.linkScrolled : ''}`}
+                >
                   Sign Up
-                </Link>
-              </>
+                </Button>
+              </Stack>
             )}
           </Stack>
         </Stack>
