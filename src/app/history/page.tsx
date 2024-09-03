@@ -13,12 +13,14 @@ export default function HistoryPage() {
   const isAuth = useSelector((state: RootState) => state.user.isAuthenticated);
 
   useEffect(() => {
-    if (!isAuth) {
+    if (isAuth) {
+      router.push('/history');
+    } else {
       router.push('/');
     }
   }, [isAuth, router]);
 
-  if (isAuth) {
+  if (!isAuth) {
     return <Loader />;
   }
 
