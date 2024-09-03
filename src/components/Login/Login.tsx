@@ -1,16 +1,19 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { Form } from '../Form/Form';
 import { setUser } from '../../reducers/reducers/userSlice';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 
 export const Login = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-
   const auth = getAuth();
+
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -35,12 +38,19 @@ export const Login = () => {
   }, [auth, dispatch, router]);
 
   const handleLogin = (email: string, password: string) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(({ user }) => {
-        console.log(user, 'login');
-      })
-      .catch(console.error);
+    signInWithEmailAndPassword(auth, email, password).catch((error) => {
+      if (error.code === 'auth/invalid-credential') {
+        setError('Invalid credentials provided. Please check your input and try again.');
+      } else {
+        setError(error.message);
+      }
+    });
   };
 
-  return <Form title="Sing in" handleClick={handleLogin} />;
+  return (
+    <Stack spacing={2}>
+      {error && <Alert severity="error">{error}</Alert>}
+      <Form title="Sing in" handleClick={handleLogin} />
+    </Stack>
+  );
 };
