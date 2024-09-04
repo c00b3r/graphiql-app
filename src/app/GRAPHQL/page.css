@@ -4,20 +4,31 @@ body {
 
 .h2 {
   margin-top: 0;
+  margin-bottom: 0px;
+  display: flex;
+  justify-content: center;
+}
+
+.h3-width {
+  margin: 5px 0;
 }
 
 .response-wrapper {
-  margin-top: 10px;
+  width: 100%;
+  height: 100%;
+}
+
+.response-result {
+  max-height: calc(100vh - 62px - 73px - 27px - 18px - 18px - 150px);
 }
 
 .response-data-filled {
-  height: 500px;
+  height: 100%;
 }
 
 .response-data {
   display: flex;
   flex-direction: column;
-  width: 500px;
   overflow-y: scroll;
 }
 
@@ -29,11 +40,19 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
+  justify-content: center;
+}
+
+.graphiql-input {
+  width: 100%;
 }
 
 .headers-wrapper {
+  width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .query_wrapper {
@@ -47,15 +66,22 @@ body {
 }
 
 .textarea {
-  width: 550px;
+  width: 100%;
+}
+
+.textarea_borders_none {
+  border-left: 0;
+  border-right: 0;
 }
 
 .textarea-query {
+  max-width: 100%;
   height: 200px;
 }
 
 .textarea-variables {
-  height: 50px;
+  width: 100%;
+  height: 40px;
 }
 
 .headers-element {
@@ -81,6 +107,10 @@ body {
 .graphql_page_wrapper {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  height: calc(100vh - 62px - 80px) !important;
+  overflow-y: hidden;
+  overflow-x: none;
 }
 
 .close_hiwtory_block {
@@ -93,16 +123,109 @@ body {
 
 .alert-wrapper-absolute {
   position: sticky !important;
-  top: 0;
+  /* top: 0; */
+  /* Добавить маржин топ, чтобы был под хэдером и проследить, 
+  чтобы был стики, когда ошибка появляется в нижней части экрана, 
+  если я не переделаю высоту блока */
+  bottom: 0;
   width: 100vw;
+  z-index: 9999999999999999999;
 }
 
 .alert-wrapper-sticky {
   position: absolute !important;
-  top: 0;
+  /* top: 0; */
+  bottom: 0;
   width: 100vw;
+  z-index: 9999999999999999999;
 }
 
 ul {
   list-style-type: none;
+}
+
+.graphiql-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+
+.graphiql-wrapper-inner {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.graphiql-block {
+  width: 100%;
+  min-width: 33%;
+  height: calc(100vh - 62px - 73px - 2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 2.5px;
+  max-width: 1200px;
+  justify-content: space-around;
+  padding-left: 3px;
+}
+
+.documentation_wrapper {
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-height: calc(100vh - 62px - 73px - 4px);
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.url_graphql {
+  min-width: 150px;
+}
+
+.graphiql_25 {
+  max-width: 25%;
+}
+.graphiql_50 {
+  max-width: calc(50% - 4px);
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+}
+.graphiql_100 {
+  max-width: 100%;
+}
+.graphiql_95 {
+  max-width: 95%;
+}
+
+.headers-wrapper-inner {
+  overflow-y: scroll;
+  height: 64px;
+}
+
+.submit_gql_buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.alert_gql {
+  justify-content: center;
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
+
+.graphiql-block-response {
+  justify-content: flex-start;
+}
+
+.documentation-block-wrapper {
+  display: flex;
+  flex-direction: column;
 }

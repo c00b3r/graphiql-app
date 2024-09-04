@@ -13,6 +13,7 @@ const initialState: IStateMain = {
     code: 0,
   },
   error: '',
+  documentation: '',
 };
 
 const mainReducer = (
@@ -45,6 +46,9 @@ const mainReducer = (
     }
     case 'SAVE_RESPONSE': {
       return { ...state, searchResults: action.payload };
+    }
+    case 'SAVE_DOCUMENTATION': {
+      return { ...state, documentation: action.payload };
     }
     case 'SHOW_ALERT': {
       return { ...state, error: action.payload };

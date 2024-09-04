@@ -1,3 +1,4 @@
+'use client';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Button, Input } from '@mui/material';
@@ -8,7 +9,6 @@ import { IState, IHeaders } from '@/interfaces/interfaces';
 
 export default function HeadersBlock() {
   const dispatch = useDispatch<AppDispatch>();
-  //   const [headers, setHeaders] = useState<IHeaders[]>([{ key: '', value: '' }]);
   const [headersVisible, showHeaders] = useState(true);
   const [enabledEditButtons, setEditButtons] = useState<number[]>([]);
   const [newHeaderKey, setNewHeaderKey] = useState<string>('');
@@ -63,11 +63,21 @@ export default function HeadersBlock() {
   };
 
   const addHeader = () => {
-    const newHeaders = [...headers, { key: newHeaderKey, value: newHeaderValue }];
-    dispatch(updateHeaders(newHeaders));
-    clearHeaderInput();
-    changeUrlOnBlur(newHeaders);
+    if (newHeaderKey && newHeaderValue) {
+      const newHeaders = [...headers, { key: newHeaderKey, value: newHeaderValue }];
+      dispatch(updateHeaders(newHeaders));
+      clearHeaderInput();
+      changeUrlOnBlur(newHeaders);
+    } else {
+      if (!newHeaderKey) {
+        // Напиши ключ
+      }
+      if (!newHeaderValue) {
+        // Напиши значение
+      }
+    }
   };
+
   const toggleHeaders = () => {
     showHeaders(!headersVisible);
   };
@@ -76,11 +86,13 @@ export default function HeadersBlock() {
     <>
       <div className="headers-wrapper">
         <div className="graphiql-input-wrapper">
-          <h3 className="h3-width">Headers</h3>
-          <Button onClick={toggleHeaders}>
-            {!headersVisible && 'Show'}
-            {headersVisible && 'Hide'}
-          </Button>
+          <h3 className="h3-width">
+            Headers
+            <Button onClick={toggleHeaders}>
+              {!headersVisible && 'Show'}
+              {headersVisible && 'Hide'}
+            </Button>
+          </h3>
         </div>
         {headersVisible && (
           <div className="headers-wrapper-inner">

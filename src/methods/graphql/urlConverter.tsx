@@ -100,3 +100,9 @@ export function makeNewUrl(currentUrl: string, convertedDataToUrl: string) {
   const newUrl = `${protocol}${hostname}${port}/GRAPHQL/${convertedDataToUrl}`;
   return newUrl;
 }
+
+export function removeBaseUrl(fullUrl: string) {
+  const url = new URL(fullUrl);
+  const pathWithParams = `${url.pathname}${url.search}`;
+  return pathWithParams;
+}

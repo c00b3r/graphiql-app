@@ -1,3 +1,4 @@
+'use client';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Input } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,10 +20,11 @@ export default function SDLUrlInput() {
   return (
     <>
       <div className="graphiql-input-wrapper">
-        <h3 className="h3-width">SDL URL</h3>
+        <h3 className="h3-width url_graphql">SDL URL</h3>
         <Input
           type="text"
           value={sdlUrl}
+          className="graphiql-input"
           onChange={(e) => {
             dispatch(updateSDL(e.target.value));
           }}

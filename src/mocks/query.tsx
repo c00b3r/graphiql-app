@@ -61,12 +61,6 @@ query pokemon_details($name: String) {  species: pokemon_v2_pokemonspecies(where
 }
 `;
 
-export const mockQueryCountries = `query {
-  countries {
-    name
-  }
-}
-`;
 export const mockQuerySwapiNetlify = `{
   allFilms {
     films {
@@ -74,35 +68,3 @@ export const mockQuerySwapiNetlify = `{
     }
   }
 }`;
-
-export const introspectQueryUnnamed = `{
-  __schema {
-    types {
-      name
-    }
-  }
-}`;
-
-export const introspectQueryNamed = `query introspectQuery {
-  __schema {
-    types {
-      name
-    }
-  }
-}`;
-
-// export const introspectQueryUnnamed = `{
-//   __schema {
-//     types {
-//       name
-//     }
-//   }
-// }`
-
-// export const introspectQueryNamed = `query introspectQuery {
-//   __schema {
-//     types {
-//       name
-//     }
-//   }
-// }`

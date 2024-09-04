@@ -1,3 +1,4 @@
+'use client';
 import { updateQuery } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Button } from '@mui/material';
@@ -9,9 +10,15 @@ import { IState } from '@/interfaces/interfaces';
 export default function GqlQueryInput() {
   const dispatch = useDispatch<AppDispatch>();
   const query = useSelector((state: IState) => state.main.queryInput);
+  const searchResults = useSelector((state: IState) => state.main.searchResults);
 
   const prettifyQuery = () => {
-    dispatch(updateQuery(gqlPrettier(query)));
+    try {
+      dispatch(updateQuery(gqlPrettier(query)));
+    } catch (err) {
+      console.log('err', err);
+      // Или просто текст, или not a valid graphql query
+    }
   };
 
   const endpointUrl = useSelector((state: IState) => state.main.endpointUrlInput);
@@ -29,13 +36,12 @@ export default function GqlQueryInput() {
   return (
     <>
       <div className="query_wrapper">
-        <h3 className="h3-width">Query</h3>{' '}
-        <div>
-          <Button onClick={prettifyQuery}>prettify</Button>
-        </div>
+        <h3 className="h3-width">
+          Query<Button onClick={prettifyQuery}>prettify</Button>
+        </h3>
       </div>
       <textarea
-        className="textarea textarea-query"
+        className={`textarea textarea-query ${searchResults.result ? 'textarea_borders_none' : ''}`}
         value={query}
         onChange={(e) => {
           dispatch(updateQuery(e.target.value));

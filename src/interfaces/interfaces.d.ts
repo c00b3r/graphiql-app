@@ -1,8 +1,25 @@
+interface UserState {
+  userName: string | null;
+  email: string | null;
+  token: string | null;
+  id: string | null;
+  loading: boolean;
+  isAuthenticated: boolean;
+}
+
+interface RootState {
+  user: UserState;
+}
+
 export interface IErrors {
   response: {
     status: number;
-    errors: string;
+    errors: IError[];
   };
+  message: string;
+}
+
+export interface IError {
   message: string;
 }
 
@@ -33,6 +50,7 @@ export interface IStateMain {
   variablesInput: string;
   searchResults: IResponse;
   error: string;
+  documentation: string;
 }
 
 export interface IState {

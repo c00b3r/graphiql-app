@@ -1,9 +1,10 @@
-import { IState } from '@/app/GRAPHQL/interfaces';
+'use client';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Input } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateEndpoint } from '@/reducers/actions/actions';
+import { IState } from '@/interfaces/interfaces';
 
 export default function EndpointUrlInput() {
   // const [endpointUrl, setEndpointUrl] = useState('');
@@ -23,9 +24,10 @@ export default function EndpointUrlInput() {
   return (
     <>
       <div className="graphiql-input-wrapper">
-        <h3 className="h3-width">Endpoint URL</h3>
+        <h3 className="h3-width url_graphql">Endpoint URL</h3>
         <Input
           type="text"
+          className="graphiql-input"
           value={endpointUrl}
           onChange={(e) => {
             dispatch(updateEndpoint(e.target.value));

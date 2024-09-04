@@ -1,4 +1,4 @@
-import { IHeaders, IResponse } from "@/interfaces/interfaces";
+import { IHeaders, IResponse } from '@/interfaces/interfaces';
 
 export const saveHistoryData = (action: string) => {
   return (dispatch: (arg0: { type: string; payload: string }) => void) => {
@@ -73,6 +73,14 @@ export const setAlertMessage = (error: string) => {
   return (dispatch: (arg0: { type: string; payload: string }) => void) => {
     dispatch({
       type: 'SHOW_ALERT',
+      payload: error,
+    });
+  };
+};
+export const saveDocumentation = (error: string) => {
+  return (dispatch: (arg0: { type: string; payload: string }) => void) => {
+    dispatch({
+      type: 'SAVE_DOCUMENTATION',
       payload: error,
     });
   };

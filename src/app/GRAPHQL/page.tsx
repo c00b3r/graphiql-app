@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { mockQueryPoke, mockQuerySwapiNetlify } from '../../mocks/query';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { mockHeadersPoke, mockHeadersSwapi } from '@/mocks/headers';
@@ -13,15 +13,29 @@ import HeadersBlock from '@/components/graphql/HeadersBlock';
 import GqlQueryInput from '@/components/graphql/GqlQueryInput';
 import VariablesBlock from '@/components/graphql/VariablesGQL';
 import DocumentationGQL from '@/components/graphql/Documentation';
-import { saveResponse, setAlertMessage, updateAllDataWhenPageLoads, updateSDL } from '@/reducers/actions/actions';
+import {
+  saveDocumentation,
+  saveResponse,
+  setAlertMessage,
+  updateAllDataWhenPageLoads,
+  updateSDL,
+} from '@/reducers/actions/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { gql, request } from 'graphql-request';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { saveHistory } from '@/methods/saveHistoryData';
 import Alerts from '@/components/Alert';
 import gqlPrettier from 'graphql-prettier';
+import { IState, IHeaders, IErrors } from '@/interfaces/interfaces';
+import {
+  getIntrospectionQuery,
+  buildClientSchema,
+  printSchema,
+} from 'graphql';
+import { useRouter } from 'next/navigation';
 import './page.css';
-import { IState, IHeaders } from '@/interfaces/interfaces';
+import Loader from '@/components/Loader/Loader';
+import { getCookie } from 'cookies-next';
 
 export default function GraphQL() {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,15 +45,25 @@ export default function GraphQL() {
   const query = useSelector((state: IState) => state.main.queryInput);
   const variables = useSelector((state: IState) => state.main.variablesInput);
   const errorMessage = useSelector((state: IState) => state.main.error);
+  const document = useSelector((state: IState) => state.main.documentation);
+  const router = useRouter();
+  const [loginStatus, setLoginStatus] = useState(false);
 
   useEffect(() => {
+    const getLoginStatus = getCookie('loginStatus');
+    if (!getLoginStatus) {
+      router.push('/welcome');
+    } else {
+      setLoginStatus(true);
+      const currentUrl = window.location.href;
+      dispatch(updateAllDataWhenPageLoads(currentUrl));
+    }
+  }, []);
+
+  useEffect(() => {
+    // Сделать функцию для сброса и при разных условиях вызывать её
     dispatch(saveResponse(false, 0));
-  });
-
-  useEffect(() => {
-    const currentUrl = window.location.href;
-    console.log('123');
-    dispatch(updateAllDataWhenPageLoads(currentUrl));
+    dispatch(saveDocumentation(''));
   }, []);
 
   const handleSubmitInput = async () => {
@@ -78,61 +102,119 @@ export default function GraphQL() {
     }
   };
 
+  const displayFetchErrors = (err: unknown) => {
+    const errorData = err as IErrors;
+    const message = errorData.response.errors[0].message;
+    const code = errorData.response.status;
+    if (code) {
+      dispatch(saveResponse(message, code));
+    } else {
+      showAlert(errorData.message);
+    }
+  };
+
   const handleSubmit = async () => {
+    let stages = 0;
     let variablesSubmit: string | object = variables === '' || Object.keys(variables).length === 0 ? '{}' : variables;
+    let headersTransformed;
+    const currentUrl = window.location.href;
+
     try {
-      if (typeof variablesSubmit !== 'object') {
-        const parsedVariables: object = JSON.parse(variablesSubmit);
-        variablesSubmit = parsedVariables;
+      // инпут у нас строка, и тут мы проверяем, было наше значение строчным объектом или нет
+      const parsedVariables: object = JSON.parse(variablesSubmit);
+      variablesSubmit = parsedVariables;
+      stages += 1;
+    } catch (err) {
+      const errorMessage = err as IErrors;
+      showAlert(errorMessage.message);
+    }
+    console.log('stages', stages);
+    if (stages === 1) {
+      try {
+        // Проверяем наши headers
+        const checkedHeaders: IHeaders[] = JSON.parse(headers);
+        headersTransformed = Object.fromEntries(checkedHeaders.map((h) => [h.key, h.value]));
+        stages += 1;
+      } catch (err) {
+        const errorMessage = err as IErrors;
+        showAlert(errorMessage.message);
       }
+    }
+    console.log('stages', stages);
+    if (stages === 2) {
+      // Тут мы работаем с ответом и историей
       try {
         const queryTransformed = gql`
           ${query}
         `;
-        try {
-          const checkedHeaders: IHeaders[] = JSON.parse(headers);
-          const headersTransformed = Object.fromEntries(checkedHeaders.map((h) => [h.key, h.value]));
-          const body = await request(endpointUrl, queryTransformed, variablesSubmit, headersTransformed);
-          dispatch(saveResponse(JSON.stringify(body), 200));
-          const currentUrl = window.location.href;
-          saveHistory(currentUrl, 'GraphiQL', sdlUrl);
-          // setDocumentationVisible(true);
-          // setDocumentation('');
-          // dispatch(saveHistoryData(currentUrl));
-        } catch {
-          showAlert('Invalid graphql query');
-          console.log('err1');
-        }
-      } catch {
-        showAlert('Invalid graphql query');
-        console.log('err2');
+        const body = await request(endpointUrl, queryTransformed, variablesSubmit as object, headersTransformed);
+        dispatch(saveResponse(JSON.stringify(body, null, 2), 200));
+        saveHistory(currentUrl, 'GraphiQL', sdlUrl);
+        stages += 1;
+      } catch (err) {
+        displayFetchErrors(err);
       }
-    } catch {
-      showAlert('Invalid variables');
-      console.log('err3');
+    }
+    if (stages === 3) {
+      // Тут мы работаем с документацией
+      try {
+        const fetchSchema = async (url: string) => {
+          const query = getIntrospectionQuery();
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
+          });
+          return response.json();
+        };
+        const schemaResponse = await fetchSchema(sdlUrl);
+        const { data } = schemaResponse;
+        const clientSchema = buildClientSchema(data);
+        const schemaSDL = printSchema(clientSchema);
+        dispatch(saveDocumentation(schemaSDL));
+      } catch (err) {
+        displayFetchErrors(err);
+      }
     }
   };
-
+  console.log('document', document);
   return (
-    <div className="graphql_page_wrapper">
-      <Alerts></Alerts>
+    <>
+      {loginStatus && (
+        <div className="graphql_page_wrapper">
+          <div className="graphiql-wrapper">
+            <div className={`graphiql-wrapper-inner ${document ? 'graphiql_100' : 'graphiql_95'}`}>
+              <DocumentationGQL></DocumentationGQL>
+              <div className={`graphiql-block ${document ? 'graphiql_50' : ''}`}>
+                <h2 className="h2">GraphiQL Client</h2>
+                <EndpointUrlInput></EndpointUrlInput>
+                <SDLUrlInput></SDLUrlInput>
+                <HeadersBlock></HeadersBlock>
+                <GqlQueryInput></GqlQueryInput>
+                <VariablesBlock></VariablesBlock>
+                <div className={'submit_gql_buttons'}>
+                  <Button variant="outlined" onClick={handleSubmitInput}>
+                    Submit input
+                  </Button>
+                  <Button variant="outlined" onClick={handleSubmitPoke}>
+                    Fill Poke
+                  </Button>
+                  <Button variant="outlined" onClick={handleSubmitSwapi}>
+                    Fill Swapi
+                  </Button>
+                </div>
+              </div>
+              <ResponseGQL></ResponseGQL>
+            </div>
+          </div>
 
-      {/* <HistoryModule></HistoryModule> */}
-      <div className="graphiql-wrapper">
-        <h2 className="h2">GraphiQL Client</h2>
-        <EndpointUrlInput></EndpointUrlInput>
-        <SDLUrlInput></SDLUrlInput>
-        <HeadersBlock></HeadersBlock>
-        <GqlQueryInput></GqlQueryInput>
-        <VariablesBlock></VariablesBlock>
-        <div>
-          <Button onClick={handleSubmitInput}>Submit input</Button>
-          <Button onClick={handleSubmitPoke}>Fill Poke</Button>
-          <Button onClick={handleSubmitSwapi}>Fill Swapi</Button>
+          <Alerts></Alerts>
         </div>
-      </div>
-      <ResponseGQL></ResponseGQL>
-      <DocumentationGQL></DocumentationGQL>
-    </div>
+      )}
+
+      {!loginStatus && <Loader />}
+    </>
   );
 }

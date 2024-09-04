@@ -1,3 +1,4 @@
+'use client';
 import { Alert } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { useSelector } from 'react-redux';
@@ -11,7 +12,7 @@ export default function Alerts() {
       {error !== '' && (
         <div className="alert-wrapper-absolute">
           <div className="alert-wrapper-sticky">
-            <Alert icon={<CheckIcon fontSize="inherit" />} severity="error">
+            <Alert className={'alert_gql'} icon={<CheckIcon fontSize="inherit" />} severity="error">
               {error}
             </Alert>
           </div>

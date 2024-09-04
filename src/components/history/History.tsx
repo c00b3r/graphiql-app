@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+'use client';
 import { useDispatch } from 'react-redux';
 import { Link } from '@mui/material';
 import { updateAllDataWhenPageLoads } from '@/reducers/actions/actions';
@@ -6,8 +6,6 @@ import { AppDispatch } from '@/reducers/root/rootReduces';
 import { useEffect, useState } from 'react';
 import { dataFromUrl } from '@/methods/graphql/urlConverter';
 import { IHistoryData, IResults, mockHistoryArrayElement } from '@/interfaces/interfaces';
-
-
 
 const mockHistoryElement: IHistoryData = {
   name: '',
@@ -76,12 +74,6 @@ export default function HistoryModule() {
   useEffect(() => {
     loadHistoryFromLS();
   }, []);
-
-  function removeBaseUrl(fullUrl: string) {
-    const url = new URL(fullUrl);
-    const pathWithParams = `${url.pathname}${url.search}`;
-    return pathWithParams;
-  }
 
   return (
     <>
