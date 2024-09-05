@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateHeaders } from '@/reducers/actions/actions';
 import { IState, IHeaders } from '@/interfaces/interfaces';
+import { enLanguage, ruLanguage } from '@/languages/languages';
 
 export default function HeadersBlock() {
   const dispatch = useDispatch<AppDispatch>();
@@ -13,6 +14,8 @@ export default function HeadersBlock() {
   const [enabledEditButtons, setEditButtons] = useState<number[]>([]);
   const [newHeaderKey, setNewHeaderKey] = useState<string>('');
   const [newHeaderValue, setNewHeaderValue] = useState<string>('');
+  const languageData = localStorage.getItem('language_data') === 'ru' ? ruLanguage : enLanguage;
+
 
   const headersStringified = useSelector((state: IState) => state.main.headersKeys);
   const headers: IHeaders[] = headersStringified !== '' ? JSON.parse(headersStringified) : [{ key: '', value: '' }];
@@ -25,6 +28,7 @@ export default function HeadersBlock() {
     const currentUrl = window.location.href;
     const convertedDataToUrl = urlConverter(endpointUrlInput, newHeaders, query, variables);
     const newUrl = makeNewUrl(currentUrl, convertedDataToUrl);
+
     window.history.pushState({}, '', newUrl);
   };
 
@@ -87,10 +91,10 @@ export default function HeadersBlock() {
       <div className="headers-wrapper">
         <div className="graphiql-input-wrapper">
           <h3 className="h3-width">
-            Headers
+            {languageData.headersHeader}
             <Button onClick={toggleHeaders}>
-              {!headersVisible && 'Show'}
-              {headersVisible && 'Hide'}
+              {!headersVisible && languageData.show}
+              {headersVisible && languageData.hide}
             </Button>
           </h3>
         </div>
@@ -98,20 +102,22 @@ export default function HeadersBlock() {
           <div className="headers-wrapper-inner">
             <div className="headers-element">
               <Input
+                className='header_input_gql'
                 type="text"
-                placeholder="Header Key"
+                placeholder={languageData.headerKey}
                 value={newHeaderKey}
                 onChange={(e) => setNewHeaderKey(e.target.value)}
               />
               <Input
+                className='header_input_gql'
                 type="text"
-                placeholder="Header Value"
+                placeholder={languageData.headerValue}
                 value={newHeaderValue}
                 onChange={(e) => setNewHeaderValue(e.target.value)}
               />
               <div className="header-buttons-wrapper">
-                <Button onClick={addHeader}>Add</Button>
-                <Button onClick={clearHeaderInput}>Clear</Button>
+                <Button onClick={addHeader}>{languageData.add}</Button>
+                <Button onClick={clearHeaderInput}>{languageData.clear}</Button>
               </div>
             </div>
             {headers.map((header, index) => {
@@ -134,17 +140,17 @@ export default function HeadersBlock() {
                   <div className="header-buttons-wrapper">
                     {!enabledEditButtons.includes(index) && (
                       <Button className={'header_button'} onClick={() => editHeader(index)}>
-                        Edit
+                        {languageData.edit}
                       </Button>
                     )}
 
                     {enabledEditButtons.includes(index) && (
                       <Button className={'header_button'} onClick={() => changeHeader(index)}>
-                        Change
+                        {languageData.change}
                       </Button>
                     )}
                     <Button className={'header_button'} onClick={() => removeHeader(index)}>
-                      Remove
+                    {languageData.remove}
                     </Button>
                   </div>
                 </div>

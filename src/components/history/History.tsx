@@ -29,7 +29,6 @@ const mockHistoryElement: IHistoryData = {
 export default function HistoryModule() {
   const dispatch = useDispatch<AppDispatch>();
   const [historyData, setHistory] = useState<IHistoryData[]>([mockHistoryElement]);
-
   const changeDataInInput = async (index: number) => {
     dispatch(updateAllDataWhenPageLoads(historyData[index].url));
   };
@@ -60,7 +59,7 @@ export default function HistoryModule() {
                 newHistoryArray.push(newElement);
               }
             } catch {
-              console.log('Ошибка 14');
+              console.log('Ошибка временная');
             }
           });
           setHistory(newHistoryArray);
@@ -76,30 +75,31 @@ export default function HistoryModule() {
   }, []);
 
   return (
-    <>
-      <div className="history-wrapper">
-        <nav>
-          <ul>
-            {historyData.map((item, index) => {
-              return (
-                <li key={`historyKey${index}`}>
-                  {item.clientName}
-                  <span> </span>
-                  <Link
-                    underline="none"
-                    color="black"
-                    href={item.url}
-                    key={`historyKey${index + 1}`}
-                    onClick={() => changeDataInInput(index)}
-                  >
-                    {item.data.endpointUrl}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+    <main className="main">
+      <div className="container">
+        <div className="history-wrapper">
+          <nav>
+            <ul>
+              {historyData.map((item, index) => {
+                return (
+                  <li key={`historyKey${index}`}>
+                    {item.clientName}<span>&nbsp;&nbsp;</span>
+                    <Link
+                      underline="none"
+                      color="black"
+                      href={item.url}
+                      key={`historyKey${index + 1}`}
+                      onClick={() => changeDataInInput(index)}
+                    >
+                      {item.data.endpointUrl}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        </div>
       </div>
-    </>
+    </main>
   );
 }

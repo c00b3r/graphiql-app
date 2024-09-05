@@ -4,15 +4,18 @@ import Stack from '@mui/material/Stack';
 import { Typography } from '@mui/material';
 import Image from 'next/image';
 import rssLogo from '../../../public/rss-logo.svg';
+import { IState } from '@/interfaces/interfaces';
+import { useSelector } from 'react-redux';
 
 export const Footer = () => {
+  const languageData = useSelector((state: IState) => state.main.languageData);
   return (
     <footer className="footer">
       <div className="container">
         <Stack direction="row" justifyContent="space-between" alignItems="center" height={60}>
           <Stack direction="column" justifyContent="center" alignItems="center" spacing={1}>
             <Typography variant="h6" component="p">
-              Our Team:
+            {languageData.ourTeam}
             </Typography>
             <Stack direction="row" alignItems="center" spacing={2}>
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>

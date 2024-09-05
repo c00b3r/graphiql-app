@@ -31,6 +31,7 @@ export interface IHeaders {
 export interface IResponse {
   result: string | false;
   code: number;
+  from: boolean;
 }
 
 export interface IPostData {
@@ -51,6 +52,7 @@ export interface IStateMain {
   searchResults: IResponse;
   error: string;
   documentation: string;
+  languageData: ILanguage;
 }
 
 export interface IState {
@@ -70,6 +72,10 @@ export interface IResults {
   query: string;
   endpointUrl: string;
   variables: string;
+}
+
+export interface ILanguage {
+  [key: string]: string;
 }
 
 export interface mockHistoryArrayElement {

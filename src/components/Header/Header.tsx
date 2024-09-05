@@ -13,9 +13,13 @@ import Loader from '../Loader/Loader';
 import ColorToggleButton from '../ToggleBtn/ToggleBtn';
 import icon from '../../../public/icons.png';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { auth } from '@/firebase';
-import { RootState } from '@/interfaces/interfaces';
+import { IState, RootState } from '@/interfaces/interfaces';
+import { enLanguage, ruLanguage } from '@/languages/languages';
+import { changeLanguage } from '@/reducers/actions/actions';
+import { AppDispatch } from '@/reducers/root/rootReduces';
+import { getPageRoute } from '@/methods/graphql/urlConverter';
 
 interface HeaderProps {
   isScrolled: boolean;
@@ -23,9 +27,25 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
   const dispatch = useDispatch();
+  const dispatchMain = useDispatch<AppDispatch>();
   const router = useRouter();
   const user = useSelector((state: RootState) => state.user);
   const [initialLoading, setInitialLoading] = useState(true);
+  const languageData = useSelector((state: IState) => state.main.languageData);
+  const [buttonStatus, setButtonStatus] = useState<'login' | 'signup' | 'else'>('else');
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const correntRouteIsLogin = getPageRoute(window.location.href) ;
+    if (correntRouteIsLogin === '/login') {
+      setButtonStatus('login')
+    } else if (correntRouteIsLogin === '/signup') {
+      setButtonStatus('signup')
+    } else {
+      setButtonStatus('else')
+    }
+  // Если login надо подсвечивать везде, кроме сайнап, то if (correntRouteIsLogin === '/signup') {setButtonStatus('signup')} else {setButtonStatus('login')}  
+  }, [pathname])
 
   useEffect(() => {
     setInitialLoading(true);
@@ -52,6 +72,22 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
 
     return () => unsubscribe();
   }, [dispatch]);
+
+  useEffect(() => {
+    const language = localStorage.getItem('language_data');
+    if (language !== 'ru') {
+      dispatchMain(changeLanguage(enLanguage));
+    } else {
+      dispatchMain(changeLanguage(ruLanguage));
+    }
+  }, []);
+
+  const changeToSignUp = async () => {
+    setButtonStatus('signup')
+  }
+  const changeToSignIn = async () => {
+    setButtonStatus('login')
+  }
 
   const handleLogOut = async () => {
     try {
@@ -87,27 +123,29 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
                 onClick={handleLogOut}
                 className={`${styles.link} ${isScrolled ? styles.linkScrolled : ''}`}
               >
-                Sign Out
+                {languageData.signOut}
               </Button>
             ) : (
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
                 <Button
-                  variant="contained"
+                  variant={buttonStatus === 'login' ? "contained" : "outlined"}
                   size="medium"
+                  onClick={changeToSignIn}
                   component={Link}
                   href="/login"
                   className={`${styles.link} ${isScrolled ? styles.linkScrolled : ''}`}
                 >
-                  Sign In
+                  {languageData.signIn}
                 </Button>
                 <Button
-                  variant="outlined"
+                  variant={buttonStatus === 'signup' ? "contained" : "outlined"}
                   size="medium"
+                  onClick={changeToSignUp}
                   component={Link}
                   href="/signup"
                   className={`${styles.link} ${isScrolled ? styles.linkScrolled : ''}`}
                 >
-                  Sign Up
+                  {languageData.signUp}
                 </Button>
               </Stack>
             )}

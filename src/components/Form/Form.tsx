@@ -4,6 +4,8 @@ import { FC, useState } from 'react';
 import { isValidEmail, isValidPassword } from '@/utils/validation';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { IState } from '@/interfaces/interfaces';
+import { useSelector } from 'react-redux';
 
 type FormProps = {
   title: string;
@@ -11,11 +13,11 @@ type FormProps = {
 };
 
 export const Form: FC<FormProps> = ({ title, handleClick }) => {
-  console.log('title', title);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const languageData = useSelector((state: IState) => state.main.languageData);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,16 +25,14 @@ export const Form: FC<FormProps> = ({ title, handleClick }) => {
     let valid = true;
 
     if (!isValidEmail(email)) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError(languageData.invalidEmail);
       valid = false;
     } else {
       setEmailError('');
     }
 
     if (!isValidPassword(password)) {
-      setPasswordError(
-        'The password must contain at least 8 characters, one letter, one digit, and one special character.'
-      );
+      setPasswordError(languageData.invalidPassword);
       valid = false;
     } else {
       setPasswordError('');
@@ -47,16 +47,17 @@ export const Form: FC<FormProps> = ({ title, handleClick }) => {
     <form className={styles.form} onSubmit={handleSubmit}>
       <TextField
         id="email"
-        label="Email"
+        label={languageData.email}
         variant="outlined"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         error={!!emailError}
         helperText={emailError}
+
       />
       <TextField
         id="password"
-        label="Password"
+        label={languageData.password}
         type="password"
         autoComplete="current-password"
         value={password}

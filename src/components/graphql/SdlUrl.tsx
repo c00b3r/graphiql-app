@@ -8,7 +8,8 @@ import { IState } from '@/interfaces/interfaces';
 export default function SDLUrlInput() {
   const dispatch = useDispatch<AppDispatch>();
   const sdlUrl = useSelector((state: IState) => state.main.sdlUrlInput);
-
+  const languageData = useSelector((state: IState) => state.main.languageData);
+  
   // useEffect(() => {
   //   const currentUrl = window.location.href;
   //   const partialData: IResults | boolean = dataFromUrl(currentUrl, false);
@@ -20,7 +21,7 @@ export default function SDLUrlInput() {
   return (
     <>
       <div className="graphiql-input-wrapper">
-        <h3 className="h3-width url_graphql">SDL URL</h3>
+        <h3 className={`${languageData.graphQlHeader === 'GraphiQL Client' ? 'url_graphql' : 'url_graphql-ru'} 'h3-width'`}>{languageData.sdlUrlHeader}</h3>
         <Input
           type="text"
           value={sdlUrl}

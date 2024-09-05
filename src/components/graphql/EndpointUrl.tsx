@@ -7,12 +7,12 @@ import { updateEndpoint } from '@/reducers/actions/actions';
 import { IState } from '@/interfaces/interfaces';
 
 export default function EndpointUrlInput() {
-  // const [endpointUrl, setEndpointUrl] = useState('');
   const dispatch = useDispatch<AppDispatch>();
   const endpointUrl = useSelector((state: IState) => state.main.endpointUrlInput);
   const headers = useSelector((state: IState) => state.main.headersKeys);
   const query = useSelector((state: IState) => state.main.queryInput);
   const variables = useSelector((state: IState) => state.main.variablesInput);
+  const languageData = useSelector((state: IState) => state.main.languageData);
 
   const changeUrlOnBlur = async () => {
     const currentUrl = window.location.href;
@@ -24,14 +24,13 @@ export default function EndpointUrlInput() {
   return (
     <>
       <div className="graphiql-input-wrapper">
-        <h3 className="h3-width url_graphql">Endpoint URL</h3>
+      <h3 className={`${languageData.graphQlHeader === 'GraphiQL Client' ? 'url_graphql' : 'url_graphql-ru'} 'h3-width'`}>{languageData.endpointUrlHeader}</h3>
         <Input
           type="text"
           className="graphiql-input"
           value={endpointUrl}
           onChange={(e) => {
             dispatch(updateEndpoint(e.target.value));
-            // setEndpointUrl(e.target.value);
           }}
           onBlur={changeUrlOnBlur}
         />

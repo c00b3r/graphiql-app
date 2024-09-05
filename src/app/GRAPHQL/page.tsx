@@ -27,11 +27,7 @@ import { saveHistory } from '@/methods/saveHistoryData';
 import Alerts from '@/components/Alert';
 import gqlPrettier from 'graphql-prettier';
 import { IState, IHeaders, IErrors } from '@/interfaces/interfaces';
-import {
-  getIntrospectionQuery,
-  buildClientSchema,
-  printSchema,
-} from 'graphql';
+import { getIntrospectionQuery, buildClientSchema, printSchema } from 'graphql';
 import { useRouter } from 'next/navigation';
 import './page.css';
 import Loader from '@/components/Loader/Loader';
@@ -46,13 +42,14 @@ export default function GraphQL() {
   const variables = useSelector((state: IState) => state.main.variablesInput);
   const errorMessage = useSelector((state: IState) => state.main.error);
   const document = useSelector((state: IState) => state.main.documentation);
+  const languageData = useSelector((state: IState) => state.main.languageData);
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState(false);
 
   useEffect(() => {
     const getLoginStatus = getCookie('loginStatus');
     if (!getLoginStatus) {
-      router.push('/welcome');
+      router.push('/');
     } else {
       setLoginStatus(true);
       const currentUrl = window.location.href;
@@ -62,9 +59,13 @@ export default function GraphQL() {
 
   useEffect(() => {
     // Сделать функцию для сброса и при разных условиях вызывать её
-    dispatch(saveResponse(false, 0));
-    dispatch(saveDocumentation(''));
+    brokenSubmit()
   }, []);
+
+  const brokenSubmit = () => {
+    dispatch(saveResponse(false, 0, false));
+    dispatch(saveDocumentation(''));
+  }
 
   const handleSubmitInput = async () => {
     handleSubmit();
@@ -104,11 +105,12 @@ export default function GraphQL() {
 
   const displayFetchErrors = (err: unknown) => {
     const errorData = err as IErrors;
-    const message = errorData.response.errors[0].message;
-    const code = errorData.response.status;
-    if (code) {
-      dispatch(saveResponse(message, code));
-    } else {
+
+    try {
+      const message = errorData.response.errors[0].message;
+      const code = errorData.response.status;
+      dispatch(saveResponse(JSON.stringify(message), code, false));
+    } catch {
       showAlert(errorData.message);
     }
   };
@@ -125,10 +127,11 @@ export default function GraphQL() {
       variablesSubmit = parsedVariables;
       stages += 1;
     } catch (err) {
+      brokenSubmit()
       const errorMessage = err as IErrors;
       showAlert(errorMessage.message);
     }
-    console.log('stages', stages);
+
     if (stages === 1) {
       try {
         // Проверяем наши headers
@@ -137,10 +140,11 @@ export default function GraphQL() {
         stages += 1;
       } catch (err) {
         const errorMessage = err as IErrors;
+        brokenSubmit()
         showAlert(errorMessage.message);
       }
     }
-    console.log('stages', stages);
+
     if (stages === 2) {
       // Тут мы работаем с ответом и историей
       try {
@@ -148,10 +152,12 @@ export default function GraphQL() {
           ${query}
         `;
         const body = await request(endpointUrl, queryTransformed, variablesSubmit as object, headersTransformed);
-        dispatch(saveResponse(JSON.stringify(body, null, 2), 200));
+        dispatch(saveResponse(JSON.stringify(body, null, 2), 200, true));
+       
         saveHistory(currentUrl, 'GraphiQL', sdlUrl);
         stages += 1;
       } catch (err) {
+        brokenSubmit()
         displayFetchErrors(err);
       }
     }
@@ -175,11 +181,12 @@ export default function GraphQL() {
         const schemaSDL = printSchema(clientSchema);
         dispatch(saveDocumentation(schemaSDL));
       } catch (err) {
+        brokenSubmit()
         displayFetchErrors(err);
       }
     }
   };
-  console.log('document', document);
+
   return (
     <>
       {loginStatus && (
@@ -188,7 +195,7 @@ export default function GraphQL() {
             <div className={`graphiql-wrapper-inner ${document ? 'graphiql_100' : 'graphiql_95'}`}>
               <DocumentationGQL></DocumentationGQL>
               <div className={`graphiql-block ${document ? 'graphiql_50' : ''}`}>
-                <h2 className="h2">GraphiQL Client</h2>
+                <h2 className="h2">{languageData.graphQlHeader}</h2>
                 <EndpointUrlInput></EndpointUrlInput>
                 <SDLUrlInput></SDLUrlInput>
                 <HeadersBlock></HeadersBlock>
@@ -196,13 +203,13 @@ export default function GraphQL() {
                 <VariablesBlock></VariablesBlock>
                 <div className={'submit_gql_buttons'}>
                   <Button variant="outlined" onClick={handleSubmitInput}>
-                    Submit input
+                    {languageData.submitInput}
                   </Button>
                   <Button variant="outlined" onClick={handleSubmitPoke}>
-                    Fill Poke
+                    {languageData.submitPoke}
                   </Button>
                   <Button variant="outlined" onClick={handleSubmitSwapi}>
-                    Fill Swapi
+                    {languageData.submitSwapi}
                   </Button>
                 </div>
               </div>

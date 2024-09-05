@@ -1,5 +1,5 @@
 'use client';
-import { updateQuery } from '@/reducers/actions/actions';
+import { setAlertMessage, updateQuery } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,13 +11,23 @@ export default function GqlQueryInput() {
   const dispatch = useDispatch<AppDispatch>();
   const query = useSelector((state: IState) => state.main.queryInput);
   const searchResults = useSelector((state: IState) => state.main.searchResults);
+  const languageData = useSelector((state: IState) => state.main.languageData);
+  const errorMessage = useSelector((state: IState) => state.main.error);
 
+  const showAlert = (error: string) => {
+    dispatch(setAlertMessage(error));
+    if (errorMessage === '') {
+      setTimeout(() => {
+        dispatch(setAlertMessage(''));
+      }, 3000);
+    }
+  };
+  
   const prettifyQuery = () => {
     try {
       dispatch(updateQuery(gqlPrettier(query)));
-    } catch (err) {
-      console.log('err', err);
-      // Или просто текст, или not a valid graphql query
+    } catch {
+      showAlert(languageData.wrongGqlError)
     }
   };
 
@@ -37,7 +47,7 @@ export default function GqlQueryInput() {
     <>
       <div className="query_wrapper">
         <h3 className="h3-width">
-          Query<Button onClick={prettifyQuery}>prettify</Button>
+        {languageData.queryHeader}<Button onClick={prettifyQuery}>{languageData.prettify}</Button>
         </h3>
       </div>
       <textarea

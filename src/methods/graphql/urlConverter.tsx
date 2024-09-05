@@ -101,7 +101,7 @@ export function makeNewUrl(currentUrl: string, convertedDataToUrl: string) {
   return newUrl;
 }
 
-export function removeBaseUrl(fullUrl: string) {
+export function getPageRoute(fullUrl: string) {
   const url = new URL(fullUrl);
   const pathWithParams = `${url.pathname}${url.search}`;
   return pathWithParams;

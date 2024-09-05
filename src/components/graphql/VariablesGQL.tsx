@@ -15,6 +15,7 @@ export default function VariablesBlock() {
   const headers = useSelector((state: IState) => state.main.headersKeys);
   const variables = useSelector((state: IState) => state.main.variablesInput);
   const searchResults = useSelector((state: IState) => state.main.searchResults);
+  const languageData = useSelector((state: IState) => state.main.languageData);
 
   const changeUrlOnBlur = async () => {
     const currentUrl = window.location.href;
@@ -27,15 +28,14 @@ export default function VariablesBlock() {
     showVariables(!variablesVisible);
   };
 
-  console.log('searchResults.result', searchResults.result);
   return (
     <>
       <div className="variables-wrapper">
         <h3 className="h3-width">
-          Variables{' '}
+          {languageData.variablesHeader}
           <Button onClick={toggleVariables}>
-            {!variablesVisible && 'Show'}
-            {variablesVisible && 'Hide'}
+            {!variablesVisible && languageData.show}
+            {variablesVisible && languageData.hide}
           </Button>
         </h3>
       </div>

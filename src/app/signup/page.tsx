@@ -7,11 +7,12 @@ import { SingUp } from '@/components/SignUp/SignUp';
 import Loader from '@/components/Loader/Loader';
 import { Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { RootState } from '@/interfaces/interfaces';
+import { IState, RootState } from '@/interfaces/interfaces';
 
 export default function SignUpPage() {
   const router = useRouter();
   const isAuth = useSelector((state: RootState) => state.user.isAuthenticated);
+  const languageData = useSelector((state: IState) => state.main.languageData);
 
   useEffect(() => {
     if (isAuth) {
@@ -28,11 +29,11 @@ export default function SignUpPage() {
       <div className="container">
         <Stack direction="column" justifyContent="space-between" alignItems="flex-start" spacing={3}>
           <Typography variant="h3" component="p" fontWeight={600}>
-            Sign Up
+            {languageData.signUp}
           </Typography>
           <SingUp />
           <Typography variant="h6" component="p">
-            Already have an account? <Link href="/login">Log in</Link>
+          {languageData.regQuestion} <Link href="/login">{languageData.logIn}</Link>
           </Typography>
         </Stack>
       </div>

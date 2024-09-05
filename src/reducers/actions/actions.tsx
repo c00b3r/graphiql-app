@@ -1,4 +1,4 @@
-import { IHeaders, IResponse } from '@/interfaces/interfaces';
+import { IHeaders, ILanguage, IResponse } from '@/interfaces/interfaces';
 
 export const saveHistoryData = (action: string) => {
   return (dispatch: (arg0: { type: string; payload: string }) => void) => {
@@ -60,11 +60,20 @@ export const updateAllDataWhenPageLoads = (action: string) => {
   };
 };
 
-export const saveResponse = (result: string | false, code: number) => {
+export const saveResponse = (result: string | false, code: number, from: boolean) => {
   return (dispatch: (arg0: { type: string; payload: IResponse }) => void) => {
     dispatch({
       type: 'SAVE_RESPONSE',
-      payload: { result, code },
+      payload: { result, code, from },
+    });
+  };
+};
+
+export const changeLanguage = (languageDb: ILanguage) => {
+  return (dispatch: (arg0: { type: string; payload: ILanguage }) => void) => {
+    dispatch({
+      type: 'CHANGE_LANGUAGE',
+      payload: languageDb,
     });
   };
 };
@@ -77,6 +86,7 @@ export const setAlertMessage = (error: string) => {
     });
   };
 };
+
 export const saveDocumentation = (error: string) => {
   return (dispatch: (arg0: { type: string; payload: string }) => void) => {
     dispatch({

@@ -1,4 +1,5 @@
 import { IStateMain, IHeaders, IErrors, IResults, IPostData } from '@/interfaces/interfaces';
+import { enLanguage } from '@/languages/languages';
 import { dataFromUrl } from '@/methods/graphql/urlConverter';
 
 const initialState: IStateMain = {
@@ -11,9 +12,11 @@ const initialState: IStateMain = {
   searchResults: {
     result: false,
     code: 0,
+    from: false,
   },
   error: '',
   documentation: '',
+  languageData: enLanguage
 };
 
 const mainReducer = (
@@ -49,6 +52,9 @@ const mainReducer = (
     }
     case 'SAVE_DOCUMENTATION': {
       return { ...state, documentation: action.payload };
+    }
+    case 'CHANGE_LANGUAGE': {
+      return { ...state, languageData: action.payload };
     }
     case 'SHOW_ALERT': {
       return { ...state, error: action.payload };
