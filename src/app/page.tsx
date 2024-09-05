@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase';
 import { Typography, Button, Stack } from '@mui/material';
 import Link from 'next/link';
+import MainInform from '@/components/MainInform/MainInform';
 
 const HomePage = () => {
   const [user, setUser] = useState<string | null>(null);
@@ -40,21 +41,25 @@ const HomePage = () => {
                 History
               </Button>
             </Stack>
+            <MainInform />
           </Stack>
         ) : (
-          <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2}>
-            <Typography variant="h3" component="p">
-              Welcome!
-            </Typography>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-              <Button variant="contained" size="large" component={Link} href="/login">
-                Sign In
-              </Button>
-              <Button variant="outlined" size="large" component={Link} href="/signup">
-                Sign Up
-              </Button>
+          <>
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
+              <Typography variant="h3" component="h1" gutterBottom>
+                Welcome to our project!
+              </Typography>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                <Button variant="outlined" size="large" component={Link} href="/login">
+                  Sign In
+                </Button>
+                <Button variant="contained" size="large" component={Link} href="/signup">
+                  Sign Up
+                </Button>
+              </Stack>
+              <MainInform />
             </Stack>
-          </Stack>
+          </>
         )}
       </div>
     </main>

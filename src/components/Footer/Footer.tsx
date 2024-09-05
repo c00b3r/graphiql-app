@@ -9,16 +9,16 @@ export const Footer = () => {
   return (
     <footer className="footer">
       <div className="container">
-        <Stack direction="row" justifyContent="space-between" alignItems="center" height={100}>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="column" justifyContent="center" alignItems="center" spacing={1}>
-            <Typography variant="h6" component="p">
+            <Typography variant="subtitle1" component="p">
               Our Team:
             </Typography>
             <Stack direction="row" alignItems="center" spacing={2}>
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
                 <GitHubIcon></GitHubIcon>
                 <Link
-                  variant="subtitle1"
+                  variant="subtitle2"
                   href="https://github.com/huntertigerx"
                   color="black"
                   underline="hover"
@@ -30,7 +30,7 @@ export const Footer = () => {
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
                 <GitHubIcon></GitHubIcon>
                 <Link
-                  variant="subtitle1"
+                  variant="subtitle2"
                   href="https://github.com/c00b3r"
                   color="black"
                   underline="hover"
@@ -42,7 +42,7 @@ export const Footer = () => {
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
                 <GitHubIcon></GitHubIcon>
                 <Link
-                  variant="subtitle1"
+                  variant="subtitle2"
                   href="https://github.com/LaraNU"
                   color="black"
                   underline="hover"

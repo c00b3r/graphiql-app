@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
             <ColorToggleButton />
             {user.isAuthenticated ? (
               <Button
-                variant="outlined"
+                variant="contained"
                 size="medium"
                 component={Link}
                 href="/"
@@ -91,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
             ) : (
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   size="medium"
                   component={Link}
                   href="/login"
@@ -100,7 +100,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
                   Sign In
                 </Button>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   size="medium"
                   component={Link}
                   href="/signup"
