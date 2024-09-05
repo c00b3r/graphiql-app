@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { addToHistory } from '@/reducers/actions/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/reducers/root/rootReduces';
@@ -15,9 +15,59 @@ export default function RestFull() {
   const [headers, setHeaders] = useState<{ [key: string]: string }>({});
   const [headerKey, setHeaderKey] = useState<string>('');
   const [headerValue, setHeaderValue] = useState<string>('');
+  const [isEditHeader, setEditHedaer] = useState<boolean>(false);
+  const [editKey, setEditKey] = useState<string | null>(null);
+  const [initialEditKey, setInitialEditKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    const path = window.location.pathname;
+    const [method, encodedUrl, encodedBody] = path.split('/').slice(1);
+    const queryString = window.location.search;
+
+    if (method && encodedUrl) {
+      setMethod(method);
+      setUrlToSend(Buffer.from(encodedUrl, 'base64').toString('utf-8'));
+      setRequestBody(encodedBody ? Buffer.from(encodedBody, 'base64').toString('utf-8') : '');
+
+      const headersFromQuery = new URLSearchParams(queryString);
+      const headersObject: { [key: string]: string } = {};
+      headersFromQuery.forEach((value, key) => {
+        headersObject[key] = decodeURIComponent(value);
+      });
+      setHeaders(headersObject);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      'restfullState',
+      JSON.stringify({
+        urlToSend,
+        method,
+        requestBody,
+        headers,
+      })
+    );
+  }, [urlToSend, method, requestBody, headers]);
+
+  useEffect(() => {
+    updateUrl();
+  }, [method, headers, urlToSend]);
+
+  const updateUrl = () => {
+    const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
+    const encodedBody = '/' + requestBody ? Buffer.from(requestBody).toString('base64') : '';
+    const queryString = new URLSearchParams(
+      Object.entries(headers).map(([key, value]) => [key, encodeURIComponent(value)])
+    ).toString();
+    const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
+
+    window.history.replaceState({}, '', newUrl);
+  };
 
   const onChangeEndpointHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrlToSend(e.target.value);
+    updateUrl();
   };
 
   const onChangeMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -41,6 +91,43 @@ export default function RestFull() {
       setHeaders((prevHeaders) => ({ ...prevHeaders, [headerKey]: headerValue }));
       setHeaderKey('');
       setHeaderValue('');
+    }
+  };
+
+  const deleteHeader = (key: string) => {
+
+    setHeaders((prevHeaders) => {
+      const updatedHeaders = { ...prevHeaders };
+      delete updatedHeaders[key];
+      return updatedHeaders;
+    });
+  };
+
+  const editHeader = (key: string) => {
+    setHeaderKey(key);
+    setHeaderValue(headers[key]);
+    setInitialEditKey(key);
+    setEditKey(key);
+    setEditHedaer(true);
+  };
+
+  const saveHeader = () => {
+    if (editKey && headerValue && initialEditKey) {
+      setHeaders((prevHeaders) => {
+        const newHeaders = { ...prevHeaders };
+        if (initialEditKey !== headerKey) {
+          delete newHeaders[initialEditKey];
+        }
+
+        newHeaders[headerKey] = headerValue;
+
+        return newHeaders;
+      });
+      setHeaderKey('');
+      setHeaderValue('');
+      setEditKey(null);
+      setInitialEditKey(null);
+      setEditHedaer(false);
     }
   };
 
@@ -73,6 +160,7 @@ export default function RestFull() {
       if (method === 'POST' || method === 'PUT') {
         fetchHeaders.set('Content-Type', 'application/json');
         fetchOption.body = requestBody;
+        updateUrl();
       }
 
       const response = await fetch(urlToSend, fetchOption);
@@ -99,15 +187,7 @@ export default function RestFull() {
         const text = await response.text();
         setResponseBody(`Response is not JSON\n\n${text}`);
       }
-
-      const encodedUrl = Buffer.from(urlToSend).toString('base64');
-      const encodedBody = requestBody ? Buffer.from(requestBody).toString('base64') : '';
-      const queryString = new URLSearchParams(
-        Object.entries(headers).map(([key, value]) => [key, encodeURIComponent(value)])
-      ).toString();
-      const newUrl = `/${method}/${encodedUrl}/${encodedBody}${queryString ? `?${queryString}` : ''}`;
-
-      window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+      updateUrl();
 
       dispatch(
         addToHistory({ method, url: urlToSend, body: requestBody, headers: Object.fromEntries(fetchHeaders.entries()) })
@@ -145,11 +225,14 @@ export default function RestFull() {
               style={{ marginRight: '5px' }}
             />
             <input type="text" placeholder="Header Value" value={headerValue} onChange={onChangeHeaderValue} />
+            {isEditHeader ? <button onClick={saveHeader}>Save</button> : null}
           </div>
           <div>
             {Object.entries(headers).map(([key, value]) => (
-              <p key={key}>
+              <p key={key} style={{ display: 'flex', gap: '5px' }}>
                 {key}: {value}
+                <button onClick={() => editHeader(key)}>Edit</button>
+                <button onClick={() => deleteHeader(key)}>Delete</button>
               </p>
             ))}
           </div>
@@ -159,6 +242,9 @@ export default function RestFull() {
           <textarea
             value={requestBody}
             onChange={onChangeRequestBody}
+            onBlur={() => {
+              updateUrl();
+            }}
             style={{ width: '400px', height: '100px', resize: 'none' }}
           ></textarea>
         </div>
