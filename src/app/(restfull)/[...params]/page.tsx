@@ -67,7 +67,6 @@ export default function RestFull() {
 
   const onChangeEndpointHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrlToSend(e.target.value);
-    updateUrl();
   };
 
   const onChangeMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -95,7 +94,6 @@ export default function RestFull() {
   };
 
   const deleteHeader = (key: string) => {
-
     setHeaders((prevHeaders) => {
       const updatedHeaders = { ...prevHeaders };
       delete updatedHeaders[key];
@@ -160,7 +158,6 @@ export default function RestFull() {
       if (method === 'POST' || method === 'PUT') {
         fetchHeaders.set('Content-Type', 'application/json');
         fetchOption.body = requestBody;
-        updateUrl();
       }
 
       const response = await fetch(urlToSend, fetchOption);
@@ -187,7 +184,6 @@ export default function RestFull() {
         const text = await response.text();
         setResponseBody(`Response is not JSON\n\n${text}`);
       }
-      updateUrl();
 
       dispatch(
         addToHistory({ method, url: urlToSend, body: requestBody, headers: Object.fromEntries(fetchHeaders.entries()) })
