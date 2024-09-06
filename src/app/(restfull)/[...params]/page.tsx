@@ -1,18 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { addToHistory } from '@/reducers/actions/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/reducers/root/rootReduces';
 
 export default function RestFull() {
-  const dispatch = useDispatch();
-  const history = useSelector((state: RootState) => state.restFull.history);
   const [urlToSend, setUrlToSend] = useState<string>('');
   const [method, setMethod] = useState<string>('GET');
   const [responseBody, setResponseBody] = useState<string>('');
   const [status, setStatus] = useState<number>();
   const [requestBody, setRequestBody] = useState<string>('');
-  const [headers, setHeaders] = useState<{ [key: string]: string }>({});
+  const [headers, setHeaders] = useState<Array<{ [key: string]: string }>>([]);
   const [headerKey, setHeaderKey] = useState<string>('');
   const [headerValue, setHeaderValue] = useState<string>('');
   const [isEditHeader, setEditHedaer] = useState<boolean>(false);
@@ -30,11 +25,14 @@ export default function RestFull() {
       setRequestBody(encodedBody ? Buffer.from(encodedBody, 'base64').toString('utf-8') : '');
 
       const headersFromQuery = new URLSearchParams(queryString);
-      const headersObject: { [key: string]: string } = {};
+      const headersArray: Array<{ [key: string]: string }> = [];
       headersFromQuery.forEach((value, key) => {
-        headersObject[key] = decodeURIComponent(value);
+        headersArray.push({
+          key: decodeURIComponent(key),
+          value: decodeURIComponent(value),
+        });
       });
-      setHeaders(headersObject);
+      setHeaders(headersArray);
     }
   }, []);
 
@@ -58,7 +56,7 @@ export default function RestFull() {
     const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
     const encodedBody = '/' + requestBody ? Buffer.from(requestBody).toString('base64') : '';
     const queryString = new URLSearchParams(
-      Object.entries(headers).map(([key, value]) => [key, encodeURIComponent(value)])
+      headers.map(({ key, value }) => [key, encodeURIComponent(value)])
     ).toString();
     const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
 
@@ -87,40 +85,32 @@ export default function RestFull() {
 
   const addHeader = () => {
     if (headerKey && headerValue) {
-      setHeaders((prevHeaders) => ({ ...prevHeaders, [headerKey]: headerValue }));
+      setHeaders((prevHeaders) => [...prevHeaders, { key: headerKey, value: headerValue }]);
       setHeaderKey('');
       setHeaderValue('');
     }
   };
 
   const deleteHeader = (key: string) => {
-    setHeaders((prevHeaders) => {
-      const updatedHeaders = { ...prevHeaders };
-      delete updatedHeaders[key];
-      return updatedHeaders;
-    });
+    setHeaders((prevHeaders) => prevHeaders.filter((header) => header.key !== key));
   };
 
   const editHeader = (key: string) => {
-    setHeaderKey(key);
-    setHeaderValue(headers[key]);
-    setInitialEditKey(key);
-    setEditKey(key);
-    setEditHedaer(true);
+    const headerToEdit = headers.find((header) => header.key === key);
+    if (headerToEdit) {
+      setHeaderKey(headerToEdit.key);
+      setHeaderValue(headerToEdit.value);
+      setInitialEditKey(key);
+      setEditKey(key);
+      setEditHedaer(true);
+    }
   };
 
   const saveHeader = () => {
     if (editKey && headerValue && initialEditKey) {
-      setHeaders((prevHeaders) => {
-        const newHeaders = { ...prevHeaders };
-        if (initialEditKey !== headerKey) {
-          delete newHeaders[initialEditKey];
-        }
-
-        newHeaders[headerKey] = headerValue;
-
-        return newHeaders;
-      });
+      setHeaders((prevHeaders) =>
+        prevHeaders.map((header) => (header.key === initialEditKey ? { key: headerKey, value: headerValue } : header))
+      );
       setHeaderKey('');
       setHeaderValue('');
       setEditKey(null);
@@ -129,25 +119,17 @@ export default function RestFull() {
     }
   };
 
-  const handleHistoryClick = (item: {
-    method: string;
-    url: string;
-    body: string;
-    headers: { [key: string]: string };
-  }) => {
-    setMethod(item.method);
-    setUrlToSend(item.url);
-    setRequestBody(item.body);
-    setHeaders(item.headers);
-  };
-
   const onSubmitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      console.log(headers);
+
       const fetchHeaders = new Headers();
 
       for (const [key, value] of Object.entries(headers)) {
-        fetchHeaders.append(key, value);
+        if (key.trim() && String(value).trim()) {
+          fetchHeaders.append(key, String(value));
+        }
       }
 
       const fetchOption: RequestInit = {
@@ -202,10 +184,6 @@ export default function RestFull() {
         const text = await response.text();
         setResponseBody(`Response is not JSON\n\n${text}`);
       }
-
-      dispatch(
-        addToHistory({ method, url: urlToSend, body: requestBody, headers: Object.fromEntries(fetchHeaders.entries()) })
-      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         setResponseBody(`Error: ${error.message}`);
@@ -214,7 +192,10 @@ export default function RestFull() {
   };
 
   return (
-    <div className="restfull-container" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+    <div
+      className="restfull-container"
+      style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '10px' }}
+    >
       <div className="request-container">
         <form className="endpoint" onSubmit={onSubmitHandler}>
           <select name="method" id="method" value={method} onChange={onChangeMethodHandler}>
@@ -245,8 +226,8 @@ export default function RestFull() {
             {isEditHeader ? <button onClick={saveHeader}>Save</button> : null}
           </div>
           <div>
-            {Object.entries(headers).map(([key, value]) => (
-              <p key={key} style={{ display: 'flex', gap: '5px' }}>
+            {headers.map(({ key, value }) => (
+              <p key={value} style={{ display: 'flex', gap: '5px' }}>
                 {key}: {value}
                 <button onClick={() => editHeader(key)}>Edit</button>
                 <button onClick={() => deleteHeader(key)}>Delete</button>
@@ -272,17 +253,6 @@ export default function RestFull() {
         </p>
         <p>Body (JSON):</p>
         <textarea readOnly value={responseBody} style={{ width: '400px', height: '200px', resize: 'none' }}></textarea>
-      </div>
-      <div className="history-container">
-        <h2>Request History</h2>
-        {history.length === 0 && <p>No history available</p>}
-        <ol>
-          {history.map((item, index) => (
-            <li key={index} onClick={() => handleHistoryClick(item)} style={{ cursor: 'pointer', marginBottom: '5px' }}>
-              {item.method} {item.url}
-            </li>
-          ))}
-        </ol>
       </div>
     </div>
   );
