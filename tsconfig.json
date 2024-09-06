@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -21,6 +22,14 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/components/Header/Header.test.tsx.old",
+    "src/__tests__/Header.early.test.tsx.old",
+    "src/__tests__/pageLoginPage.test.tsx"
+  ],
   "exclude": ["node_modules", ".next"]
 }

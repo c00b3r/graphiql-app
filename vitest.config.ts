@@ -7,6 +7,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    exclude: ['.next', 'node_modules'],
+    setupFiles: ['src/__tests__/config/config.ts'],
+    exclude: ['.next', 'node_modules', './next.config.mjs', './jest-setup.js'],
+    // include: ['src/**/*.ts', 'src/**/*.tsx'], // Включаем только файлы .ts и .tsx из папки src
+    // exclude: ['**/*.spec.ts', '**/*.test.ts'], // Исключаем тестовые файлы (если необходимо)
   },
 });

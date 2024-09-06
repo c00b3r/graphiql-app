@@ -10,12 +10,11 @@
   ],
   "ignorePatterns": ["dist", ".eslintrc.cjs"],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["react-refresh", "react-compiler", "prettier"],
+  "plugins": ["react-refresh", "react", "react-compiler", "prettier"],
   "rules": {
     "prefer-const": "off",
     "react-compiler/react-compiler": "error",
     "react-hooks/exhaustive-deps": "off",
-    "react-refresh/only-export-components": ["warn", { "allowConstantExport": true }],
     "@typescript-eslint/no-explicit-any": "error"
   }
 }

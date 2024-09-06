@@ -1,6 +1,5 @@
 import { Avatar, Card, CardContent, Typography, Box, IconButton, Link } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
-
 type TeamMemberProps = {
   name: string;
   role: string;

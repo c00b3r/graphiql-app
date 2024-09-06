@@ -4,15 +4,18 @@ import Stack from '@mui/material/Stack';
 import { Typography } from '@mui/material';
 import Image from 'next/image';
 import rssLogo from '../../../public/rss-logo.svg';
+import { IState } from '@/interfaces/interfaces';
+import { useSelector } from 'react-redux';
 
 export const Footer = () => {
+  const languageData = useSelector((state: IState) => state.main.languageData);
   return (
     <footer className="footer">
       <div className="container">
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="column" justifyContent="center" alignItems="center" spacing={1}>
             <Typography variant="subtitle1" component="p">
-              Our Team:
+              {languageData.ourTeam}
             </Typography>
             <Stack direction="row" alignItems="center" spacing={2}>
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
@@ -58,7 +61,7 @@ export const Footer = () => {
           </Typography>
           <Stack direction="column" justifyContent="center" alignItems="center" spacing={1}>
             <Link href="https://rs.school/courses/reactjs" color="black" underline="hover" target="_blank">
-              <Image src={rssLogo} alt="Logo" style={{ width: '40px', height: '40px' }} />
+              <Image priority src={rssLogo} alt="Logo" style={{ width: '40px', height: '40px' }} />
             </Link>
           </Stack>
         </Stack>
