@@ -174,6 +174,24 @@ export default function RestFull() {
         return;
       }
 
+      if (method === 'HEAD') {
+        const dataHeaders = Array.from(response.headers.entries());
+        setResponseBody(dataHeaders.join(''));
+        return;
+      }
+
+      if (method === 'OPTIONS') {
+        const allowMethods = response.headers.get('Allow');
+
+        if (allowMethods) {
+          setResponseBody(`Allowed methods: ${allowMethods}`);
+        } else {
+          setResponseBody('No allowed methods provided by the server.');
+        }
+
+        return;
+      }
+
       const contentType = response.headers.get('Content-Type' || '');
       let data;
 
@@ -204,6 +222,9 @@ export default function RestFull() {
             <option>POST</option>
             <option>PUT</option>
             <option>DELETE</option>
+            <option>HEAD</option>
+            <option>OPTIONS</option>
+            <option>PATCH</option>
           </select>
           <input type="text" placeholder="Enter URL" value={urlToSend} onChange={(e) => onChangeEndpointHandler(e)} />
           <button style={{ cursor: 'pointer' }}>Send</button>

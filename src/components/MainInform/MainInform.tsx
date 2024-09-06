@@ -23,7 +23,7 @@ const MainInform = () => {
       name: languageData.name2,
       role: languageData.role2,
       description: languageData.desc2,
-      imageSrc: '/photo.png',
+      imageSrc: '/vasilev.jpg',
       githubLink: 'https://github.com/c00b3r',
     },
     {
