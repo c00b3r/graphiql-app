@@ -1,11 +1,12 @@
 .history-wrapper {
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 10px;
   overflow-wrap: break-word;
   white-space: normal;
   justify-content: center;
+  align-items: center;
 }
 
 .container {
@@ -14,4 +15,8 @@
 
 .history-wrapper nav ul {
   list-style: none;
+}
+
+h3 {
+  margin: 0;
 }

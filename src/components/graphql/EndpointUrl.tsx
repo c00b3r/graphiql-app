@@ -24,7 +24,11 @@ export default function EndpointUrlInput() {
   return (
     <>
       <div className="graphiql-input-wrapper">
-      <h3 className={`${languageData.graphQlHeader === 'GraphiQL Client' ? 'url_graphql' : 'url_graphql-ru'} 'h3-width'`}>{languageData.endpointUrlHeader}</h3>
+        <h3
+          className={`${languageData.graphQlHeader === 'GraphiQL Client' ? 'url_graphql' : 'url_graphql-ru'} 'h3-width'`}
+        >
+          {languageData.endpointUrlHeader}
+        </h3>
         <Input
           type="text"
           className="graphiql-input"

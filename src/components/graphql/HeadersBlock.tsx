@@ -4,7 +4,7 @@ import { AppDispatch } from '@/reducers/root/rootReduces';
 import { Button, Input } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateHeaders } from '@/reducers/actions/actions';
+import { setAlertMessage, updateHeaders } from '@/reducers/actions/actions';
 import { IState, IHeaders } from '@/interfaces/interfaces';
 import { enLanguage, ruLanguage } from '@/languages/languages';
 
@@ -14,21 +14,28 @@ export default function HeadersBlock() {
   const [enabledEditButtons, setEditButtons] = useState<number[]>([]);
   const [newHeaderKey, setNewHeaderKey] = useState<string>('');
   const [newHeaderValue, setNewHeaderValue] = useState<string>('');
+  const errorMessage = useSelector((state: IState) => state.main.error);
   const languageData = localStorage.getItem('language_data') === 'ru' ? ruLanguage : enLanguage;
-
-
   const headersStringified = useSelector((state: IState) => state.main.headersKeys);
   const headers: IHeaders[] = headersStringified !== '' ? JSON.parse(headersStringified) : [{ key: '', value: '' }];
   const endpointUrlInput = useSelector((state: IState) => state.main.endpointUrlInput);
   const query = useSelector((state: IState) => state.main.queryInput);
   const variables = useSelector((state: IState) => state.main.variablesInput);
 
+  const showAlert = (error: string) => {
+    dispatch(setAlertMessage(error));
+    if (errorMessage === '') {
+      setTimeout(() => {
+        dispatch(setAlertMessage(''));
+      }, 3000);
+    }
+  };
+
   const changeUrlOnBlur = async (newHeaders: IHeaders[]) => {
     dispatch(updateHeaders(newHeaders));
     const currentUrl = window.location.href;
     const convertedDataToUrl = urlConverter(endpointUrlInput, newHeaders, query, variables);
     const newUrl = makeNewUrl(currentUrl, convertedDataToUrl);
-
     window.history.pushState({}, '', newUrl);
   };
 
@@ -74,10 +81,10 @@ export default function HeadersBlock() {
       changeUrlOnBlur(newHeaders);
     } else {
       if (!newHeaderKey) {
-        // Напиши ключ
+        showAlert('Headers key input is missing a value');
       }
       if (!newHeaderValue) {
-        // Напиши значение
+        showAlert('Headers value input is missing a value');
       }
     }
   };
@@ -101,56 +108,89 @@ export default function HeadersBlock() {
         {headersVisible && (
           <div className="headers-wrapper-inner">
             <div className="headers-element">
-              <Input
-                className='header_input_gql'
-                type="text"
-                placeholder={languageData.headerKey}
-                value={newHeaderKey}
-                onChange={(e) => setNewHeaderKey(e.target.value)}
-              />
-              <Input
-                className='header_input_gql'
-                type="text"
-                placeholder={languageData.headerValue}
-                value={newHeaderValue}
-                onChange={(e) => setNewHeaderValue(e.target.value)}
-              />
-              <div className="header-buttons-wrapper">
-                <Button onClick={addHeader}>{languageData.add}</Button>
-                <Button onClick={clearHeaderInput}>{languageData.clear}</Button>
+              <div className={`header-inputs-wrapper  ${languageData.add !== 'Add' ? 'header-inputs-wrapper-ru' : ''}`}>
+                <Input
+                  className="header_keyvalue_entered"
+                  type="text"
+                  placeholder={languageData.headerKey}
+                  value={newHeaderKey}
+                  onChange={(e) => setNewHeaderKey(e.target.value)}
+                />
+                <Input
+                  className="header_keyvalue_entered"
+                  type="text"
+                  placeholder={languageData.headerValue}
+                  value={newHeaderValue}
+                  onChange={(e) => setNewHeaderValue(e.target.value)}
+                />
+              </div>
+
+              <div
+                className={`header-buttons-wrapper  ${languageData.add !== 'Add' ? 'header-buttons-wrapper-ru' : ''}`}
+              >
+                <Button
+                  className={languageData.add === 'Add' ? 'header_button_left_en' : 'header_button_left_ru'}
+                  onClick={addHeader}
+                >
+                  {languageData.add}
+                </Button>
+                <Button
+                  className={languageData.add === 'Add' ? 'header_button_right_en' : 'header_button_right_ru'}
+                  onClick={clearHeaderInput}
+                >
+                  {languageData.clear}
+                </Button>
               </div>
             </div>
+
             {headers.map((header, index) => {
               return (
                 <div className="headers-element" key={`header-${index}`}>
-                  <Input
-                    type="text"
-                    placeholder="Header Key"
-                    value={header.key}
-                    onChange={(e) => handleHeaderChange(index, 'key', e.target.value)}
-                    disabled={!enabledEditButtons.includes(index)}
-                  />
-                  <Input
-                    type="text"
-                    placeholder="Header Value"
-                    value={header.value}
-                    onChange={(e) => handleHeaderChange(index, 'value', e.target.value)}
-                    disabled={!enabledEditButtons.includes(index)}
-                  />
-                  <div className="header-buttons-wrapper">
+                  <div
+                    className={`header-inputs-wrapper  ${languageData.add !== 'Add' ? 'header-inputs-wrapper-ru' : ''}`}
+                  >
+                    <Input
+                      className="header_keyvalue_entered"
+                      type="text"
+                      placeholder="Header Key"
+                      value={header.key}
+                      onChange={(e) => handleHeaderChange(index, 'key', e.target.value)}
+                      disabled={!enabledEditButtons.includes(index)}
+                    />
+                    <Input
+                      className="header_keyvalue_entered"
+                      type="text"
+                      placeholder="Header Value"
+                      value={header.value}
+                      onChange={(e) => handleHeaderChange(index, 'value', e.target.value)}
+                      disabled={!enabledEditButtons.includes(index)}
+                    />
+                  </div>
+                  <div
+                    className={`header-buttons-wrapper  ${languageData.add !== 'Add' ? 'header-buttons-wrapper-ru' : ''}`}
+                  >
                     {!enabledEditButtons.includes(index) && (
-                      <Button className={'header_button'} onClick={() => editHeader(index)}>
+                      <Button
+                        className={languageData.add === 'Add' ? 'header_button_left_en' : 'header_button_left_ru'}
+                        onClick={() => editHeader(index)}
+                      >
                         {languageData.edit}
                       </Button>
                     )}
 
                     {enabledEditButtons.includes(index) && (
-                      <Button className={'header_button'} onClick={() => changeHeader(index)}>
+                      <Button
+                        className={languageData.add === 'Add' ? 'header_button_left_en' : 'header_button_left_ru'}
+                        onClick={() => changeHeader(index)}
+                      >
                         {languageData.change}
                       </Button>
                     )}
-                    <Button className={'header_button'} onClick={() => removeHeader(index)}>
-                    {languageData.remove}
+                    <Button
+                      className={languageData.add === 'Add' ? 'header_button_right_en' : 'header_button_right_ru'}
+                      onClick={() => removeHeader(index)}
+                    >
+                      {languageData.remove}
                     </Button>
                   </div>
                 </div>

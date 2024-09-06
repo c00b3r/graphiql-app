@@ -1,11 +1,12 @@
 'use client';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from '@mui/material';
-import { updateAllDataWhenPageLoads } from '@/reducers/actions/actions';
+import { setAlertMessage, updateAllDataWhenPageLoads } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { useEffect, useState } from 'react';
 import { dataFromUrl } from '@/methods/graphql/urlConverter';
-import { IHistoryData, IResults, mockHistoryArrayElement } from '@/interfaces/interfaces';
+import { IHistoryData, IResults, IState, mockHistoryArrayElement } from '@/interfaces/interfaces';
+import Alerts from '../Alert';
 
 const mockHistoryElement: IHistoryData = {
   name: '',
@@ -29,8 +30,20 @@ const mockHistoryElement: IHistoryData = {
 export default function HistoryModule() {
   const dispatch = useDispatch<AppDispatch>();
   const [historyData, setHistory] = useState<IHistoryData[]>([mockHistoryElement]);
+  const errorMessage = useSelector((state: IState) => state.main.error);
+  const languageData = useSelector((state: IState) => state.main.languageData);
+
   const changeDataInInput = async (index: number) => {
     dispatch(updateAllDataWhenPageLoads(historyData[index].url));
+  };
+
+  const showAlert = (error: string) => {
+    dispatch(setAlertMessage(error));
+    if (errorMessage === '') {
+      setTimeout(() => {
+        dispatch(setAlertMessage(''));
+      }, 3000);
+    }
   };
 
   const loadHistoryFromLS = () => {
@@ -59,12 +72,12 @@ export default function HistoryModule() {
                 newHistoryArray.push(newElement);
               }
             } catch {
-              console.log('Ошибка временная');
+              showAlert('Wrong data in the url');
             }
           });
           setHistory(newHistoryArray);
         } catch {
-          console.error('invalid data in local storage');
+          showAlert('invalid data in local storage');
         }
       }
     }
@@ -78,12 +91,14 @@ export default function HistoryModule() {
     <main className="main">
       <div className="container">
         <div className="history-wrapper">
+          <h3>{languageData.historyHeader}</h3>
           <nav>
             <ul>
               {historyData.map((item, index) => {
                 return (
                   <li key={`historyKey${index}`}>
-                    {item.clientName}<span>&nbsp;&nbsp;</span>
+                    {item.clientName}
+                    <span>&nbsp;&nbsp;</span>
                     <Link
                       underline="none"
                       color="black"
@@ -99,6 +114,7 @@ export default function HistoryModule() {
             </ul>
           </nav>
         </div>
+        <Alerts></Alerts>
       </div>
     </main>
   );

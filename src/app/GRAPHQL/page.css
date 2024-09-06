@@ -45,6 +45,12 @@ body {
   width: 100%;
 }
 
+.headers-wrapper-inner {
+  overflow-y: scroll;
+  width: 100%;
+  height: 64px;
+}
+
 .headers-wrapper {
   width: 100%;
   display: flex;
@@ -85,15 +91,41 @@ body {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  justify-content: space-between;
 }
 
-.header_button {
-  width: 66px;
+.header_button_left_en {
+  min-width: 40px;
+}
+.header_button_right_en {
+  min-width: 63px;
+}
+
+.header_keyvalue_entered {
+  min-width: 50%;
+}
+
+.header-inputs-wrapper {
+  /* flex: 2;  */
+  min-width: 80% !important;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
 }
 
 .header-buttons-wrapper {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  min-width: 20% !important;
+  /* flex: 1; */
+}
+
+.header-inputs-wrapper-ru {
+  min-width: 60% !important;
+}
+
+.header-buttons-wrapper-ru {
+  min-width: 39% !important;
 }
 
 .variables-wrapper {
@@ -203,11 +235,6 @@ ul {
   max-width: 95%;
 }
 
-.headers-wrapper-inner {
-  overflow-y: scroll;
-  height: 64px;
-}
-
 .submit_gql_buttons {
   width: 100%;
   display: flex;
@@ -220,8 +247,6 @@ ul {
 
 .alert_gql {
   justify-content: center;
-  overflow-x: scroll;
-  overflow-y: scroll;
   padding-bottom: 0 !important;
 }
 
@@ -233,4 +258,3 @@ ul {
   display: flex;
   flex-direction: column;
 }
-

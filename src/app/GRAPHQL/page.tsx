@@ -29,9 +29,9 @@ import gqlPrettier from 'graphql-prettier';
 import { IState, IHeaders, IErrors } from '@/interfaces/interfaces';
 import { getIntrospectionQuery, buildClientSchema, printSchema } from 'graphql';
 import { useRouter } from 'next/navigation';
-import './page.css';
 import Loader from '@/components/Loader/Loader';
 import { getCookie } from 'cookies-next';
+import './page.css';
 
 export default function GraphQL() {
   const dispatch = useDispatch<AppDispatch>();
@@ -58,14 +58,13 @@ export default function GraphQL() {
   }, []);
 
   useEffect(() => {
-    // Сделать функцию для сброса и при разных условиях вызывать её
-    brokenSubmit()
+    brokenSubmit();
   }, []);
 
   const brokenSubmit = () => {
     dispatch(saveResponse(false, 0, false));
     dispatch(saveDocumentation(''));
-  }
+  };
 
   const handleSubmitInput = async () => {
     handleSubmit();
@@ -127,7 +126,7 @@ export default function GraphQL() {
       variablesSubmit = parsedVariables;
       stages += 1;
     } catch (err) {
-      brokenSubmit()
+      brokenSubmit();
       const errorMessage = err as IErrors;
       showAlert(errorMessage.message);
     }
@@ -140,7 +139,7 @@ export default function GraphQL() {
         stages += 1;
       } catch (err) {
         const errorMessage = err as IErrors;
-        brokenSubmit()
+        brokenSubmit();
         showAlert(errorMessage.message);
       }
     }
@@ -153,11 +152,11 @@ export default function GraphQL() {
         `;
         const body = await request(endpointUrl, queryTransformed, variablesSubmit as object, headersTransformed);
         dispatch(saveResponse(JSON.stringify(body, null, 2), 200, true));
-       
+
         saveHistory(currentUrl, 'GraphiQL', sdlUrl);
         stages += 1;
       } catch (err) {
-        brokenSubmit()
+        brokenSubmit();
         displayFetchErrors(err);
       }
     }
@@ -181,7 +180,7 @@ export default function GraphQL() {
         const schemaSDL = printSchema(clientSchema);
         dispatch(saveDocumentation(schemaSDL));
       } catch (err) {
-        brokenSubmit()
+        brokenSubmit();
         displayFetchErrors(err);
       }
     }
@@ -216,7 +215,6 @@ export default function GraphQL() {
               <ResponseGQL></ResponseGQL>
             </div>
           </div>
-
           <Alerts></Alerts>
         </div>
       )}

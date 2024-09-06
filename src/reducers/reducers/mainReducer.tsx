@@ -16,7 +16,7 @@ const initialState: IStateMain = {
   },
   error: '',
   documentation: '',
-  languageData: enLanguage
+  languageData: enLanguage,
 };
 
 const mainReducer = (

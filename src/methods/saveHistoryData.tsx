@@ -1,6 +1,6 @@
 export const saveHistory = (url: string, client: string, sdlUrl: string) => {
   if (typeof window !== 'undefined') {
-    const savedState = localStorage.getItem('history_data');
+    let savedState = localStorage.getItem('history_data');
     if (savedState) {
       try {
         const historyArray = JSON.parse(savedState);
@@ -12,10 +12,10 @@ export const saveHistory = (url: string, client: string, sdlUrl: string) => {
         const mergedArray = [newData].concat(historyArray);
         localStorage.setItem('history_data', JSON.stringify(mergedArray));
       } catch {
-        console.error('invalid data in local storage');
+        savedState = null;
       }
     } else {
-      localStorage.setItem('history_data', JSON.stringify([{ url, client }]));
+      localStorage.setItem('history_data', JSON.stringify([{ url, client, sdlUrl }]));
     }
   }
 };

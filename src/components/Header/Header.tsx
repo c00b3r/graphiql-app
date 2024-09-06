@@ -36,16 +36,13 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    const correntRouteIsLogin = getPageRoute(window.location.href) ;
+    const correntRouteIsLogin = getPageRoute(window.location.href);
     if (correntRouteIsLogin === '/login') {
-      setButtonStatus('login')
-    } else if (correntRouteIsLogin === '/signup') {
-      setButtonStatus('signup')
+      setButtonStatus('login');
     } else {
-      setButtonStatus('else')
+      setButtonStatus('signup');
     }
-  // Если login надо подсвечивать везде, кроме сайнап, то if (correntRouteIsLogin === '/signup') {setButtonStatus('signup')} else {setButtonStatus('login')}  
-  }, [pathname])
+  }, [pathname]);
 
   useEffect(() => {
     setInitialLoading(true);
@@ -83,11 +80,11 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
   }, []);
 
   const changeToSignUp = async () => {
-    setButtonStatus('signup')
-  }
+    setButtonStatus('signup');
+  };
   const changeToSignIn = async () => {
-    setButtonStatus('login')
-  }
+    setButtonStatus('login');
+  };
 
   const handleLogOut = async () => {
     try {
@@ -128,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
             ) : (
               <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
                 <Button
-                  variant={buttonStatus === 'login' ? "contained" : "outlined"}
+                  variant={buttonStatus === 'login' ? 'contained' : 'outlined'}
                   size="medium"
                   onClick={changeToSignIn}
                   component={Link}
@@ -138,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
                   {languageData.signIn}
                 </Button>
                 <Button
-                  variant={buttonStatus === 'signup' ? "contained" : "outlined"}
+                  variant={buttonStatus !== 'signup' ? 'outlined' : 'contained'}
                   size="medium"
                   onClick={changeToSignUp}
                   component={Link}

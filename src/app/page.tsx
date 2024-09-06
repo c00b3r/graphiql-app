@@ -6,11 +6,12 @@ import { Typography, Button, Stack } from '@mui/material';
 import Link from 'next/link';
 import { IState } from '@/interfaces/interfaces';
 import { useSelector } from 'react-redux';
+import MainInform from '@/components/MainInform/MainInform';
 
 const HomePage = () => {
   const [user, setUser] = useState<string | null>(null);
   const languageData = useSelector((state: IState) => state.main.languageData);
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -30,34 +31,50 @@ const HomePage = () => {
         {user ? (
           <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2}>
             <Typography variant="h3" component="p">
-            {languageData.welcomeBack}, {user}!
+              {languageData.welcomeBack}, {user}!
             </Typography>
             <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
               <Button variant="contained" size="large" component={Link} href="/restfull">
                 {languageData.restHeader}
               </Button>
               <Button variant="contained" size="large" component={Link} href="/GRAPHQL">
-              {languageData.graphQlHeader}
+                {languageData.graphQlHeader}
               </Button>
               <Button variant="contained" size="large" component={Link} href="/history">
-              {languageData.history}
+                {languageData.history}
               </Button>
             </Stack>
           </Stack>
         ) : (
-          <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2}>
-            <Typography variant="h3" component="p">
-              {languageData.welcome}
-            </Typography>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-              <Button variant="contained" size="large" component={Link} href="/login">
-              {languageData.signIn}
-              </Button>
-              <Button variant="outlined" size="large" component={Link} href="/signup">
-              {languageData.signUp}
-              </Button>
+          // <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2}>
+          //   <Typography variant="h3" component="p">
+          //     {languageData.welcome}
+          //   </Typography>
+          //   <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+          //     <Button variant="contained" size="large" component={Link} href="/login">
+          //
+          //     </Button>
+          //     <Button variant="outlined" size="large" component={Link} href="/signup">
+          //
+          //     </Button>
+          //   </Stack>
+          // </Stack>
+          <>
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
+              <Typography variant="h3" component="h1" gutterBottom>
+                {languageData.welcome}
+              </Typography>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                <Button variant="outlined" size="large" component={Link} href="/login">
+                  {languageData.signIn}
+                </Button>
+                <Button variant="contained" size="large" component={Link} href="/signup">
+                  {languageData.signUp}
+                </Button>
+              </Stack>
+              <MainInform />
             </Stack>
-          </Stack>
+          </>
         )}
       </div>
     </main>

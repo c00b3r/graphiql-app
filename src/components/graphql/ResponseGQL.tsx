@@ -17,11 +17,15 @@ export default function ResponseGQL() {
         <div className="response-wrapper">
           <h2 className="h2">{languageData.responseHeader}</h2>
           <div className={code !== 0 ? 'response-data-filled response-data' : 'response-data'}>
-            <div>{languageData.status}: {code === 0 ? '' : code}</div>
+            <div>
+              {languageData.status}: {code === 0 ? '' : code}
+            </div>
             {code === 200 && message && (
               <>
                 <div>{languageData.body}: </div>
-                <div className="response-result">{from ? JsonViewer(JSON.parse(message) as object) : JSON.parse(message)}</div>
+                <div className="response-result">
+                  {from ? JsonViewer(JSON.parse(message) as object) : JSON.parse(message)}
+                </div>
               </>
             )}
             {code !== 200 && code !== 0 && (

@@ -33,7 +33,7 @@ export default function SignUpPage() {
           </Typography>
           <SingUp />
           <Typography variant="h6" component="p">
-          {languageData.regQuestion} <Link href="/login">{languageData.logIn}</Link>
+            {languageData.regQuestion} <Link href="/login">{languageData.logIn}</Link>
           </Typography>
         </Stack>
       </div>

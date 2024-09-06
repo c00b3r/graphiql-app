@@ -6,10 +6,9 @@ import Button from '@mui/material/Button';
 import { IState } from '@/interfaces/interfaces';
 import { useSelector } from 'react-redux';
 
-
 export default function NoHistory() {
-    const languageData = useSelector((state: IState) => state.main.languageData);
-    
+  const languageData = useSelector((state: IState) => state.main.languageData);
+
   return (
     <main className="main">
       <div className="container">

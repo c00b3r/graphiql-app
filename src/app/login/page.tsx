@@ -29,11 +29,11 @@ export default function LoginPage() {
       <div className="container">
         <Stack direction="column" justifyContent="space-between" alignItems="flex-start" spacing={3}>
           <Typography variant="h3" component="p" fontWeight={600}>
-          {languageData.signIn}
+            {languageData.signIn}
           </Typography>
           <Login />
           <Typography variant="h6" component="p">
-          {languageData.notRegistered} <Link href="/signup">{languageData.createAccount}</Link>
+            {languageData.notRegistered} <Link href="/signup">{languageData.createAccount}</Link>
           </Typography>
         </Stack>
       </div>

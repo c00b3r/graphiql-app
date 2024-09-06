@@ -15,7 +15,7 @@ export default function ColorToggleButton() {
   useEffect(() => {
     const language = localStorage.getItem('language_data');
     if (language === 'ru') {
-      setAlignment('ru')
+      setAlignment('ru');
     }
   }, []);
 

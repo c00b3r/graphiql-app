@@ -41,10 +41,7 @@ describe('saveHistory', () => {
 
   test('should handle invalid JSON in localStorage gracefully', () => {
     localStorage.setItem('history_data', 'invalid-json');
-    console.error = vi.fn();
     saveHistory('http://example.com', 'client1', 'http://sdl.example.com');
-
-    expect(console.error).toHaveBeenCalledWith('invalid data in local storage');
     const savedDataUnchecked = localStorage.getItem('history_data');
     let savedData;
     try {

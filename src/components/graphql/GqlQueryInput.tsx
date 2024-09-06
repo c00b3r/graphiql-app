@@ -22,12 +22,12 @@ export default function GqlQueryInput() {
       }, 3000);
     }
   };
-  
+
   const prettifyQuery = () => {
     try {
       dispatch(updateQuery(gqlPrettier(query)));
     } catch {
-      showAlert(languageData.wrongGqlError)
+      showAlert(languageData.wrongGqlError);
     }
   };
 
@@ -47,7 +47,8 @@ export default function GqlQueryInput() {
     <>
       <div className="query_wrapper">
         <h3 className="h3-width">
-        {languageData.queryHeader}<Button onClick={prettifyQuery}>{languageData.prettify}</Button>
+          {languageData.queryHeader}
+          <Button onClick={prettifyQuery}>{languageData.prettify}</Button>
         </h3>
       </div>
       <textarea

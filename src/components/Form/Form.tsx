@@ -53,7 +53,6 @@ export const Form: FC<FormProps> = ({ title, handleClick }) => {
         onChange={(e) => setEmail(e.target.value)}
         error={!!emailError}
         helperText={emailError}
-
       />
       <TextField
         id="password"
