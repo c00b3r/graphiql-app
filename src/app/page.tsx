@@ -46,19 +46,6 @@ const HomePage = () => {
             </Stack>
           </Stack>
         ) : (
-          // <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2}>
-          //   <Typography variant="h3" component="p">
-          //     {languageData.welcome}
-          //   </Typography>
-          //   <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-          //     <Button variant="contained" size="large" component={Link} href="/login">
-          //
-          //     </Button>
-          //     <Button variant="outlined" size="large" component={Link} href="/signup">
-          //
-          //     </Button>
-          //   </Stack>
-          // </Stack>
           <>
             <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
               <Typography variant="h3" component="h1" gutterBottom>
