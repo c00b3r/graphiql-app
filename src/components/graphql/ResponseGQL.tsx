@@ -2,6 +2,7 @@
 import { IState } from '@/interfaces/interfaces';
 import JsonViewer from '@/methods/graphql/jsonViewer';
 import { useSelector } from 'react-redux';
+import { Typography } from '@mui/material';
 
 export default function ResponseGQL() {
   const searchResults = useSelector((state: IState) => state.main.searchResults);
@@ -15,23 +16,27 @@ export default function ResponseGQL() {
     <>
       <div className={`graphiql-block-response graphiql-block ${document ? 'graphiql_25' : ''}`}>
         <div className="response-wrapper">
-          <h2 className="h2">{languageData.responseHeader}</h2>
+          <Typography variant="h5" component="h2" className="h2" fontWeight={600}>
+            {languageData.responseHeader}
+          </Typography>
           <div className={code !== 0 ? 'response-data-filled response-data' : 'response-data'}>
-            <div>
+            <Typography variant="h6" component="p" fontWeight={600}>
               {languageData.status}: {code === 0 ? '' : code}
-            </div>
+            </Typography>
             {code === 200 && message && (
               <>
-                <div>{languageData.body}: </div>
-                <div className="response-result">
+                <Typography variant="subtitle1" component="div" fontWeight={600}>
+                  {languageData.body}:{' '}
+                </Typography>
+                <Typography variant="subtitle2" component="div" className="response-result">
                   {from ? JsonViewer(JSON.parse(message) as object) : JSON.parse(message)}
-                </div>
+                </Typography>
               </>
             )}
             {code !== 200 && code !== 0 && (
-              <div>
+              <Typography variant="h6" component="p" fontWeight={600}>
                 {languageData.body}: <pre>{message as string}</pre>
-              </div>
+              </Typography>
             )}
           </div>
         </div>

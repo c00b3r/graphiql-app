@@ -5,7 +5,7 @@ import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { mockHeadersPoke, mockHeadersSwapi } from '@/mocks/headers';
 import { mockVariablesPoke } from '@/mocks/variables';
 import { mockEndpointUrlPoke, mockEndpointUrlSwapiNetlify } from '@/mocks/urls';
-import { Button } from '@mui/material';
+import { Button, Typography, Box } from '@mui/material';
 import ResponseGQL from '@/components/graphql/ResponseGQL';
 import SDLUrlInput from '@/components/graphql/SdlUrl';
 import EndpointUrlInput from '@/components/graphql/EndpointUrl';
@@ -32,6 +32,7 @@ import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader/Loader';
 import { getCookie } from 'cookies-next';
 import './page.css';
+import Link from 'next/link';
 
 export default function GraphQL() {
   const dispatch = useDispatch<AppDispatch>();
@@ -188,38 +189,50 @@ export default function GraphQL() {
 
   return (
     <>
-      {loginStatus && (
-        <div className="graphql_page_wrapper">
-          <div className="graphiql-wrapper">
-            <div className={`graphiql-wrapper-inner ${document ? 'graphiql_100' : 'graphiql_95'}`}>
-              <DocumentationGQL></DocumentationGQL>
-              <div className={`graphiql-block ${document ? 'graphiql_50' : ''}`}>
-                <h2 className="h2">{languageData.graphQlHeader}</h2>
-                <EndpointUrlInput></EndpointUrlInput>
-                <SDLUrlInput></SDLUrlInput>
-                <HeadersBlock></HeadersBlock>
-                <GqlQueryInput></GqlQueryInput>
-                <VariablesBlock></VariablesBlock>
-                <div className={'submit_gql_buttons'}>
-                  <Button variant="outlined" onClick={handleSubmitInput}>
-                    {languageData.submitInput}
-                  </Button>
-                  <Button variant="outlined" onClick={handleSubmitPoke}>
-                    {languageData.submitPoke}
-                  </Button>
-                  <Button variant="outlined" onClick={handleSubmitSwapi}>
-                    {languageData.submitSwapi}
-                  </Button>
+      <main className="main">
+        <div className="container">
+          {loginStatus && (
+            <div className="graphql_page_wrapper">
+              <div className="graphiql-wrapper">
+                <div className={`graphiql-wrapper-inner ${document ? 'graphiql_100' : 'graphiql_95'}`}>
+                  <DocumentationGQL></DocumentationGQL>
+                  <div className={`graphiql-block ${document ? 'graphiql_50' : ''}`}>
+                    <Typography variant="h5" component="h2" fontWeight={600} gutterBottom>
+                      {languageData.graphQlHeader}
+                    </Typography>
+                    <EndpointUrlInput></EndpointUrlInput>
+                    <SDLUrlInput></SDLUrlInput>
+                    <HeadersBlock></HeadersBlock>
+                    <GqlQueryInput></GqlQueryInput>
+                    <VariablesBlock></VariablesBlock>
+                    <div className={'submit_gql_buttons'}>
+                      <Button variant="contained" onClick={handleSubmitInput}>
+                        {languageData.submitInput}
+                      </Button>
+                      <Button variant="outlined" onClick={handleSubmitPoke}>
+                        {languageData.submitPoke}
+                      </Button>
+                      <Button variant="outlined" onClick={handleSubmitSwapi}>
+                        {languageData.submitSwapi}
+                      </Button>
+                    </div>
+                  </div>
+                  <ResponseGQL></ResponseGQL>
                 </div>
               </div>
-              <ResponseGQL></ResponseGQL>
+              <Alerts></Alerts>
             </div>
-          </div>
-          <Alerts></Alerts>
-        </div>
-      )}
+          )}
 
-      {!loginStatus && <Loader />}
+          {!loginStatus && <Loader />}
+
+          <Box textAlign={'center'} marginTop={10}>
+            <Button variant="contained" size="medium" component={Link} href="/history">
+              History
+            </Button>
+          </Box>
+        </div>
+      </main>
     </>
   );
 }

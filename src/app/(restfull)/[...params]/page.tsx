@@ -196,73 +196,90 @@ export default function RestFull() {
   };
 
   return (
-    <div className="restfull-container" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-      <div className="request-container">
-        <form className="endpoint" onSubmit={onSubmitHandler}>
-          <select name="method" id="method" value={method} onChange={onChangeMethodHandler}>
-            <option>GET</option>
-            <option>POST</option>
-            <option>PUT</option>
-            <option>DELETE</option>
-          </select>
-          <input type="text" placeholder="Enter URL" value={urlToSend} onChange={(e) => onChangeEndpointHandler(e)} />
-          <button style={{ cursor: 'pointer' }}>Send</button>
-        </form>
-        <div className="manage-header-container">
-          <button onClick={addHeader} style={{ marginBottom: '10px', cursor: 'pointer' }}>
-            Add Header
-          </button>
-          <div>
-            <input
-              type="text"
-              placeholder="Header Key"
-              value={headerKey}
-              onChange={onChangeHeaderKey}
-              style={{ marginRight: '5px' }}
-            />
-            <input type="text" placeholder="Header Value" value={headerValue} onChange={onChangeHeaderValue} />
-            {isEditHeader ? <button onClick={saveHeader}>Save</button> : null}
+    <main className="main">
+      <div className="container">
+        <div className="restfull-container" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div className="request-container">
+            <form className="endpoint" onSubmit={onSubmitHandler}>
+              <select name="method" id="method" value={method} onChange={onChangeMethodHandler}>
+                <option>GET</option>
+                <option>POST</option>
+                <option>PUT</option>
+                <option>DELETE</option>
+              </select>
+              <input
+                type="text"
+                placeholder="Enter URL"
+                value={urlToSend}
+                onChange={(e) => onChangeEndpointHandler(e)}
+              />
+              <button style={{ cursor: 'pointer' }}>Send</button>
+            </form>
+            <div className="manage-header-container">
+              <button onClick={addHeader} style={{ marginBottom: '10px', cursor: 'pointer' }}>
+                Add Header
+              </button>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Header Key"
+                  value={headerKey}
+                  onChange={onChangeHeaderKey}
+                  style={{ marginRight: '5px' }}
+                />
+                <input type="text" placeholder="Header Value" value={headerValue} onChange={onChangeHeaderValue} />
+                {isEditHeader ? <button onClick={saveHeader}>Save</button> : null}
+              </div>
+              <div>
+                {Object.entries(headers).map(([key, value]) => (
+                  <p key={key} style={{ display: 'flex', gap: '5px' }}>
+                    {key}: {value}
+                    <button onClick={() => editHeader(key)}>Edit</button>
+                    <button onClick={() => deleteHeader(key)}>Delete</button>
+                  </p>
+                ))}
+              </div>
+            </div>
+            <div className="body-container">
+              <p>JSON:</p>
+              <textarea
+                value={requestBody}
+                onChange={onChangeRequestBody}
+                onBlur={() => {
+                  updateUrl();
+                }}
+                style={{ width: '400px', height: '100px', resize: 'none' }}
+              ></textarea>
+            </div>
           </div>
-          <div>
-            {Object.entries(headers).map(([key, value]) => (
-              <p key={key} style={{ display: 'flex', gap: '5px' }}>
-                {key}: {value}
-                <button onClick={() => editHeader(key)}>Edit</button>
-                <button onClick={() => deleteHeader(key)}>Delete</button>
-              </p>
-            ))}
+          <div className="response-container">
+            <p>
+              Status: <em>{status}</em>
+            </p>
+            <p>Body (JSON):</p>
+            <textarea
+              readOnly
+              value={responseBody}
+              style={{ width: '400px', height: '200px', resize: 'none' }}
+            ></textarea>
+          </div>
+          <div className="history-container">
+            <h2>Request History</h2>
+            {history.length === 0 && <p>No history available</p>}
+            <ol>
+              {history.map((item, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleHistoryClick(item)}
+                  style={{ cursor: 'pointer', marginBottom: '5px' }}
+                >
+                  {item.method} {item.url}
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
-        <div className="body-container">
-          <p>JSON:</p>
-          <textarea
-            value={requestBody}
-            onChange={onChangeRequestBody}
-            onBlur={() => {
-              updateUrl();
-            }}
-            style={{ width: '400px', height: '100px', resize: 'none' }}
-          ></textarea>
-        </div>
       </div>
-      <div className="response-container">
-        <p>
-          Status: <em>{status}</em>
-        </p>
-        <p>Body (JSON):</p>
-        <textarea readOnly value={responseBody} style={{ width: '400px', height: '200px', resize: 'none' }}></textarea>
-      </div>
-      <div className="history-container">
-        <h2>Request History</h2>
-        {history.length === 0 && <p>No history available</p>}
-        <ol>
-          {history.map((item, index) => (
-            <li key={index} onClick={() => handleHistoryClick(item)} style={{ cursor: 'pointer', marginBottom: '5px' }}>
-              {item.method} {item.url}
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
+    </main>
   );
 }

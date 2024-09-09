@@ -1,7 +1,7 @@
 'use client';
 import { setAlertMessage, updateQuery } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import gqlPrettier from 'graphql-prettier';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
@@ -46,10 +46,12 @@ export default function GqlQueryInput() {
   return (
     <>
       <div className="query_wrapper">
-        <h3 className="h3-width">
+        <Typography className="h3-width" variant="h6" component="h3" fontWeight={600}>
           {languageData.queryHeader}
-          <Button onClick={prettifyQuery}>{languageData.prettify}</Button>
-        </h3>
+          <Button variant="outlined" size="small" onClick={prettifyQuery}>
+            {languageData.prettify}
+          </Button>
+        </Typography>
       </div>
       <textarea
         className={`textarea textarea-query ${searchResults.result ? 'textarea_borders_none' : ''}`}

@@ -1,7 +1,7 @@
 'use client';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { AppDispatch } from '@/reducers/root/rootReduces';
-import { Input } from '@mui/material';
+import { Input, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateEndpoint } from '@/reducers/actions/actions';
 import { IState } from '@/interfaces/interfaces';
@@ -24,11 +24,14 @@ export default function EndpointUrlInput() {
   return (
     <>
       <div className="graphiql-input-wrapper">
-        <h3
+        <Typography
           className={`${languageData.graphQlHeader === 'GraphiQL Client' ? 'url_graphql' : 'url_graphql-ru'} 'h3-width'`}
+          variant="h6"
+          component="h3"
+          fontWeight={600}
         >
           {languageData.endpointUrlHeader}
-        </h3>
+        </Typography>
         <Input
           type="text"
           className="graphiql-input"

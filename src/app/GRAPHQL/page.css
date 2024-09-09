@@ -1,7 +1,3 @@
-body {
-  margin: 0;
-}
-
 .h2 {
   margin-top: 0;
   margin-bottom: 0px;
@@ -11,6 +7,9 @@ body {
 
 .h3-width {
   margin: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .response-wrapper {
@@ -46,9 +45,12 @@ body {
 }
 
 .headers-wrapper-inner {
-  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
   width: 100%;
-  height: 64px;
+  height: fit-content;
 }
 
 .headers-wrapper {
@@ -90,15 +92,8 @@ body {
 .headers-element {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 15px;
   justify-content: space-between;
-}
-
-.header_button_left_en {
-  min-width: 40px;
-}
-.header_button_right_en {
-  min-width: 63px;
 }
 
 .header_keyvalue_entered {
@@ -106,8 +101,7 @@ body {
 }
 
 .header-inputs-wrapper {
-  /* flex: 2;  */
-  min-width: 80% !important;
+  flex: 3;
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -116,8 +110,9 @@ body {
 .header-buttons-wrapper {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
   min-width: 20% !important;
-  /* flex: 1; */
+  flex: 1;
 }
 
 .header-inputs-wrapper-ru {
@@ -169,10 +164,6 @@ body {
   z-index: 9999999999999999999;
 }
 
-ul {
-  list-style-type: none;
-}
-
 .graphiql-wrapper {
   display: flex;
   flex-direction: row;
@@ -183,7 +174,7 @@ ul {
 .graphiql-wrapper-inner {
   display: flex;
   flex-direction: row;
-  width: 100%;
+  width: 100vw;
   height: 100%;
   justify-content: center;
   overflow: hidden;
@@ -191,7 +182,6 @@ ul {
 
 .graphiql-block {
   width: 100%;
-  min-width: 33%;
   height: calc(100vh - 62px - 73px - 2px);
   display: flex;
   flex-direction: column;

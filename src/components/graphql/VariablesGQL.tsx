@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { updateVariables } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { IState } from '@/interfaces/interfaces';
 
 export default function VariablesBlock() {
@@ -31,13 +31,13 @@ export default function VariablesBlock() {
   return (
     <>
       <div className="variables-wrapper">
-        <h3 className="h3-width">
+        <Typography variant="h6" component="h3" className="h3-width" fontWeight={600}>
           {languageData.variablesHeader}
-          <Button onClick={toggleVariables}>
+          <Button variant="outlined" size="small" onClick={toggleVariables}>
             {!variablesVisible && languageData.show}
             {variablesVisible && languageData.hide}
           </Button>
-        </h3>
+        </Typography>
       </div>
 
       <>
