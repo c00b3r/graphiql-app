@@ -13,6 +13,10 @@ export default function RestFull() {
   const [isEditHeader, setEditHedaer] = useState<boolean>(false);
   const [editKey, setEditKey] = useState<string | null>(null);
   const [initialEditKey, setInitialEditKey] = useState<string | null>(null);
+  const [variables, setVariables] = useState<Array<{ key: string; value: string }>>([]);
+  const [isVariablesVisible, setVariablesVisible] = useState<boolean>(false);
+  const [variableKey, setVariableKey] = useState<string>('');
+  const [variableValue, setVariableValue] = useState<string>('');
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -119,11 +123,21 @@ export default function RestFull() {
     }
   };
 
+  const addVariable = () => {
+    if (variableKey && variableValue) {
+      setVariables([...variables, { key: variableKey, value: variableValue }]);
+      setVariableKey('');
+      setVariableValue('');
+    }
+  };
+
+  const deleteVariable = (key: string) => {
+    setVariables(variables.filter((variable) => variable.key !== key));
+  };
+
   const onSubmitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log(headers);
-
       const fetchHeaders = new Headers();
 
       for (const [key, value] of Object.entries(headers)) {
@@ -140,6 +154,13 @@ export default function RestFull() {
       if (method === 'POST' || method === 'PUT') {
         fetchHeaders.set('Content-Type', 'application/json');
         fetchOption.body = requestBody;
+
+        const combinedBody = requestBody ? JSON.parse(requestBody) : {};
+        variables.forEach(({ key, value }) => {
+          combinedBody[key] = value;
+        });
+
+        fetchOption.body = JSON.stringify(combinedBody);
       }
 
       const response = await fetch(urlToSend, fetchOption);
@@ -234,6 +255,38 @@ export default function RestFull() {
               </p>
             ))}
           </div>
+        </div>
+        <div className="variables-section">
+          <button onClick={() => setVariablesVisible(!isVariablesVisible)}>
+            {isVariablesVisible ? 'Hide Variables' : 'Show Variables'}
+          </button>
+          {isVariablesVisible && (
+            <div>
+              <h3>Variables</h3>
+              <input
+                type="text"
+                placeholder="Variable Key"
+                value={variableKey}
+                onChange={(e) => setVariableKey(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Variable Value"
+                value={variableValue}
+                onChange={(e) => setVariableValue(e.target.value)}
+              />
+              <button onClick={addVariable}>Add Variable</button>
+
+              <div>
+                {variables.map((variable, index) => (
+                  <p key={index}>
+                    {variable.key}: {variable.value}
+                    <button onClick={() => deleteVariable(variable.key)}>Delete</button>
+                  </p>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div className="body-container">
           <p>JSON:</p>
