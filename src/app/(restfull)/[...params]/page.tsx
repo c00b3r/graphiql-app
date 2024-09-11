@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { Typography, Stack, Button, Select, SelectChangeEvent, MenuItem, TextField, Box } from '@mui/material';
 
 export default function RestFull() {
   const [urlToSend, setUrlToSend] = useState<string>('');
@@ -71,7 +72,11 @@ export default function RestFull() {
     setUrlToSend(e.target.value);
   };
 
-  const onChangeMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  /*   const onChangeMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setMethod(e.target.value);
+  }; */
+
+  const onChangeMethodHandler = (e: SelectChangeEvent) => {
     setMethod(e.target.value);
   };
 
@@ -213,100 +218,197 @@ export default function RestFull() {
   };
 
   return (
-    <div
-      className="restfull-container"
-      style={{ display: 'flex', flexDirection: 'column', gap: '15px', padding: '10px' }}
-    >
-      <div className="request-container">
-        <form className="endpoint" onSubmit={onSubmitHandler}>
-          <select name="method" id="method" value={method} onChange={onChangeMethodHandler}>
-            <option>GET</option>
-            <option>POST</option>
-            <option>PUT</option>
-            <option>DELETE</option>
-            <option>HEAD</option>
-            <option>OPTIONS</option>
-            <option>PATCH</option>
-          </select>
-          <input type="text" placeholder="Enter URL" value={urlToSend} onChange={(e) => onChangeEndpointHandler(e)} />
-          <button style={{ cursor: 'pointer' }}>Send</button>
-        </form>
-        <div className="manage-header-container">
-          <button onClick={addHeader} style={{ marginBottom: '10px', cursor: 'pointer' }}>
-            Add Header
-          </button>
-          <div>
-            <input
-              type="text"
-              placeholder="Header Key"
-              value={headerKey}
-              onChange={onChangeHeaderKey}
-              style={{ marginRight: '5px' }}
-            />
-            <input type="text" placeholder="Header Value" value={headerValue} onChange={onChangeHeaderValue} />
-            {isEditHeader ? <button onClick={saveHeader}>Save</button> : null}
-          </div>
-          <div>
-            {headers.map(({ key, value }) => (
-              <p key={value} style={{ display: 'flex', gap: '5px' }}>
-                {key}: {value}
-                <button onClick={() => editHeader(key)}>Edit</button>
-                <button onClick={() => deleteHeader(key)}>Delete</button>
-              </p>
-            ))}
-          </div>
-        </div>
-        <div className="variables-section">
-          <button onClick={() => setVariablesVisible(!isVariablesVisible)}>
-            {isVariablesVisible ? 'Hide Variables' : 'Show Variables'}
-          </button>
-          {isVariablesVisible && (
-            <div>
-              <h3>Variables</h3>
-              <input
-                type="text"
-                placeholder="Variable Key"
-                value={variableKey}
-                onChange={(e) => setVariableKey(e.target.value)}
+    <main className="main">
+      <div className="container">
+        <Stack direction="column" justifyContent="center" alignItems="center" spacing={2} width={600}>
+          <Typography variant="h5" component="h2" fontWeight={600} gutterBottom>
+            RESTfull Client
+          </Typography>
+          <Stack direction="column" spacing={3} sx={{ width: '100%' }}>
+            <Box
+              component="form"
+              sx={{ display: 'flex', width: '100%', gap: 2, justifyContent: 'space-between' }}
+              onSubmit={onSubmitHandler}
+            >
+              <Select
+                size="small"
+                name="method"
+                id="method"
+                value={method}
+                onChange={onChangeMethodHandler}
+                sx={{ width: 100 }}
+              >
+                <MenuItem value="GET">GET</MenuItem>
+                <MenuItem value="POST">POST</MenuItem>
+                <MenuItem value="PUT">PUT</MenuItem>
+                <MenuItem value="DELETE">DELETE</MenuItem>
+                <MenuItem value="HEAD">HEAD</MenuItem>
+                <MenuItem value="OPTIONS">OPTIONS</MenuItem>
+                <MenuItem value="PATCH">PATCH</MenuItem>
+              </Select>
+              <TextField
+                id="text"
+                value={urlToSend}
+                placeholder="Enter URL"
+                variant="outlined"
+                size="small"
+                onChange={onChangeEndpointHandler}
+                sx={{ flex: 1 }}
               />
-              <input
-                type="text"
-                placeholder="Variable Value"
-                value={variableValue}
-                onChange={(e) => setVariableValue(e.target.value)}
-              />
-              <button onClick={addVariable}>Add Variable</button>
+              <Button type="submit" variant="outlined" size="small">
+                Send
+              </Button>
+            </Box>
 
-              <div>
-                {variables.map((variable, index) => (
-                  <p key={index}>
-                    {variable.key}: {variable.value}
-                    <button onClick={() => deleteVariable(variable.key)}>Delete</button>
-                  </p>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'stretch',
+                justifyContent: 'space-between',
+                gap: '15px',
+              }}
+            >
+              <Typography variant="h6" component="h3" fontWeight={600}>
+                Headers:
+              </Typography>
+              <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
+                <TextField label="Header Key" variant="standard" value={headerKey} onChange={onChangeHeaderKey} />
+                <TextField label="Header Value" variant="standard" value={headerValue} onChange={onChangeHeaderValue} />
+                <Button variant="outlined" size="small" onClick={addHeader}>
+                  Add Header
+                </Button>
+                {isEditHeader ? (
+                  <Button variant="outlined" size="small" onClick={saveHeader}>
+                    Save
+                  </Button>
+                ) : null}
+              </Box>
+
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'stretch',
+                  justifyContent: 'space-between',
+                  gap: '15px',
+                }}
+              >
+                {headers.map(({ key, value }) => (
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    key={value}
+                    sx={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'space-between' }}
+                  >
+                    {key}: {value}
+                    <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                      <Button variant="outlined" size="small" onClick={() => editHeader(key)}>
+                        Edit
+                      </Button>
+                      <Button variant="outlined" size="small" onClick={() => deleteHeader(key)}>
+                        Delete
+                      </Button>
+                    </Stack>
+                  </Typography>
                 ))}
-              </div>
+              </Box>
+            </Box>
+
+            <Stack direction="column" alignItems="flex-start" spacing={2}>
+              <Typography variant="h6" component="h3" fontWeight={600}>
+                Variables:
+              </Typography>
+              <Button variant="outlined" size="small" onClick={() => setVariablesVisible(!isVariablesVisible)}>
+                {isVariablesVisible ? 'Hide Variables' : 'Show Variables'}
+              </Button>
+              {isVariablesVisible && (
+                <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
+                  <TextField
+                    type="text"
+                    label="Variable Key"
+                    variant="standard"
+                    value={variableKey}
+                    onChange={(e) => setVariableKey(e.target.value)}
+                  />
+                  <TextField
+                    type="text"
+                    label="Variable Value"
+                    variant="standard"
+                    value={variableValue}
+                    onChange={(e) => setVariableValue(e.target.value)}
+                  />
+                  <Button variant="outlined" size="small" onClick={addVariable}>
+                    Add Variable
+                  </Button>
+                </Box>
+              )}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'stretch',
+                  justifyContent: 'space-between',
+                  gap: '15px',
+                }}
+              >
+                {variables.map((variable, index) => (
+                  <Typography
+                    variant="h6"
+                    component="p"
+                    key={index}
+                    sx={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'space-between' }}
+                  >
+                    {variable.key}: {variable.value}
+                    <Button variant="outlined" size="small" onClick={() => deleteVariable(variable.key)}>
+                      Delete
+                    </Button>
+                  </Typography>
+                ))}
+              </Box>
+            </Stack>
+
+            <div className="body-container">
+              <Typography variant="h6" component="h3" fontWeight={600}>
+                JSON:
+              </Typography>
+              <TextField
+                value={requestBody}
+                onChange={onChangeRequestBody}
+                onBlur={updateUrl}
+                multiline
+                rows={4}
+                variant="outlined"
+                fullWidth
+                sx={{ resize: 'none' }}
+              />
             </div>
-          )}
-        </div>
-        <div className="body-container">
-          <p>JSON:</p>
-          <textarea
-            value={requestBody}
-            onChange={onChangeRequestBody}
-            onBlur={() => {
-              updateUrl();
-            }}
-            style={{ width: '400px', height: '100px', resize: 'none' }}
-          ></textarea>
-        </div>
+          </Stack>
+
+          <Box sx={{ width: '100%' }} className="response-container">
+            <Typography variant="h6" component="h3" fontWeight={600}>
+              Status: <em>{status}</em>
+            </Typography>
+            <Typography variant="h6" component="h3" fontWeight={600}>
+              Body (JSON):
+            </Typography>
+            <Box
+              sx={{
+                maxHeight: '200px',
+                minHeight: '150px',
+                overflowY: 'auto',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                padding: '8px',
+              }}
+            >
+              <Typography variant="body1" component="pre">
+                {responseBody}
+              </Typography>
+            </Box>
+          </Box>
+        </Stack>
       </div>
-      <div className="response-container">
-        <p>
-          Status: <em>{status}</em>
-        </p>
-        <p>Body (JSON):</p>
-        <textarea readOnly value={responseBody} style={{ width: '400px', height: '200px', resize: 'none' }}></textarea>
-      </div>
-    </div>
+    </main>
   );
 }
