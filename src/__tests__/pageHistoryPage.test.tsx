@@ -10,9 +10,14 @@ vi.mock('next/navigation', () => ({
 vi.mock('next/router', () => ({
   useRouter: vi.fn(),
 }));
-vi.mock('react', () => ({
-  useEffect: vi.fn(),
-}));
+
+vi.mock('react', async () => {
+  const actualReact = await import('react');
+  return {
+    ...actualReact,
+    useEffect: vi.fn(),
+  };
+});
 
 const MockHistoryPage = () => {
   return (

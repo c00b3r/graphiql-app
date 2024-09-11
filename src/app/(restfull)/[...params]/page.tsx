@@ -1,6 +1,16 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Typography, Stack, Button, Select, SelectChangeEvent, MenuItem, TextField, Box } from '@mui/material';
+import {
+  Typography,
+  Stack,
+  Button,
+  Select,
+  SelectChangeEvent,
+  MenuItem,
+  TextField,
+  Box,
+  CircularProgress,
+} from '@mui/material';
 
 export default function RestFull() {
   const [urlToSend, setUrlToSend] = useState<string>('');
@@ -18,6 +28,7 @@ export default function RestFull() {
   const [isVariablesVisible, setVariablesVisible] = useState<boolean>(false);
   const [variableKey, setVariableKey] = useState<string>('');
   const [variableValue, setVariableValue] = useState<string>('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -71,10 +82,6 @@ export default function RestFull() {
   const onChangeEndpointHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrlToSend(e.target.value);
   };
-
-  /*   const onChangeMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setMethod(e.target.value);
-  }; */
 
   const onChangeMethodHandler = (e: SelectChangeEvent) => {
     setMethod(e.target.value);
@@ -142,6 +149,8 @@ export default function RestFull() {
 
   const onSubmitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       const fetchHeaders = new Headers();
 
@@ -215,6 +224,8 @@ export default function RestFull() {
         setResponseBody(`Error: ${error.message}`);
       }
     }
+
+    setLoading(false);
   };
 
   return (
@@ -258,6 +269,18 @@ export default function RestFull() {
               <Button type="submit" variant="outlined" size="small">
                 Send
               </Button>
+              {loading && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
+              )}
             </Box>
 
             <Box
@@ -297,7 +320,7 @@ export default function RestFull() {
                 {headers.map(({ key, value }) => (
                   <Typography
                     variant="h6"
-                    component="p"
+                    component="div"
                     key={value}
                     sx={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'space-between' }}
                   >
@@ -355,7 +378,7 @@ export default function RestFull() {
                 {variables.map((variable, index) => (
                   <Typography
                     variant="h6"
-                    component="p"
+                    component="div"
                     key={index}
                     sx={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'space-between' }}
                   >
