@@ -61,7 +61,7 @@ export const Footer = () => {
           </Typography>
           <Stack direction="column" justifyContent="center" alignItems="center" spacing={1}>
             <Link href="https://rs.school/courses/reactjs" color="black" underline="hover" target="_blank">
-              <Image priority src={rssLogo} alt="Logo" style={{ width: '40px', height: '40px' }} />
+              <Image priority src={rssLogo} alt="Logo" width={40} height={40} />
             </Link>
           </Stack>
         </Stack>
