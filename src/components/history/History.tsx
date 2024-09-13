@@ -89,37 +89,35 @@ export default function HistoryModule() {
   }, []);
 
   return (
-    <main className="main">
-      <div className="container">
-        <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={4}>
-          <Typography variant="h4" component="p">
-            {languageData.historyHeader}
-          </Typography>
-          <nav>
-            <List>
-              {historyData.map((item, index) => (
-                <ListItem key={`historyKey${index}`} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Typography variant="h6" component="p">
-                    {item.clientName}:
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <MuiLink
-                      component={NextLink}
-                      underline="none"
-                      color="black"
-                      href={item.url}
-                      onClick={() => changeDataInInput(index)}
-                    >
-                      {item.data.endpointUrl}
-                    </MuiLink>
-                  </Typography>
-                </ListItem>
-              ))}
-            </List>
-          </nav>
-        </Stack>
-        <Alerts></Alerts>
-      </div>
-    </main>
+    <>
+      <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={4}>
+        <Typography variant="h4" component="p">
+          {languageData.historyHeader}
+        </Typography>
+        <nav>
+          <List>
+            {historyData.map((item, index) => (
+              <ListItem key={`historyKey${index}`} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Typography variant="h6" component="p">
+                  {item.clientName}:
+                </Typography>
+                <Typography variant="subtitle1">
+                  <MuiLink
+                    component={NextLink}
+                    underline="none"
+                    color="black"
+                    href={item.url}
+                    onClick={() => changeDataInInput(index)}
+                  >
+                    {item.data.endpointUrl}
+                  </MuiLink>
+                </Typography>
+              </ListItem>
+            ))}
+          </List>
+        </nav>
+      </Stack>
+      <Alerts></Alerts>
+    </>
   );
 }
