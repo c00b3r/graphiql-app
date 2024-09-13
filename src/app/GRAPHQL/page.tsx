@@ -30,9 +30,11 @@ import { IState, IHeaders, IErrors } from '@/interfaces/interfaces';
 import { getIntrospectionQuery, buildClientSchema, printSchema } from 'graphql';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader/Loader';
-import { getCookie } from 'cookies-next';
 import './page.css';
 import Link from 'next/link';
+
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
 
 export default function GraphQL() {
   const dispatch = useDispatch<AppDispatch>();
@@ -47,16 +49,23 @@ export default function GraphQL() {
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState(false);
 
+  const [initialLoading, setInitialLoading] = useState(true);
+
   useEffect(() => {
-    const getLoginStatus = getCookie('loginStatus');
-    if (!getLoginStatus) {
-      router.push('/');
-    } else {
-      setLoginStatus(true);
-      const currentUrl = window.location.href;
-      dispatch(updateAllDataWhenPageLoads(currentUrl));
-    }
-  }, []);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoginStatus(true);
+        const currentUrl = window.location.href;
+        dispatch(updateAllDataWhenPageLoads(currentUrl));
+      } else {
+        setLoginStatus(false);
+        router.push('/');
+      }
+      setInitialLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth, router]);
 
   useEffect(() => {
     brokenSubmit();
@@ -186,6 +195,14 @@ export default function GraphQL() {
       }
     }
   };
+
+  if (initialLoading) {
+    return <Loader />;
+  }
+
+  if (!loginStatus) {
+    return <Loader />;
+  }
 
   return (
     <>

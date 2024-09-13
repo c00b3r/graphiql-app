@@ -11,6 +11,10 @@ import {
   Box,
   CircularProgress,
 } from '@mui/material';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import Loader from '@/components/Loader/Loader';
 
 export default function RestFull() {
   const [urlToSend, setUrlToSend] = useState<string>('');
@@ -29,6 +33,24 @@ export default function RestFull() {
   const [variableKey, setVariableKey] = useState<string>('');
   const [variableValue, setVariableValue] = useState<string>('');
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+  const [loginStatus, setLoginStatus] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoginStatus(true);
+      } else {
+        setLoginStatus(false);
+        router.push('/');
+      }
+      setInitialLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth, router]);
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -227,6 +249,14 @@ export default function RestFull() {
 
     setLoading(false);
   };
+
+  if (initialLoading) {
+    return <Loader />;
+  }
+
+  if (!loginStatus) {
+    return <Loader />;
+  }
 
   return (
     <main className="main">
