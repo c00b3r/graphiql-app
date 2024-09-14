@@ -8,7 +8,6 @@ vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
 
-
 const MockDocumentationGQL = () => {
   return (
     <Provider store={store}>

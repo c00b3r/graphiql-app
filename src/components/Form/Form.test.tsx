@@ -8,7 +8,6 @@ vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
 
-
 const mockHandleClick = vi.fn();
 
 const MockForm = () => {

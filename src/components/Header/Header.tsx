@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
       dispatch(removeUser());
       router.push('/');
     } catch (error) {
-      console.log('catch x3')
+      console.log('catch x3');
       alert(`Error: ${error}`);
     }
   };

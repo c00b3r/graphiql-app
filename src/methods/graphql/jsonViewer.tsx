@@ -26,12 +26,11 @@ function cleanObject(obj: string | null | undefined | object | number): string |
 }
 
 const JsonViewer = (dirtyData: string | object | CleanObject | null | undefined) => {
-
   const data = cleanObject(dirtyData);
 
   const formatJson = (obj: object) => {
     if (!obj) {
-      return
+      return;
     }
     const entries = Object.entries(obj);
     return entries
@@ -53,10 +52,12 @@ const JsonViewer = (dirtyData: string | object | CleanObject | null | undefined)
                 {value.map((item, itemIndex) => {
                   if (typeof item === 'string') {
                     return (
-                      <div key={`array-${index}`} className={'left-10 orange-text'}>{(item)}</div>
-                    )
+                      <div key={`array-${index}`} className={'left-10 orange-text'}>
+                        {item}
+                      </div>
+                    );
                   }
-                  return(
+                  return (
                     <React.Fragment key={itemIndex}>
                       <div>
                         <span className={'left-0'}>&#123;</span>
@@ -67,9 +68,8 @@ const JsonViewer = (dirtyData: string | object | CleanObject | null | undefined)
                         {itemIndex === value.length - 1 ? '' : ','}
                       </div>
                     </React.Fragment>
-                  )
-                }
-                )}
+                  );
+                })}
               </div>
               <span className="black-text">]</span>
             </div>
