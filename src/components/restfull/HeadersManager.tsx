@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box, Stack } from '@mui/material';
+import { ILanguage } from '@/interfaces/interfaces';
 
 interface HeadersManagerProps {
   headers: {
@@ -12,9 +13,10 @@ interface HeadersManagerProps {
       }[]
     >
   >;
+  languageData: ILanguage;
 }
 
-export default function HeadersManager({ headers, setHeaders }: HeadersManagerProps) {
+export default function HeadersManager({ headers, setHeaders, languageData }: HeadersManagerProps) {
   const [headerKey, setHeaderKey] = useState<string>('');
   const [headerValue, setHeaderValue] = useState<string>('');
   const [isEditHeader, setEditHeader] = useState<boolean>(false);
@@ -60,7 +62,7 @@ export default function HeadersManager({ headers, setHeaders }: HeadersManagerPr
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '15px' }}>
       <Typography variant="h6" component="h3" fontWeight={600}>
-        Headers:
+        {languageData.headersHeader}:
       </Typography>
       <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
         <TextField

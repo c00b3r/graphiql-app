@@ -9,7 +9,7 @@ import { IState } from '@/interfaces/interfaces';
 import { useSelector } from 'react-redux';
 import MethodSelect from '@/components/restfull/MethodSelect';
 import UrlInput from '@/components/restfull/UrlInput';
-import HeadersManager from '@/components/restfull/HeadersManger';
+import HeadersManager from '@/components/restfull/HeadersManager';
 import VariablesManager from '@/components/restfull/VariablesManager';
 import RequestBodyEditor from '@/components/restfull/RequestBodyEditor';
 import ResponseContainer from '@/components/restfull/ResponseContainer';
@@ -226,7 +226,7 @@ export default function RestFull() {
                 </Box>
               )}
             </Box>
-            <HeadersManager headers={headers} setHeaders={setHeaders} />
+            <HeadersManager headers={headers} setHeaders={setHeaders} languageData={languageData} />
             <VariablesManager variables={variables} setVariables={setVariables} languageData={languageData} />
             <RequestBodyEditor
               requestBody={requestBody}
