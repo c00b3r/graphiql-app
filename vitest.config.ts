@@ -16,6 +16,7 @@ export default defineConfig({
       exclude: [
         '**/*.spec.ts',
         '**/*.test.ts',
+        '**/*.d.ts',
         '**/*.spec.tsx',
         '**/*.test.tsx',
         '.next',
