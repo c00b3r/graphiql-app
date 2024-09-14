@@ -13,6 +13,7 @@ import HeadersManager from '@/components/restfull/HeadersManger';
 import VariablesManager from '@/components/restfull/VariablesManager';
 import RequestBodyEditor from '@/components/restfull/RequestBodyEditor';
 import ResponseContainer from '@/components/restfull/ResponseContainer';
+import { saveHistory } from '@/methods/saveHistoryData';
 
 export default function RestFull() {
   const [urlToSend, setUrlToSend] = useState<string>('');
@@ -27,6 +28,7 @@ export default function RestFull() {
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [url, setUrl] = useState('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -88,6 +90,7 @@ export default function RestFull() {
     ).toString();
     const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
 
+    setUrl(newUrl);
     window.history.replaceState({}, '', newUrl);
   };
 
@@ -175,6 +178,9 @@ export default function RestFull() {
       if (error instanceof Error) {
         setResponseBody(`Error: ${error.message}`);
       }
+    }
+    if (urlToSend) {
+      saveHistory(urlToSend, method, url);
     }
 
     setLoading(false);
