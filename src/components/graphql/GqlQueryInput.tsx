@@ -41,11 +41,10 @@ export default function GqlQueryInput() {
     const convertedDataToUrl = urlConverter(endpointUrl, headers !== '' ? JSON.parse(headers) : '', query, variables);
     const newUrl = makeNewUrl(currentUrl, convertedDataToUrl);
     window.history.pushState({}, '', newUrl);
-    // dispatch(updateAllDataWhenPageLoads(newUrl));
   };
 
   return (
-    <>
+    <div className="query_wrapper_outer">
       <div className="query_wrapper">
         <Typography className="h3-width" variant="h6" component="h3" fontWeight={600}>
           {languageData.queryHeader}
@@ -63,6 +62,6 @@ export default function GqlQueryInput() {
         onBlur={changeUrlOnBlur}
         rows={5}
       />
-    </>
+    </div>
   );
 }
