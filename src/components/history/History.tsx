@@ -81,6 +81,10 @@ export default function HistoryModule() {
                 // это тип запроса (GET, POST)
                 // newElement.url это url куда был запрос
                 // а newElement.data.endpointUrl это закодированная ссылка
+                newElement.clientName = element.client;
+                newElement.url = element.sdlUrl;
+                newElement.data.endpointUrl = element.url;
+                newHistoryArray.push(newElement);
               }
             } catch {
               console.log('alert 7');
