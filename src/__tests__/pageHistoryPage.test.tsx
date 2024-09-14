@@ -8,7 +8,6 @@ vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
 
-
 vi.mock('react', async () => {
   const actualReact = await import('react');
   return {

@@ -81,11 +81,11 @@ export default function HeadersBlock() {
       changeUrlOnBlur(newHeaders);
     } else {
       if (!newHeaderKey) {
-        console.log('alert 5')
+        console.log('alert 5');
         showAlert('Headers key input is missing a value');
       }
       if (!newHeaderValue) {
-        console.log('alert 6')
+        console.log('alert 6');
         showAlert('Headers value input is missing a value');
       }
     }

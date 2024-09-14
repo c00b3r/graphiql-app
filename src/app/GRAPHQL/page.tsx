@@ -49,7 +49,7 @@ export default function GraphQL() {
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -77,9 +77,9 @@ export default function GraphQL() {
 
   const updateSdlAfterSubmit = async () => {
     if (sdlUrl === '' && endpointUrl !== '') {
-      dispatch(updateSDL(`${endpointUrl}?sdl`))
+      dispatch(updateSDL(`${endpointUrl}?sdl`));
     }
-  }
+  };
 
   const handleSubmitInput = async () => {
     handleSubmit();
@@ -125,7 +125,7 @@ export default function GraphQL() {
       const code = errorData.response.status;
       dispatch(saveResponse(JSON.stringify(message), code, false));
     } catch {
-      console.log('alert 1')
+      console.log('alert 1');
       showAlert(errorData.message);
     }
   };
@@ -145,7 +145,7 @@ export default function GraphQL() {
     } catch (err) {
       brokenSubmit();
       const errorMessage = err as IErrors;
-      console.log('alert 2')
+      console.log('alert 2');
       showAlert(errorMessage.message);
     }
 
@@ -158,7 +158,7 @@ export default function GraphQL() {
       } catch (err) {
         const errorMessage = err as IErrors;
         brokenSubmit();
-        console.log('alert 3')
+        console.log('alert 3');
         showAlert(errorMessage.message);
       }
     }
@@ -174,8 +174,8 @@ export default function GraphQL() {
         saveHistory(currentUrl, 'GraphiQL', sdlUrl);
         stages += 1;
       } catch (err) {
-        console.log('err', err)
-        console.log('catch x1')
+        console.log('err', err);
+        console.log('catch x1');
         brokenSubmit();
         displayFetchErrors(err);
       }
@@ -200,7 +200,7 @@ export default function GraphQL() {
         const schemaSDL = printSchema(clientSchema);
         dispatch(saveDocumentation(schemaSDL));
       } catch (err) {
-        console.log('catch x2')
+        console.log('catch x2');
         brokenSubmit();
         displayFetchErrors(err);
       }

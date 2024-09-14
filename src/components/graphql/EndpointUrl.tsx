@@ -21,7 +21,7 @@ export default function EndpointUrlInput() {
     const newUrl = makeNewUrl(currentUrl, convertedDataToUrl);
     window.history.pushState({}, '', newUrl);
     if (sdlUrl === '' && endpointUrl !== '') {
-      dispatch(updateSDL(`${endpointUrl}?sdl`))
+      dispatch(updateSDL(`${endpointUrl}?sdl`));
     }
   };
 
