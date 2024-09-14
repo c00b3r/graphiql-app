@@ -15,6 +15,8 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader/Loader';
+import { IState } from '@/interfaces/interfaces';
+import { useSelector } from 'react-redux';
 
 export default function RestFull() {
   const [urlToSend, setUrlToSend] = useState<string>('');
@@ -33,7 +35,7 @@ export default function RestFull() {
   const [variableKey, setVariableKey] = useState<string>('');
   const [variableValue, setVariableValue] = useState<string>('');
   const [loading, setLoading] = useState(false);
-
+  const languageData = useSelector((state: IState) => state.main.languageData);
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -263,7 +265,7 @@ export default function RestFull() {
       <div className="container">
         <Stack direction="column" justifyContent="center" alignItems="center" spacing={2} width={600}>
           <Typography variant="h5" component="h2" fontWeight={600} gutterBottom>
-            RESTfull Client
+            {languageData.restfullClient}
           </Typography>
           <Stack direction="column" spacing={3} sx={{ width: '100%' }}>
             <Box
@@ -290,14 +292,14 @@ export default function RestFull() {
               <TextField
                 id="text"
                 value={urlToSend}
-                placeholder="Enter URL"
+                placeholder={languageData.enterUrl}
                 variant="outlined"
                 size="small"
                 onChange={onChangeEndpointHandler}
                 sx={{ flex: 1 }}
               />
               <Button type="submit" variant="outlined" size="small">
-                Send
+                {languageData.send}
               </Button>
               {loading && (
                 <Box
@@ -323,17 +325,27 @@ export default function RestFull() {
               }}
             >
               <Typography variant="h6" component="h3" fontWeight={600}>
-                Headers:
+                {languageData.headersHeader}:
               </Typography>
               <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
-                <TextField label="Header Key" variant="standard" value={headerKey} onChange={onChangeHeaderKey} />
-                <TextField label="Header Value" variant="standard" value={headerValue} onChange={onChangeHeaderValue} />
+                <TextField
+                  label={languageData.headerKey}
+                  variant="standard"
+                  value={headerKey}
+                  onChange={onChangeHeaderKey}
+                />
+                <TextField
+                  label={languageData.headerValue}
+                  variant="standard"
+                  value={headerValue}
+                  onChange={onChangeHeaderValue}
+                />
                 <Button variant="outlined" size="small" onClick={addHeader}>
-                  Add Header
+                  {languageData.addHeader}
                 </Button>
                 {isEditHeader ? (
                   <Button variant="outlined" size="small" onClick={saveHeader}>
-                    Save
+                    {languageData.save}
                   </Button>
                 ) : null}
               </Box>
@@ -370,10 +382,10 @@ export default function RestFull() {
 
             <Stack direction="column" alignItems="flex-start" spacing={2}>
               <Typography variant="h6" component="h3" fontWeight={600}>
-                Variables:
+                {languageData.variablesHeader}:
               </Typography>
               <Button variant="outlined" size="small" onClick={() => setVariablesVisible(!isVariablesVisible)}>
-                {isVariablesVisible ? 'Hide Variables' : 'Show Variables'}
+                {isVariablesVisible ? languageData.hideVariables : languageData.showVariables}
               </Button>
               {isVariablesVisible && (
                 <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
@@ -423,7 +435,7 @@ export default function RestFull() {
 
             <div className="body-container">
               <Typography variant="h6" component="h3" fontWeight={600}>
-                JSON:
+                {languageData.json}
               </Typography>
               <TextField
                 value={requestBody}
@@ -440,10 +452,10 @@ export default function RestFull() {
 
           <Box sx={{ width: '100%' }} className="response-container">
             <Typography variant="h6" component="h3" fontWeight={600}>
-              Status: <em>{status}</em>
+              {languageData.status}: <em>{status}</em>
             </Typography>
             <Typography variant="h6" component="h3" fontWeight={600}>
-              Body (JSON):
+              {languageData.bodyJson}:
             </Typography>
             <Box
               sx={{

@@ -69,7 +69,17 @@ export const enLanguage = {
     'This project is part of the React Course at RS School, aimed at giving students hands-on experience in web development. Throughout the course, we faced various challenges in user interface design, state management, and backend integration, ultimately leading to the creation of this fully functional web application.',
   paragraphHeader: 'Project Details',
   aboutHeader: 'About the Course',
+  restfullClient: 'RESTfull Client',
+  json: 'JSON',
+  bodyJson: 'Body (JSON)',
+  showVariables: 'Show Variables',
+  hideVariables: 'Hide Variables',
+  send: 'Send',
+  addHeader: 'Add Header',
+  save: 'Save',
+  enterUrl: 'Enter URL',
 };
+
 export const ruLanguage = {
   graphQlHeader: 'GraphiQL Клиент',
   documentationHeader: 'Документация',
@@ -139,4 +149,13 @@ export const ruLanguage = {
     'Этот проект является частью курса React в RS School, направленного на предоставление студентам практического опыта в веб-разработке. На протяжении всего курса мы сталкивались с различными проблемами в области дизайна пользовательского интерфейса, управления состоянием и интеграции бэкэнда, что в конечном итоге привело к созданию этого полностью функционального веб-приложения.',
   paragraphHeader: 'Подробности проекта',
   aboutHeader: 'О Курсе',
+  restfullClient: 'RESTfull Клиент',
+  json: 'JSON',
+  bodyJson: 'Тело (JSON)',
+  showVariables: 'Показать переменные',
+  hideVariables: 'Спрятать переменные',
+  send: 'Отправить',
+  addHeader: 'Добавить заголовок',
+  save: 'Сохранить',
+  enterUrl: 'Введите URL',
 };

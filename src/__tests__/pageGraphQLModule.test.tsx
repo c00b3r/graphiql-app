@@ -5,7 +5,6 @@ import store from '@/reducers/root/rootReduces';
 import { deleteCookie, setCookie } from 'cookies-next';
 import GraphQLModule from '../app/GRAPHQL/[...params]/page';
 
-
 vi.mock('next/navigation', () => ({
   useRouter() {
     return {
