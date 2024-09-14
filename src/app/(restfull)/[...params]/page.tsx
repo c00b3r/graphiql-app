@@ -1,22 +1,18 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import {
-  Typography,
-  Stack,
-  Button,
-  Select,
-  SelectChangeEvent,
-  MenuItem,
-  TextField,
-  Box,
-  CircularProgress,
-} from '@mui/material';
+import { Typography, Stack, Box, CircularProgress } from '@mui/material';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader/Loader';
 import { IState } from '@/interfaces/interfaces';
 import { useSelector } from 'react-redux';
+import MethodSelect from '@/components/restfull/MethodSelect';
+import UrlInput from '@/components/restfull/UrlInput';
+import HeadersManager from '@/components/restfull/HeadersManger';
+import VariablesManager from '@/components/restfull/VariablesManager';
+import RequestBodyEditor from '@/components/restfull/RequestBodyEditor';
+import ResponseContainer from '@/components/restfull/ResponseContainer';
 
 export default function RestFull() {
   const [urlToSend, setUrlToSend] = useState<string>('');
@@ -25,15 +21,7 @@ export default function RestFull() {
   const [status, setStatus] = useState<number>();
   const [requestBody, setRequestBody] = useState<string>('');
   const [headers, setHeaders] = useState<Array<{ [key: string]: string }>>([]);
-  const [headerKey, setHeaderKey] = useState<string>('');
-  const [headerValue, setHeaderValue] = useState<string>('');
-  const [isEditHeader, setEditHedaer] = useState<boolean>(false);
-  const [editKey, setEditKey] = useState<string | null>(null);
-  const [initialEditKey, setInitialEditKey] = useState<string | null>(null);
   const [variables, setVariables] = useState<Array<{ key: string; value: string }>>([]);
-  const [isVariablesVisible, setVariablesVisible] = useState<boolean>(false);
-  const [variableKey, setVariableKey] = useState<string>('');
-  const [variableValue, setVariableValue] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const languageData = useSelector((state: IState) => state.main.languageData);
   const router = useRouter();
@@ -107,68 +95,8 @@ export default function RestFull() {
     setUrlToSend(e.target.value);
   };
 
-  const onChangeMethodHandler = (e: SelectChangeEvent) => {
-    setMethod(e.target.value);
-  };
-
   const onChangeRequestBody = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setRequestBody(e.target.value);
-  };
-
-  const onChangeHeaderKey = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHeaderKey(e.target.value);
-  };
-
-  const onChangeHeaderValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHeaderValue(e.target.value);
-  };
-
-  const addHeader = () => {
-    if (headerKey && headerValue) {
-      setHeaders((prevHeaders) => [...prevHeaders, { key: headerKey, value: headerValue }]);
-      setHeaderKey('');
-      setHeaderValue('');
-    }
-  };
-
-  const deleteHeader = (key: string) => {
-    setHeaders((prevHeaders) => prevHeaders.filter((header) => header.key !== key));
-  };
-
-  const editHeader = (key: string) => {
-    const headerToEdit = headers.find((header) => header.key === key);
-    if (headerToEdit) {
-      setHeaderKey(headerToEdit.key);
-      setHeaderValue(headerToEdit.value);
-      setInitialEditKey(key);
-      setEditKey(key);
-      setEditHedaer(true);
-    }
-  };
-
-  const saveHeader = () => {
-    if (editKey && headerValue && initialEditKey) {
-      setHeaders((prevHeaders) =>
-        prevHeaders.map((header) => (header.key === initialEditKey ? { key: headerKey, value: headerValue } : header))
-      );
-      setHeaderKey('');
-      setHeaderValue('');
-      setEditKey(null);
-      setInitialEditKey(null);
-      setEditHedaer(false);
-    }
-  };
-
-  const addVariable = () => {
-    if (variableKey && variableValue) {
-      setVariables([...variables, { key: variableKey, value: variableValue }]);
-      setVariableKey('');
-      setVariableValue('');
-    }
-  };
-
-  const deleteVariable = (key: string) => {
-    setVariables(variables.filter((variable) => variable.key !== key));
   };
 
   const onSubmitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -273,35 +201,13 @@ export default function RestFull() {
               sx={{ display: 'flex', width: '100%', gap: 2, justifyContent: 'space-between' }}
               onSubmit={onSubmitHandler}
             >
-              <Select
-                size="small"
-                name="method"
-                id="method"
-                value={method}
-                onChange={onChangeMethodHandler}
-                sx={{ width: 100 }}
-              >
-                <MenuItem value="GET">GET</MenuItem>
-                <MenuItem value="POST">POST</MenuItem>
-                <MenuItem value="PUT">PUT</MenuItem>
-                <MenuItem value="DELETE">DELETE</MenuItem>
-                <MenuItem value="HEAD">HEAD</MenuItem>
-                <MenuItem value="OPTIONS">OPTIONS</MenuItem>
-                <MenuItem value="PATCH">PATCH</MenuItem>
-              </Select>
-              <TextField
-                id="text"
-                value={urlToSend}
-                placeholder={languageData.enterUrl}
-                variant="outlined"
-                size="small"
-                onChange={onChangeEndpointHandler}
-                sx={{ flex: 1 }}
+              <MethodSelect method={method} setMethod={setMethod} />
+              <UrlInput
+                urlToSend={urlToSend}
+                onChangeEndpointHandler={onChangeEndpointHandler}
+                languageData={languageData}
               />
-              <Button type="submit" variant="outlined" size="small">
-                {languageData.send}
-              </Button>
-              {loading && (
+              {loading && status !== 404 && (
                 <Box
                   sx={{
                     position: 'absolute',
@@ -314,164 +220,16 @@ export default function RestFull() {
                 </Box>
               )}
             </Box>
-
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'stretch',
-                justifyContent: 'space-between',
-                gap: '15px',
-              }}
-            >
-              <Typography variant="h6" component="h3" fontWeight={600}>
-                {languageData.headersHeader}:
-              </Typography>
-              <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
-                <TextField
-                  label={languageData.headerKey}
-                  variant="standard"
-                  value={headerKey}
-                  onChange={onChangeHeaderKey}
-                />
-                <TextField
-                  label={languageData.headerValue}
-                  variant="standard"
-                  value={headerValue}
-                  onChange={onChangeHeaderValue}
-                />
-                <Button variant="outlined" size="small" onClick={addHeader}>
-                  {languageData.addHeader}
-                </Button>
-                {isEditHeader ? (
-                  <Button variant="outlined" size="small" onClick={saveHeader}>
-                    {languageData.save}
-                  </Button>
-                ) : null}
-              </Box>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'stretch',
-                  justifyContent: 'space-between',
-                  gap: '15px',
-                }}
-              >
-                {headers.map(({ key, value }) => (
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    key={value}
-                    sx={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'space-between' }}
-                  >
-                    {key}: {value}
-                    <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
-                      <Button variant="outlined" size="small" onClick={() => editHeader(key)}>
-                        Edit
-                      </Button>
-                      <Button variant="outlined" size="small" onClick={() => deleteHeader(key)}>
-                        Delete
-                      </Button>
-                    </Stack>
-                  </Typography>
-                ))}
-              </Box>
-            </Box>
-
-            <Stack direction="column" alignItems="flex-start" spacing={2}>
-              <Typography variant="h6" component="h3" fontWeight={600}>
-                {languageData.variablesHeader}:
-              </Typography>
-              <Button variant="outlined" size="small" onClick={() => setVariablesVisible(!isVariablesVisible)}>
-                {isVariablesVisible ? languageData.hideVariables : languageData.showVariables}
-              </Button>
-              {isVariablesVisible && (
-                <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
-                  <TextField
-                    type="text"
-                    label="Variable Key"
-                    variant="standard"
-                    value={variableKey}
-                    onChange={(e) => setVariableKey(e.target.value)}
-                  />
-                  <TextField
-                    type="text"
-                    label="Variable Value"
-                    variant="standard"
-                    value={variableValue}
-                    onChange={(e) => setVariableValue(e.target.value)}
-                  />
-                  <Button variant="outlined" size="small" onClick={addVariable}>
-                    Add Variable
-                  </Button>
-                </Box>
-              )}
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'stretch',
-                  justifyContent: 'space-between',
-                  gap: '15px',
-                }}
-              >
-                {variables.map((variable, index) => (
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    key={index}
-                    sx={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'space-between' }}
-                  >
-                    {variable.key}: {variable.value}
-                    <Button variant="outlined" size="small" onClick={() => deleteVariable(variable.key)}>
-                      Delete
-                    </Button>
-                  </Typography>
-                ))}
-              </Box>
-            </Stack>
-
-            <div className="body-container">
-              <Typography variant="h6" component="h3" fontWeight={600}>
-                {languageData.json}
-              </Typography>
-              <TextField
-                value={requestBody}
-                onChange={onChangeRequestBody}
-                onBlur={updateUrl}
-                multiline
-                rows={4}
-                variant="outlined"
-                fullWidth
-                sx={{ resize: 'none' }}
-              />
-            </div>
+            <HeadersManager headers={headers} setHeaders={setHeaders} />
+            <VariablesManager variables={variables} setVariables={setVariables} languageData={languageData} />
+            <RequestBodyEditor
+              requestBody={requestBody}
+              onChangeRequestBody={onChangeRequestBody}
+              updateUrl={updateUrl}
+              languageData={languageData}
+            />
           </Stack>
-
-          <Box sx={{ width: '100%' }} className="response-container">
-            <Typography variant="h6" component="h3" fontWeight={600}>
-              {languageData.status}: <em>{status}</em>
-            </Typography>
-            <Typography variant="h6" component="h3" fontWeight={600}>
-              {languageData.bodyJson}:
-            </Typography>
-            <Box
-              sx={{
-                maxHeight: '200px',
-                minHeight: '150px',
-                overflowY: 'auto',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                padding: '8px',
-              }}
-            >
-              <Typography variant="body1" component="pre">
-                {responseBody}
-              </Typography>
-            </Box>
-          </Box>
+          <ResponseContainer status={status} responseBody={responseBody} languageData={languageData} />
         </Stack>
       </div>
     </main>
