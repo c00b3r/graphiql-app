@@ -15,11 +15,9 @@ export default function NoHistory() {
         <Stack direction="column" justifyContent="center" alignItems="center" spacing={1}>
           <Typography variant="h4" component="p">
             {languageData.noRequests}
-            {/* You haven&apos;t executed any requests. */}
           </Typography>
           <Typography variant="h4" component="p">
             {languageData.empty}
-            {/* It&apos;s empty here. Try: */}
           </Typography>
         </Stack>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>

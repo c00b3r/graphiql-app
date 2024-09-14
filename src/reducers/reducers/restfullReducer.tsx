@@ -1,4 +1,4 @@
-type RequestHistoryItem = {
+export type RequestHistoryItem = {
   method: string;
   url: string;
   body: string;
@@ -17,7 +17,7 @@ const initialState = {
 
 const restfullReducer = (
   state = initialState,
-  action: { type: string; payload: Action<RequestHistoryItem | null> }
+  action: { type: string; payload: null | RequestHistoryItem | Action<RequestHistoryItem | null> }
 ) => {
   switch (action.type) {
     case 'UPDATE_INPUT': {
