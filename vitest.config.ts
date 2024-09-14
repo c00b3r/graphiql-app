@@ -13,9 +13,19 @@ export default defineConfig({
     setupFiles: ['src/__tests__/config/config.ts'],
     exclude: ['.next', 'node_modules', 'jest-setup.js'],
     coverage: {
-      exclude: ['.next', 'node_modules', 'jest-setup.js', 'next.config.mjs', 'jest.config.ts', 'vitest.config.ts'],
+      exclude: [
+        '**/*.spec.ts',
+        '**/*.test.ts',
+        '**/*.spec.tsx',
+        '**/*.test.tsx',
+        '.next',
+        'node_modules',
+        'jest-setup.js',
+        'next.config.mjs',
+        'jest.config.ts',
+        'vitest.config.ts',
+        'next-env.d.ts',
+      ],
     },
-    // include: ['src/**/*.ts', 'src/**/*.tsx'], // Включаем только файлы .ts и .tsx из папки src
-    // exclude: ['**/*.spec.ts', '**/*.test.ts'], // Исключаем тестовые файлы (если необходимо)
   },
 });

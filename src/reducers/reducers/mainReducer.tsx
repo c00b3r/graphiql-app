@@ -1,4 +1,4 @@
-import { IStateMain, IHeaders, IErrors, IResults, IPostData } from '@/interfaces/interfaces';
+import { IStateMain, IHeaders, IErrors, IResults, IPostData, ILanguage } from '@/interfaces/interfaces';
 import { enLanguage } from '@/languages/languages';
 import { dataFromUrl } from '@/methods/graphql/urlConverter';
 
@@ -21,7 +21,7 @@ const initialState: IStateMain = {
 
 const mainReducer = (
   state = initialState,
-  action: { type: string; payload: boolean | string | string[] | IHeaders[] | IErrors }
+  action: { type: string; payload: boolean | ILanguage | string | string[] | IHeaders[] | IErrors }
 ) => {
   switch (action.type) {
     case 'UPDATE_HEADERS': {
