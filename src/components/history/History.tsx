@@ -59,18 +59,28 @@ export default function HistoryModule() {
             const mockCopy = JSON.stringify(mockHistoryElement);
             const newElement: IHistoryData = JSON.parse(mockCopy);
             try {
-              const partialData: IResults | false = dataFromUrl(element.url);
-              if (partialData) {
-                newElement.data.endpointUrl = partialData.endpointUrl;
-                newElement.data.sdlUrl = element.sdlUrl !== '' ? element.sdlUrl : `${partialData.endpointUrl}?sdl`;
-                newElement.data.query = partialData.query;
-                newElement.data.headers = partialData.headers;
-                newElement.data.variables = partialData.variables;
-                newElement.index = index;
-                newElement.name = '';
-                newElement.url = element.url;
-                newElement.clientName = element.client;
-                newHistoryArray.push(newElement);
+              if (element.client === 'GeaphiQL') {
+                const partialData: IResults | false = dataFromUrl(element.url);
+                if (partialData) {
+                  newElement.data.endpointUrl = partialData.endpointUrl;
+                  newElement.data.sdlUrl = element.sdlUrl !== '' ? element.sdlUrl : `${partialData.endpointUrl}?sdl`;
+                  newElement.data.query = partialData.query;
+                  newElement.data.headers = partialData.headers;
+                  newElement.data.variables = partialData.variables;
+                  newElement.index = index;
+                  newElement.name = '';
+                  newElement.url = element.url;
+                  newElement.clientName = element.client;
+                  newHistoryArray.push(newElement);
+                }
+              } else {
+                // декодирование REST ссылки, которая была сохранена
+                // в newElement надо передать 3 вида данных, которые
+                // мы используем на странице history, это
+                // clientName, endpointUrl и url, где newElement.clientName
+                // это тип запроса (GET, POST)
+                // newElement.url это url куда был запрос
+                // а newElement.data.endpointUrl это закодированная ссылка
               }
             } catch {
               console.log('alert 7');
