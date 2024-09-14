@@ -32,9 +32,9 @@ import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader/Loader';
 import './page.css';
 import Link from 'next/link';
-
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase';
+import styles from './Page.module.css';
 
 export default function GraphQL() {
   const dispatch = useDispatch<AppDispatch>();
@@ -194,7 +194,7 @@ export default function GraphQL() {
           });
           return response.json();
         };
-        const schemaResponse = await fetchSchema(sdlUrl);
+        const schemaResponse = await fetchSchema(sdlUrl === '' ? `${endpointUrl}?sdl` : sdlUrl);
         const { data } = schemaResponse;
         const clientSchema = buildClientSchema(data);
         const schemaSDL = printSchema(clientSchema);
@@ -218,7 +218,7 @@ export default function GraphQL() {
   return (
     <>
       <main className="main">
-        <div className="container">
+        <div className={styles.loaderContainer}>
           {loginStatus && (
             <div className="graphql_page_wrapper">
               <div className="graphiql-wrapper">
@@ -254,9 +254,9 @@ export default function GraphQL() {
 
           {!loginStatus && <Loader />}
 
-          <Box textAlign={'center'} marginTop={10}>
+          <Box textAlign={'center'} marginTop={1}>
             <Button variant="contained" size="medium" component={Link} href="/history">
-              History
+              {languageData.history}
             </Button>
           </Box>
         </div>

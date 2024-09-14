@@ -29,7 +29,7 @@ export default function VariablesBlock() {
   };
 
   return (
-    <>
+    <div className="variables_wrapper_outer">
       <div className="variables-wrapper">
         <Typography variant="h6" component="h3" className="h3-width" fontWeight={600}>
           {languageData.variablesHeader}
@@ -53,6 +53,6 @@ export default function VariablesBlock() {
           />
         )}{' '}
       </>
-    </>
+    </div>
   );
 }
