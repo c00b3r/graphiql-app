@@ -1,10 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { mockQueryPoke, mockQuerySwapiNetlify } from '../../mocks/query';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
-import { mockHeadersPoke, mockHeadersSwapi } from '@/mocks/headers';
-import { mockVariablesPoke } from '@/mocks/variables';
-import { mockEndpointUrlPoke, mockEndpointUrlSwapiNetlify } from '@/mocks/urls';
 import { Button, Typography, Box } from '@mui/material';
 import ResponseGQL from '@/components/graphql/ResponseGQL';
 import SDLUrlInput from '@/components/graphql/SdlUrl';
@@ -35,6 +31,15 @@ import Link from 'next/link';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase';
 import styles from './Page.module.css';
+import {
+  mockEndpointUrlPoke,
+  mockEndpointUrlSwapiNetlify,
+  mockHeadersPoke,
+  mockHeadersSwapi,
+  mockQueryPoke,
+  mockQuerySwapiNetlify,
+  mockVariablesPoke,
+} from '@/__mocks__/graphQlMocks';
 
 export default function GraphQL() {
   const dispatch = useDispatch<AppDispatch>();

@@ -1,3 +1,97 @@
+export const mockHeadersPoke = [
+  {
+    key: 'Content-Type',
+    value: 'application/json',
+  },
+  {
+    key: 'X-Method-Used',
+    value: 'graphiql',
+  },
+];
+
+export const mockHeadersSwapi = [
+  {
+    key: 'Content-Type',
+    value: 'application/json',
+  },
+];
+
+export const mockQueryPoke = `
+query pokemon_details($name: String) {  species: pokemon_v2_pokemonspecies(where: {name: {_eq: $name}}) {     name
+    base_happiness     is_legendary
+    is_mythical    generation: pokemon_v2_generation {
+      name
+    }
+    habitat: pokemon_v2_pokemonhabitat {
+      name
+    }
+    pokemon: pokemon_v2_pokemons_aggregate(limit: 1) {
+      nodes {
+        height
+        name
+        id
+        weight
+        abilities: pokemon_v2_pokemonabilities_aggregate {
+          nodes {
+            ability: pokemon_v2_ability {
+              name
+            }
+          }
+        }
+        stats: pokemon_v2_pokemonstats {
+          base_stat
+          stat: pokemon_v2_stat {
+            name
+          }
+        }
+        types: pokemon_v2_pokemontypes {
+          slot
+          type: pokemon_v2_type {
+            name
+          }
+        }
+        levelUpMoves: pokemon_v2_pokemonmoves_aggregate(where: {pokemon_v2_movelearnmethod: {name: {_eq: "level-up"}}}, distinct_on: move_id) {
+          nodes {
+            move: pokemon_v2_move {
+              name
+            }
+            level
+          }
+        }
+        foundInAsManyPlaces: pokemon_v2_encounters_aggregate {
+          aggregate {
+            count
+          }
+        }
+        fireRedItems: pokemon_v2_pokemonitems(where: {pokemon_v2_version: {name: {_eq: "firered"}}}) {
+          pokemon_v2_item {
+            name
+            cost
+          }
+          rarity
+        }
+      }
+    }
+    flavorText: pokemon_v2_pokemonspeciesflavortexts(where: {pokemon_v2_language: {name: {_eq: "en"}}, pokemon_v2_version: {name: {_eq: "firered"}}}) {
+      flavor_text
+    }
+  }
+}
+`;
+
+export const mockQuerySwapiNetlify = `{
+  allFilms {
+    films {
+      title
+    }
+  }
+}`;
+
+export const mockSdlUrl = 'https://json-schema.org/schema#';
+export const mockEndpointUrlPoke = 'https://beta.pokeapi.co/graphql/v1beta';
+export const mockEndpointUrlCountries = 'https://www.graph.cool/';
+export const mockEndpointUrlSwapiNetlify = 'https://swapi-graphql.netlify.app/.netlify/functions/index';
+export const mockVariablesPoke = { name: 'starmie' };
 export const mockedResponsePoke = {
   species: [
     {
@@ -313,31 +407,4 @@ export const mockedResponsePoke = {
       ],
     },
   ],
-};
-
-export const mockedResponseSwapiNetlify = {
-  data: {
-    allFilms: {
-      films: [
-        {
-          title: 'A New Hope',
-        },
-        {
-          title: 'The Empire Strikes Back',
-        },
-        {
-          title: 'Return of the Jedi',
-        },
-        {
-          title: 'The Phantom Menace',
-        },
-        {
-          title: 'Attack of the Clones',
-        },
-        {
-          title: 'Revenge of the Sith',
-        },
-      ],
-    },
-  },
 };

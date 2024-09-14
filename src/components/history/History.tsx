@@ -74,13 +74,6 @@ export default function HistoryModule() {
                   newHistoryArray.push(newElement);
                 }
               } else {
-                // декодирование REST ссылки, которая была сохранена
-                // в newElement надо передать 3 вида данных, которые
-                // мы используем на странице history, это
-                // clientName, endpointUrl и url, где newElement.clientName
-                // это тип запроса (GET, POST)
-                // newElement.url это url куда был запрос
-                // а newElement.data.endpointUrl это закодированная ссылка
                 newElement.clientName = element.client;
                 newElement.url = element.sdlUrl;
                 newElement.data.endpointUrl = element.url;
