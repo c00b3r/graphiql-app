@@ -7,9 +7,7 @@ import EndpointUrlInput from './EndpointUrl';
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(),
-}));
+
 
 const MockEndpointUrlInput = () => {
   return (

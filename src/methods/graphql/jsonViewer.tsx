@@ -26,9 +26,13 @@ function cleanObject(obj: string | null | undefined | object | number): string |
 }
 
 const JsonViewer = (dirtyData: string | object | CleanObject | null | undefined) => {
+
   const data = cleanObject(dirtyData);
 
   const formatJson = (obj: object) => {
+    if (!obj) {
+      return
+    }
     const entries = Object.entries(obj);
     return entries
       .map(([key, value], index) => {
@@ -46,18 +50,26 @@ const JsonViewer = (dirtyData: string | object | CleanObject | null | undefined)
                 <span className="black-text"> [</span>
               </div>
               <div className={'left-20'}>
-                {value.map((item, itemIndex) => (
-                  <React.Fragment key={itemIndex}>
-                    <div>
-                      <span className={'left-0'}>&#123;</span>
-                    </div>
-                    <div className={'left-10'}>{formatJson(item)}</div>
-                    <div>
-                      <span className="black-text curly-black left-0">&#125;</span>
-                      {itemIndex === value.length - 1 ? '' : ','}
-                    </div>
-                  </React.Fragment>
-                ))}
+                {value.map((item, itemIndex) => {
+                  if (typeof item === 'string') {
+                    return (
+                      <div key={`array-${index}`} className={'left-10 orange-text'}>{(item)}</div>
+                    )
+                  }
+                  return(
+                    <React.Fragment key={itemIndex}>
+                      <div>
+                        <span className={'left-0'}>&#123;</span>
+                      </div>
+                      <div className={'left-10'}>{formatJson(item)}</div>
+                      <div>
+                        <span className="black-text curly-black left-0">&#125;</span>
+                        {itemIndex === value.length - 1 ? '' : ','}
+                      </div>
+                    </React.Fragment>
+                  )
+                }
+                )}
               </div>
               <span className="black-text">]</span>
             </div>

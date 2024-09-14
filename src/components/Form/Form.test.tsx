@@ -7,9 +7,7 @@ import { Form } from './Form';
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(),
-}));
+
 
 const mockHandleClick = vi.fn();
 

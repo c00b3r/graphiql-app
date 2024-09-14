@@ -7,9 +7,7 @@ import HistoryModule from './History';
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(),
-}));
+
 
 const MockHistoryModule = () => {
   return (

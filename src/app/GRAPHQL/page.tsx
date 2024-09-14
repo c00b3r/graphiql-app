@@ -48,9 +48,8 @@ export default function GraphQL() {
   const languageData = useSelector((state: IState) => state.main.languageData);
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState(false);
-
   const [initialLoading, setInitialLoading] = useState(true);
-
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -75,6 +74,12 @@ export default function GraphQL() {
     dispatch(saveResponse(false, 0, false));
     dispatch(saveDocumentation(''));
   };
+
+  const updateSdlAfterSubmit = async () => {
+    if (sdlUrl === '' && endpointUrl !== '') {
+      dispatch(updateSDL(`${endpointUrl}?sdl`))
+    }
+  }
 
   const handleSubmitInput = async () => {
     handleSubmit();
@@ -120,11 +125,13 @@ export default function GraphQL() {
       const code = errorData.response.status;
       dispatch(saveResponse(JSON.stringify(message), code, false));
     } catch {
+      console.log('alert 1')
       showAlert(errorData.message);
     }
   };
 
   const handleSubmit = async () => {
+    updateSdlAfterSubmit();
     let stages = 0;
     let variablesSubmit: string | object = variables === '' || Object.keys(variables).length === 0 ? '{}' : variables;
     let headersTransformed;
@@ -138,6 +145,7 @@ export default function GraphQL() {
     } catch (err) {
       brokenSubmit();
       const errorMessage = err as IErrors;
+      console.log('alert 2')
       showAlert(errorMessage.message);
     }
 
@@ -150,6 +158,7 @@ export default function GraphQL() {
       } catch (err) {
         const errorMessage = err as IErrors;
         brokenSubmit();
+        console.log('alert 3')
         showAlert(errorMessage.message);
       }
     }
@@ -162,10 +171,11 @@ export default function GraphQL() {
         `;
         const body = await request(endpointUrl, queryTransformed, variablesSubmit as object, headersTransformed);
         dispatch(saveResponse(JSON.stringify(body, null, 2), 200, true));
-
         saveHistory(currentUrl, 'GraphiQL', sdlUrl);
         stages += 1;
       } catch (err) {
+        console.log('err', err)
+        console.log('catch x1')
         brokenSubmit();
         displayFetchErrors(err);
       }
@@ -190,6 +200,7 @@ export default function GraphQL() {
         const schemaSDL = printSchema(clientSchema);
         dispatch(saveDocumentation(schemaSDL));
       } catch (err) {
+        console.log('catch x2')
         brokenSubmit();
         displayFetchErrors(err);
       }
@@ -212,7 +223,6 @@ export default function GraphQL() {
             <div className="graphql_page_wrapper">
               <div className="graphiql-wrapper">
                 <div className={`graphiql-wrapper-inner ${document ? 'graphiql_100' : 'graphiql_95'}`}>
-                  <DocumentationGQL></DocumentationGQL>
                   <div className={`graphiql-block ${document ? 'graphiql_50' : ''}`}>
                     <Typography variant="h5" component="h2" fontWeight={600} gutterBottom>
                       {languageData.graphQlHeader}
@@ -235,6 +245,7 @@ export default function GraphQL() {
                     </div>
                   </div>
                   <ResponseGQL></ResponseGQL>
+                  <DocumentationGQL></DocumentationGQL>
                 </div>
               </div>
               <Alerts></Alerts>

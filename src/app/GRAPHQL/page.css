@@ -173,7 +173,7 @@
 
 .graphiql-wrapper-inner {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100vw;
   height: 100%;
   justify-content: center;

@@ -7,9 +7,7 @@ import HistoryPage from '../app/history/page';
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(),
-}));
+
 
 vi.mock('react', async () => {
   const actualReact = await import('react');
