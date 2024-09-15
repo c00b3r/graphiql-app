@@ -24,7 +24,7 @@ describe('EndpointUrlInput', () => {
     });
 
     store.dispatch = vi.fn();
-    window.history.pushState = vi.fn(); // Мокаем pushState
+    window.history.pushState = vi.fn();
   });
 
   test('renders correctly', () => {
