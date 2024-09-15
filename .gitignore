@@ -63,3 +63,6 @@ dist-ssr
 coverage
 next-env.d.ts
 .next
+
+# Local Netlify folder
+.netlify
