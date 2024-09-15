@@ -106,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({ isScrolled }) => {
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <IconButton color="primary" aria-label="logo">
             <Link href="/">
-              <Image src={icon} alt="Logo" style={{ width: '40px', height: '40px' }} />
+              <Image priority src={icon} alt="Logo" width={40} height={40} />
             </Link>
           </IconButton>
           <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={6}>

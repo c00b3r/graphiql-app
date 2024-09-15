@@ -6,6 +6,7 @@ import { Header } from '@/components/Header/Header';
 import { Footer } from '@/components/Footer/Footer';
 import '../styles/global.css';
 import '../firebase';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -34,13 +35,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.ico" sizes="any" />
       </head>
       <body>
-        <Provider store={store}>
-          <div className="wrapper">
-            <Header isScrolled={isScrolled} />
-            {children}
-            <Footer />
-          </div>
-        </Provider>
+        <ErrorBoundary>
+          <Provider store={store}>
+            <div className="wrapper">
+              <Header isScrolled={isScrolled} />
+              {children}
+              <Footer />
+            </div>
+          </Provider>
+        </ErrorBoundary>
       </body>
     </html>
   );

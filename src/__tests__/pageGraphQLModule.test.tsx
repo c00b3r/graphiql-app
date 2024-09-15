@@ -1,17 +1,15 @@
 import { describe, it, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import store from '@/reducers/root/rootReduces';
 import { deleteCookie, setCookie } from 'cookies-next';
 import GraphQLModule from '../app/GRAPHQL/[...params]/page';
 
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(),
-}));
 vi.mock('next/navigation', () => ({
   useRouter() {
     return {
       prefetch: () => null,
+      push: vi.fn(),
     };
   },
 }));
@@ -33,7 +31,9 @@ describe('Search Component', () => {
     deleteCookie('loginStatus');
   });
 
-  it('renders without crashing', () => {
-    render(<MockGraphQLModule />);
+  it('renders without crashing', async () => {
+    await act(async () => {
+      render(<MockGraphQLModule />);
+    });
   });
 });

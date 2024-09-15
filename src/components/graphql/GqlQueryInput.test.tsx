@@ -1,26 +1,92 @@
-import { describe, it, vi } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import store from '@/reducers/root/rootReduces';
+import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import GqlQueryInput from './GqlQueryInput';
+import { Store, UnknownAction } from 'redux';
+import { Mock, vi } from 'vitest';
 
-vi.mock('next/navigation', () => ({
-  useRouter: vi.fn(),
-}));
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(),
-}));
+const mockStore = configureStore([]);
 
-const MockGqlQueryInput = () => {
-  return (
-    <Provider store={store}>
-      <GqlQueryInput />
-    </Provider>
-  );
-};
+describe('GqlQueryInput', () => {
+  let store: MockStoreEnhanced<unknown, object> | Store<unknown, UnknownAction, unknown>;
 
-describe('Search Component', () => {
-  it('renders without crashing', () => {
-    render(<MockGqlQueryInput />);
+  beforeEach(() => {
+    store = mockStore({
+      main: {
+        queryInput: '',
+        searchResults: { result: false },
+        languageData: {
+          queryHeader: 'GraphQL Query',
+          prettify: 'Prettify',
+          wrongGqlError: 'Invalid GraphQL query',
+        },
+        error: '',
+        endpointUrlInput: 'http://example.com/graphql',
+        headersKeys: '',
+        variablesInput: '',
+      },
+    });
+    store.dispatch = vi.fn();
+    window.history.pushState = vi.fn();
+  });
+
+  test('renders correctly', () => {
+    render(
+      <Provider store={store}>
+        <GqlQueryInput />
+      </Provider>
+    );
+
+    expect(screen.getByText('GraphQL Query')).toBeInTheDocument();
+    expect(screen.getByText('Prettify')).toBeInTheDocument();
+  });
+
+  test('dispatches updateQuery on input change', () => {
+    render(
+      <Provider store={store}>
+        <GqlQueryInput />
+      </Provider>
+    );
+
+    const textarea = screen.getByRole('textbox');
+    fireEvent.change(textarea, { target: { value: 'query { test }' } });
+    expect(store.dispatch).toHaveBeenCalled();
+    const calls = (store.dispatch as Mock).mock.calls;
+    const lastCall = calls[calls.length - 1][0];
+    expect(typeof lastCall).toBe('function');
+  });
+
+  test('shows alert message on prettify error', () => {
+    const dispatchSpy = vi.spyOn(store, 'dispatch');
+
+    render(
+      <Provider store={store}>
+        <GqlQueryInput />
+      </Provider>
+    );
+
+    const button = screen.getByText('Prettify');
+    fireEvent.click(button);
+
+    expect(dispatchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  test('updates URL on blur', async () => {
+    const originalPushState = window.history.pushState;
+    const pushStateMock = vi.fn();
+    window.history.pushState = pushStateMock;
+
+    render(
+      <Provider store={store}>
+        <GqlQueryInput />
+      </Provider>
+    );
+
+    const textarea = screen.getByRole('textbox');
+    fireEvent.blur(textarea);
+
+    expect(pushStateMock).toHaveBeenCalled();
+
+    window.history.pushState = originalPushState;
   });
 });

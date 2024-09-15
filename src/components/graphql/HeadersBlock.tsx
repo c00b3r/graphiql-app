@@ -1,7 +1,7 @@
 'use client';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
 import { AppDispatch } from '@/reducers/root/rootReduces';
-import { Button, Input } from '@mui/material';
+import { Button, Input, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlertMessage, updateHeaders } from '@/reducers/actions/actions';
@@ -62,9 +62,15 @@ export default function HeadersBlock() {
   };
 
   const changeHeader = (index: number) => {
-    const filterd = [...enabledEditButtons].filter((item) => item !== index);
-    setEditButtons(filterd);
-    changeUrlOnBlur(headers);
+    if (headers[index].key === '') {
+      showAlert('Headers key input is missing a value');
+    } else if (headers[index].value === '') {
+      showAlert('Headers value input is missing a value');
+    } else {
+      const filtered = [...enabledEditButtons].filter((item) => item !== index);
+      setEditButtons(filtered);
+      changeUrlOnBlur(headers);
+    }
   };
 
   const editHeader = (index: number) => {
@@ -97,13 +103,13 @@ export default function HeadersBlock() {
     <>
       <div className="headers-wrapper">
         <div className="graphiql-input-wrapper">
-          <h3 className="h3-width">
+          <Typography variant="h6" component="h3" className="h3-width" fontWeight={600}>
             {languageData.headersHeader}
-            <Button onClick={toggleHeaders}>
+            <Button onClick={toggleHeaders} variant="outlined" size="small" fullWidth>
               {!headersVisible && languageData.show}
               {headersVisible && languageData.hide}
             </Button>
-          </h3>
+          </Typography>
         </div>
         {headersVisible && (
           <div className="headers-wrapper-inner">
@@ -129,12 +135,18 @@ export default function HeadersBlock() {
                 className={`header-buttons-wrapper  ${languageData.add !== 'Add' ? 'header-buttons-wrapper-ru' : ''}`}
               >
                 <Button
+                  variant="outlined"
+                  size="small"
+                  fullWidth
                   className={languageData.add === 'Add' ? 'header_button_left_en' : 'header_button_left_ru'}
                   onClick={addHeader}
                 >
                   {languageData.add}
                 </Button>
                 <Button
+                  variant="outlined"
+                  size="small"
+                  fullWidth
                   className={languageData.add === 'Add' ? 'header_button_right_en' : 'header_button_right_ru'}
                   onClick={clearHeaderInput}
                 >
@@ -152,7 +164,7 @@ export default function HeadersBlock() {
                     <Input
                       className="header_keyvalue_entered"
                       type="text"
-                      placeholder="Header Key"
+                      placeholder={languageData.headerKey}
                       value={header.key}
                       onChange={(e) => handleHeaderChange(index, 'key', e.target.value)}
                       disabled={!enabledEditButtons.includes(index)}
@@ -160,7 +172,7 @@ export default function HeadersBlock() {
                     <Input
                       className="header_keyvalue_entered"
                       type="text"
-                      placeholder="Header Value"
+                      placeholder={languageData.headerValue}
                       value={header.value}
                       onChange={(e) => handleHeaderChange(index, 'value', e.target.value)}
                       disabled={!enabledEditButtons.includes(index)}
@@ -171,6 +183,9 @@ export default function HeadersBlock() {
                   >
                     {!enabledEditButtons.includes(index) && (
                       <Button
+                        variant="outlined"
+                        size="small"
+                        fullWidth
                         className={languageData.add === 'Add' ? 'header_button_left_en' : 'header_button_left_ru'}
                         onClick={() => editHeader(index)}
                       >
@@ -180,6 +195,9 @@ export default function HeadersBlock() {
 
                     {enabledEditButtons.includes(index) && (
                       <Button
+                        variant="outlined"
+                        size="small"
+                        fullWidth
                         className={languageData.add === 'Add' ? 'header_button_left_en' : 'header_button_left_ru'}
                         onClick={() => changeHeader(index)}
                       >
@@ -187,6 +205,9 @@ export default function HeadersBlock() {
                       </Button>
                     )}
                     <Button
+                      variant="outlined"
+                      size="small"
+                      fullWidth
                       className={languageData.add === 'Add' ? 'header_button_right_en' : 'header_button_right_ru'}
                       onClick={() => removeHeader(index)}
                     >

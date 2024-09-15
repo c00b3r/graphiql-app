@@ -1,11 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { mockQueryPoke, mockQuerySwapiNetlify } from '../../mocks/query';
 import { makeNewUrl, urlConverter } from '@/methods/graphql/urlConverter';
-import { mockHeadersPoke, mockHeadersSwapi } from '@/mocks/headers';
-import { mockVariablesPoke } from '@/mocks/variables';
-import { mockEndpointUrlPoke, mockEndpointUrlSwapiNetlify } from '@/mocks/urls';
-import { Button } from '@mui/material';
+import { Button, Typography, Box } from '@mui/material';
 import ResponseGQL from '@/components/graphql/ResponseGQL';
 import SDLUrlInput from '@/components/graphql/SdlUrl';
 import EndpointUrlInput from '@/components/graphql/EndpointUrl';
@@ -30,8 +26,20 @@ import { IState, IHeaders, IErrors } from '@/interfaces/interfaces';
 import { getIntrospectionQuery, buildClientSchema, printSchema } from 'graphql';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader/Loader';
-import { getCookie } from 'cookies-next';
 import './page.css';
+import Link from 'next/link';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
+import styles from './Page.module.css';
+import {
+  mockEndpointUrlPoke,
+  mockEndpointUrlSwapiNetlify,
+  mockHeadersPoke,
+  mockHeadersSwapi,
+  mockQueryPoke,
+  mockQuerySwapiNetlify,
+  mockVariablesPoke,
+} from '@/__mocks__/graphQlMocks';
 
 export default function GraphQL() {
   const dispatch = useDispatch<AppDispatch>();
@@ -45,17 +53,23 @@ export default function GraphQL() {
   const languageData = useSelector((state: IState) => state.main.languageData);
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    const getLoginStatus = getCookie('loginStatus');
-    if (!getLoginStatus) {
-      router.push('/');
-    } else {
-      setLoginStatus(true);
-      const currentUrl = window.location.href;
-      dispatch(updateAllDataWhenPageLoads(currentUrl));
-    }
-  }, []);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoginStatus(true);
+        const currentUrl = window.location.href;
+        dispatch(updateAllDataWhenPageLoads(currentUrl));
+      } else {
+        setLoginStatus(false);
+        router.push('/');
+      }
+      setInitialLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth, router]);
 
   useEffect(() => {
     brokenSubmit();
@@ -64,6 +78,12 @@ export default function GraphQL() {
   const brokenSubmit = () => {
     dispatch(saveResponse(false, 0, false));
     dispatch(saveDocumentation(''));
+  };
+
+  const updateSdlAfterSubmit = async () => {
+    if (sdlUrl === '' && endpointUrl !== '') {
+      dispatch(updateSDL(`${endpointUrl}?sdl`));
+    }
   };
 
   const handleSubmitInput = async () => {
@@ -106,15 +126,24 @@ export default function GraphQL() {
     const errorData = err as IErrors;
 
     try {
-      const message = errorData.response.errors[0].message;
       const code = errorData.response.status;
-      dispatch(saveResponse(JSON.stringify(message), code, false));
+      if (+code >= 400 && +code <= 599) {
+        const message = errorData.message;
+        if (typeof message === 'string') {
+          dispatch(saveResponse(message, code, false));
+        } else if (typeof message === 'object') {
+          dispatch(saveResponse(JSON.stringify(message), code, false));
+        }
+      } else {
+        showAlert(errorData.message);
+      }
     } catch {
       showAlert(errorData.message);
     }
   };
 
   const handleSubmit = async () => {
+    updateSdlAfterSubmit();
     let stages = 0;
     let variablesSubmit: string | object = variables === '' || Object.keys(variables).length === 0 ? '{}' : variables;
     let headersTransformed;
@@ -152,7 +181,6 @@ export default function GraphQL() {
         `;
         const body = await request(endpointUrl, queryTransformed, variablesSubmit as object, headersTransformed);
         dispatch(saveResponse(JSON.stringify(body, null, 2), 200, true));
-
         saveHistory(currentUrl, 'GraphiQL', sdlUrl);
         stages += 1;
       } catch (err) {
@@ -174,7 +202,7 @@ export default function GraphQL() {
           });
           return response.json();
         };
-        const schemaResponse = await fetchSchema(sdlUrl);
+        const schemaResponse = await fetchSchema(sdlUrl === '' ? `${endpointUrl}?sdl` : sdlUrl);
         const { data } = schemaResponse;
         const clientSchema = buildClientSchema(data);
         const schemaSDL = printSchema(clientSchema);
@@ -186,40 +214,60 @@ export default function GraphQL() {
     }
   };
 
+  if (initialLoading) {
+    return <Loader />;
+  }
+
+  if (!loginStatus) {
+    return <Loader />;
+  }
+
   return (
     <>
-      {loginStatus && (
-        <div className="graphql_page_wrapper">
-          <div className="graphiql-wrapper">
-            <div className={`graphiql-wrapper-inner ${document ? 'graphiql_100' : 'graphiql_95'}`}>
-              <DocumentationGQL></DocumentationGQL>
-              <div className={`graphiql-block ${document ? 'graphiql_50' : ''}`}>
-                <h2 className="h2">{languageData.graphQlHeader}</h2>
-                <EndpointUrlInput></EndpointUrlInput>
-                <SDLUrlInput></SDLUrlInput>
-                <HeadersBlock></HeadersBlock>
-                <GqlQueryInput></GqlQueryInput>
-                <VariablesBlock></VariablesBlock>
-                <div className={'submit_gql_buttons'}>
-                  <Button variant="outlined" onClick={handleSubmitInput}>
-                    {languageData.submitInput}
-                  </Button>
-                  <Button variant="outlined" onClick={handleSubmitPoke}>
-                    {languageData.submitPoke}
-                  </Button>
-                  <Button variant="outlined" onClick={handleSubmitSwapi}>
-                    {languageData.submitSwapi}
-                  </Button>
+      <main className={`${styles.main} main`}>
+        <div className={styles.container}>
+          {loginStatus && (
+            <div className="graphql_page_wrapper">
+              <Alerts></Alerts>
+              <div className="graphiql-wrapper">
+                <div className={`graphiql-wrapper-inner ${document ? 'graphiql_100' : 'graphiql_95'}`}>
+                  <div className={`graphiql-block ${document ? 'graphiql_50' : ''}`}>
+                    <Typography variant="h5" component="h2" fontWeight={600} gutterBottom>
+                      {languageData.graphQlHeader}
+                    </Typography>
+                    <EndpointUrlInput></EndpointUrlInput>
+                    <SDLUrlInput></SDLUrlInput>
+                    <HeadersBlock></HeadersBlock>
+                    <GqlQueryInput></GqlQueryInput>
+                    <VariablesBlock></VariablesBlock>
+                    <div className={'submit_gql_buttons'}>
+                      <Button variant="outlined" onClick={handleSubmitPoke}>
+                        {languageData.submitPoke}
+                      </Button>
+                      <Button variant="contained" onClick={handleSubmitInput}>
+                        {languageData.submitInput}
+                      </Button>
+                      <Button variant="outlined" onClick={handleSubmitSwapi}>
+                        {languageData.submitSwapi}
+                      </Button>
+                    </div>
+                  </div>
+                  <ResponseGQL></ResponseGQL>
+                  <DocumentationGQL></DocumentationGQL>
                 </div>
               </div>
-              <ResponseGQL></ResponseGQL>
             </div>
-          </div>
-          <Alerts></Alerts>
-        </div>
-      )}
+          )}
 
-      {!loginStatus && <Loader />}
+          {!loginStatus && <Loader />}
+
+          <Box textAlign={'center'} marginTop={1}>
+            <Button variant="contained" size="medium" component={Link} href="/history">
+              {languageData.history}
+            </Button>
+          </Box>
+        </div>
+      </main>
     </>
   );
 }

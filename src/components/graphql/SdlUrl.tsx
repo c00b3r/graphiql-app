@@ -1,6 +1,6 @@
 'use client';
 import { AppDispatch } from '@/reducers/root/rootReduces';
-import { Input } from '@mui/material';
+import { Input, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSDL } from '@/reducers/actions/actions';
 import { IResults, IState } from '@/interfaces/interfaces';
@@ -25,11 +25,14 @@ export default function SDLUrlInput() {
   return (
     <>
       <div className="graphiql-input-wrapper">
-        <h3
+        <Typography
+          variant="h6"
+          component="h3"
           className={`${languageData.graphQlHeader === 'GraphiQL Client' ? 'url_graphql' : 'url_graphql-ru'} 'h3-width'`}
+          fontWeight={600}
         >
           {languageData.sdlUrlHeader}
-        </h3>
+        </Typography>
         <Input
           type="text"
           value={sdlUrl}

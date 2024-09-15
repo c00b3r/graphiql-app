@@ -19,7 +19,7 @@ describe('saveHistory', () => {
     } catch {
       savedData = '';
     }
-    expect(savedData).toEqual([{ url: 'http://example.com', client: 'client1' }]);
+    expect(savedData).toEqual([{ url: 'http://example.com', client: 'client1', sdlUrl: 'http://sdl.example.com' }]);
   });
 
   test('should append new history data when localStorage has existing data', () => {
@@ -61,7 +61,7 @@ describe('saveHistory', () => {
     } catch {
       savedData = '';
     }
-    expect(JSON.stringify(savedData)).toEqual(JSON.stringify([{ url: '', client: '' }]));
+    expect(JSON.stringify(savedData)).toEqual(JSON.stringify([{ url: '', client: '', sdlUrl: '' }]));
   });
 
   test('should handle multiple consecutive calls', () => {
@@ -73,8 +73,12 @@ describe('saveHistory', () => {
     } catch {
       savedData = '';
     }
-    expect(JSON.stringify(savedData[0])).toEqual(JSON.stringify({ url: 'http://example.com', client: 'client1' }));
+    expect(JSON.stringify(savedData[0])).toEqual(
+      JSON.stringify({ url: 'http://example.com', client: 'client1', sdlUrl: 'http://sdl.example.com' })
+    );
     saveHistory('http://example2.com', 'client2', 'http://sdl.example2.com');
-    expect(JSON.stringify(savedData[0])).toEqual(JSON.stringify({ url: 'http://example.com', client: 'client1' }));
+    expect(JSON.stringify(savedData[0])).toEqual(
+      JSON.stringify({ url: 'http://example.com', client: 'client1', sdlUrl: 'http://sdl.example.com' })
+    );
   });
 });

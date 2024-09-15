@@ -1,6 +1,7 @@
 'use client';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from '@mui/material';
+import NextLink from 'next/link';
+import { Link as MuiLink, Stack, Typography, List, ListItem } from '@mui/material';
 import { setAlertMessage, updateAllDataWhenPageLoads } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
 import { useEffect, useState } from 'react';
@@ -58,17 +59,24 @@ export default function HistoryModule() {
             const mockCopy = JSON.stringify(mockHistoryElement);
             const newElement: IHistoryData = JSON.parse(mockCopy);
             try {
-              const partialData: IResults | false = dataFromUrl(element.url);
-              if (partialData) {
-                newElement.data.endpointUrl = partialData.endpointUrl;
-                newElement.data.sdlUrl = element.sdlUrl !== '' ? element.sdlUrl : `${partialData.endpointUrl}?sdl`;
-                newElement.data.query = partialData.query;
-                newElement.data.headers = partialData.headers;
-                newElement.data.variables = partialData.variables;
-                newElement.index = index;
-                newElement.name = '';
-                newElement.url = element.url;
+              if (element.client === 'GraphiQL') {
+                const partialData: IResults | false = dataFromUrl(element.url);
+                if (partialData) {
+                  newElement.data.endpointUrl = partialData.endpointUrl;
+                  newElement.data.sdlUrl = element.sdlUrl !== '' ? element.sdlUrl : `${partialData.endpointUrl}?sdl`;
+                  newElement.data.query = partialData.query;
+                  newElement.data.headers = partialData.headers;
+                  newElement.data.variables = partialData.variables;
+                  newElement.index = index;
+                  newElement.name = '';
+                  newElement.url = element.url;
+                  newElement.clientName = element.client;
+                  newHistoryArray.push(newElement);
+                }
+              } else {
                 newElement.clientName = element.client;
+                newElement.url = element.sdlUrl;
+                newElement.data.endpointUrl = element.url;
                 newHistoryArray.push(newElement);
               }
             } catch {
@@ -88,34 +96,35 @@ export default function HistoryModule() {
   }, []);
 
   return (
-    <main className="main">
-      <div className="container">
-        <div className="history-wrapper">
-          <h3>{languageData.historyHeader}</h3>
-          <nav>
-            <ul>
-              {historyData.map((item, index) => {
-                return (
-                  <li key={`historyKey${index}`}>
-                    {item.clientName}
-                    <span>&nbsp;&nbsp;</span>
-                    <Link
-                      underline="none"
-                      color="black"
-                      href={item.url}
-                      key={`historyKey${index + 1}`}
-                      onClick={() => changeDataInInput(index)}
-                    >
-                      {item.data.endpointUrl}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        </div>
-        <Alerts></Alerts>
-      </div>
-    </main>
+    <>
+      <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={4}>
+        <Typography variant="h4" component="p">
+          {languageData.historyHeader}
+        </Typography>
+        <nav>
+          <List>
+            {historyData.map((item, index) => (
+              <ListItem key={`historyKey${index}`} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Typography variant="h6" component="p">
+                  {item.clientName}:
+                </Typography>
+                <Typography variant="subtitle1">
+                  <MuiLink
+                    component={NextLink}
+                    underline="none"
+                    color="black"
+                    href={item.url}
+                    onClick={() => changeDataInInput(index)}
+                  >
+                    {item.data.endpointUrl}
+                  </MuiLink>
+                </Typography>
+              </ListItem>
+            ))}
+          </List>
+        </nav>
+      </Stack>
+      <Alerts></Alerts>
+    </>
   );
 }

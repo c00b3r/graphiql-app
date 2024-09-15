@@ -1,23 +1,51 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { addToHistory } from '@/reducers/actions/actions';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/reducers/root/rootReduces';
+import { Typography, Stack, Box, CircularProgress } from '@mui/material';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import Loader from '@/components/Loader/Loader';
+import { IState } from '@/interfaces/interfaces';
+import { useSelector } from 'react-redux';
+import MethodSelect from '@/components/restfull/MethodSelect';
+import UrlInput from '@/components/restfull/UrlInput';
+import HeadersManager from '@/components/restfull/HeadersManager';
+import VariablesManager from '@/components/restfull/VariablesManager';
+import RequestBodyEditor from '@/components/restfull/RequestBodyEditor';
+import ResponseContainer from '@/components/restfull/ResponseContainer';
+import { saveHistory } from '@/methods/saveHistoryData';
+import { getPageRoute } from '@/methods/graphql/urlConverter';
+import NotFound from '@/app/not-found';
 
 export default function RestFull() {
-  const dispatch = useDispatch();
-  const history = useSelector((state: RootState) => state.restFull.history);
   const [urlToSend, setUrlToSend] = useState<string>('');
   const [method, setMethod] = useState<string>('GET');
   const [responseBody, setResponseBody] = useState<string>('');
   const [status, setStatus] = useState<number>();
   const [requestBody, setRequestBody] = useState<string>('');
-  const [headers, setHeaders] = useState<{ [key: string]: string }>({});
-  const [headerKey, setHeaderKey] = useState<string>('');
-  const [headerValue, setHeaderValue] = useState<string>('');
-  const [isEditHeader, setEditHedaer] = useState<boolean>(false);
-  const [editKey, setEditKey] = useState<string | null>(null);
-  const [initialEditKey, setInitialEditKey] = useState<string | null>(null);
+  const [headers, setHeaders] = useState<Array<{ [key: string]: string }>>([]);
+  const [variables, setVariables] = useState<Array<{ key: string; value: string }>>([]);
+  const [loading, setLoading] = useState(false);
+  const languageData = useSelector((state: IState) => state.main.languageData);
+  const router = useRouter();
+  const [loginStatus, setLoginStatus] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [url, setUrl] = useState('');
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoginStatus(true);
+      } else {
+        setLoginStatus(false);
+        router.push('/');
+      }
+      setInitialLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [auth, router]);
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -30,11 +58,14 @@ export default function RestFull() {
       setRequestBody(encodedBody ? Buffer.from(encodedBody, 'base64').toString('utf-8') : '');
 
       const headersFromQuery = new URLSearchParams(queryString);
-      const headersObject: { [key: string]: string } = {};
+      const headersArray: Array<{ [key: string]: string }> = [];
       headersFromQuery.forEach((value, key) => {
-        headersObject[key] = decodeURIComponent(value);
+        headersArray.push({
+          key: decodeURIComponent(key),
+          value: decodeURIComponent(value),
+        });
       });
-      setHeaders(headersObject);
+      setHeaders(headersArray);
     }
   }, []);
 
@@ -55,99 +86,43 @@ export default function RestFull() {
   }, [method, headers, urlToSend]);
 
   const updateUrl = () => {
-    const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
-    const encodedBody = '/' + requestBody ? Buffer.from(requestBody).toString('base64') : '';
-    const queryString = new URLSearchParams(
-      Object.entries(headers).map(([key, value]) => [key, encodeURIComponent(value)])
-    ).toString();
-    const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
-
-    window.history.replaceState({}, '', newUrl);
+    const currentPathBasic = getPageRoute(window.location.href);
+    const currentPath = currentPathBasic.split('/')[1];
+    const validMethods = ['restfull', 'GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH'];
+    if (!validMethods.includes(currentPath)) {
+      setIsNotFound(true);
+    } else {
+      setIsNotFound(false);
+      const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
+      const encodedBody = '/' + requestBody ? Buffer.from(requestBody).toString('base64') : '';
+      const queryString = new URLSearchParams(
+        headers.map(({ key, value }) => [key, encodeURIComponent(value)])
+      ).toString();
+      const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
+      setUrl(newUrl);
+      window.history.replaceState({}, '', newUrl);
+    }
   };
 
   const onChangeEndpointHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrlToSend(e.target.value);
   };
 
-  const onChangeMethodHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setMethod(e.target.value);
-  };
-
   const onChangeRequestBody = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setRequestBody(e.target.value);
   };
 
-  const onChangeHeaderKey = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHeaderKey(e.target.value);
-  };
-
-  const onChangeHeaderValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHeaderValue(e.target.value);
-  };
-
-  const addHeader = () => {
-    if (headerKey && headerValue) {
-      setHeaders((prevHeaders) => ({ ...prevHeaders, [headerKey]: headerValue }));
-      setHeaderKey('');
-      setHeaderValue('');
-    }
-  };
-
-  const deleteHeader = (key: string) => {
-    setHeaders((prevHeaders) => {
-      const updatedHeaders = { ...prevHeaders };
-      delete updatedHeaders[key];
-      return updatedHeaders;
-    });
-  };
-
-  const editHeader = (key: string) => {
-    setHeaderKey(key);
-    setHeaderValue(headers[key]);
-    setInitialEditKey(key);
-    setEditKey(key);
-    setEditHedaer(true);
-  };
-
-  const saveHeader = () => {
-    if (editKey && headerValue && initialEditKey) {
-      setHeaders((prevHeaders) => {
-        const newHeaders = { ...prevHeaders };
-        if (initialEditKey !== headerKey) {
-          delete newHeaders[initialEditKey];
-        }
-
-        newHeaders[headerKey] = headerValue;
-
-        return newHeaders;
-      });
-      setHeaderKey('');
-      setHeaderValue('');
-      setEditKey(null);
-      setInitialEditKey(null);
-      setEditHedaer(false);
-    }
-  };
-
-  const handleHistoryClick = (item: {
-    method: string;
-    url: string;
-    body: string;
-    headers: { [key: string]: string };
-  }) => {
-    setMethod(item.method);
-    setUrlToSend(item.url);
-    setRequestBody(item.body);
-    setHeaders(item.headers);
-  };
-
   const onSubmitHandler = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       const fetchHeaders = new Headers();
 
       for (const [key, value] of Object.entries(headers)) {
-        fetchHeaders.append(key, value);
+        if (key.trim() && String(value).trim()) {
+          fetchHeaders.append(key, String(value));
+        }
       }
 
       const fetchOption: RequestInit = {
@@ -158,6 +133,13 @@ export default function RestFull() {
       if (method === 'POST' || method === 'PUT') {
         fetchHeaders.set('Content-Type', 'application/json');
         fetchOption.body = requestBody;
+
+        const combinedBody = requestBody ? JSON.parse(requestBody) : {};
+        variables.forEach(({ key, value }) => {
+          combinedBody[key] = value;
+        });
+
+        fetchOption.body = JSON.stringify(combinedBody);
       }
 
       const response = await fetch(urlToSend, fetchOption);
@@ -174,6 +156,24 @@ export default function RestFull() {
         return;
       }
 
+      if (method === 'HEAD') {
+        const dataHeaders = Array.from(response.headers.entries());
+        setResponseBody(dataHeaders.join(''));
+        return;
+      }
+
+      if (method === 'OPTIONS') {
+        const allowMethods = response.headers.get('Allow');
+
+        if (allowMethods) {
+          setResponseBody(`Allowed methods: ${allowMethods}`);
+        } else {
+          setResponseBody('No allowed methods provided by the server.');
+        }
+
+        return;
+      }
+
       const contentType = response.headers.get('Content-Type' || '');
       let data;
 
@@ -184,85 +184,75 @@ export default function RestFull() {
         const text = await response.text();
         setResponseBody(`Response is not JSON\n\n${text}`);
       }
-
-      dispatch(
-        addToHistory({ method, url: urlToSend, body: requestBody, headers: Object.fromEntries(fetchHeaders.entries()) })
-      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         setResponseBody(`Error: ${error.message}`);
       }
     }
+    if (urlToSend) {
+      saveHistory(urlToSend, method, url);
+    }
+
+    setLoading(false);
   };
 
+  if (initialLoading) {
+    return <Loader />;
+  }
+
+  if (!loginStatus) {
+    return <Loader />;
+  }
+
   return (
-    <div className="restfull-container" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-      <div className="request-container">
-        <form className="endpoint" onSubmit={onSubmitHandler}>
-          <select name="method" id="method" value={method} onChange={onChangeMethodHandler}>
-            <option>GET</option>
-            <option>POST</option>
-            <option>PUT</option>
-            <option>DELETE</option>
-          </select>
-          <input type="text" placeholder="Enter URL" value={urlToSend} onChange={(e) => onChangeEndpointHandler(e)} />
-          <button style={{ cursor: 'pointer' }}>Send</button>
-        </form>
-        <div className="manage-header-container">
-          <button onClick={addHeader} style={{ marginBottom: '10px', cursor: 'pointer' }}>
-            Add Header
-          </button>
-          <div>
-            <input
-              type="text"
-              placeholder="Header Key"
-              value={headerKey}
-              onChange={onChangeHeaderKey}
-              style={{ marginRight: '5px' }}
-            />
-            <input type="text" placeholder="Header Value" value={headerValue} onChange={onChangeHeaderValue} />
-            {isEditHeader ? <button onClick={saveHeader}>Save</button> : null}
+    <>
+      {isNotFound && <NotFound />}
+      {!isNotFound && (
+        <main className="main">
+          <div className="container">
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={2} width={600}>
+              <Typography variant="h5" component="h2" fontWeight={600} gutterBottom>
+                {languageData.restfullClient}
+              </Typography>
+              <Stack direction="column" spacing={3} sx={{ width: '100%' }}>
+                <Box
+                  component="form"
+                  sx={{ display: 'flex', width: '100%', gap: 2, justifyContent: 'space-between' }}
+                  onSubmit={onSubmitHandler}
+                >
+                  <MethodSelect method={method} setMethod={setMethod} />
+                  <UrlInput
+                    urlToSend={urlToSend}
+                    onChangeEndpointHandler={onChangeEndpointHandler}
+                    languageData={languageData}
+                  />
+                  {loading && status !== 404 && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                      }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  )}
+                </Box>
+                <HeadersManager headers={headers} setHeaders={setHeaders} languageData={languageData} />
+                <VariablesManager variables={variables} setVariables={setVariables} languageData={languageData} />
+                <RequestBodyEditor
+                  requestBody={requestBody}
+                  onChangeRequestBody={onChangeRequestBody}
+                  updateUrl={updateUrl}
+                  languageData={languageData}
+                />
+              </Stack>
+              <ResponseContainer status={status} responseBody={responseBody} languageData={languageData} />
+            </Stack>
           </div>
-          <div>
-            {Object.entries(headers).map(([key, value]) => (
-              <p key={key} style={{ display: 'flex', gap: '5px' }}>
-                {key}: {value}
-                <button onClick={() => editHeader(key)}>Edit</button>
-                <button onClick={() => deleteHeader(key)}>Delete</button>
-              </p>
-            ))}
-          </div>
-        </div>
-        <div className="body-container">
-          <p>JSON:</p>
-          <textarea
-            value={requestBody}
-            onChange={onChangeRequestBody}
-            onBlur={() => {
-              updateUrl();
-            }}
-            style={{ width: '400px', height: '100px', resize: 'none' }}
-          ></textarea>
-        </div>
-      </div>
-      <div className="response-container">
-        <p>
-          Status: <em>{status}</em>
-        </p>
-        <p>Body (JSON):</p>
-        <textarea readOnly value={responseBody} style={{ width: '400px', height: '200px', resize: 'none' }}></textarea>
-      </div>
-      <div className="history-container">
-        <h2>Request History</h2>
-        {history.length === 0 && <p>No history available</p>}
-        <ol>
-          {history.map((item, index) => (
-            <li key={index} onClick={() => handleHistoryClick(item)} style={{ cursor: 'pointer', marginBottom: '5px' }}>
-              {item.method} {item.url}
-            </li>
-          ))}
-        </ol>
-      </div>
-    </div>
+        </main>
+      )}
+    </>
   );
 }

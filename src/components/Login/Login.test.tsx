@@ -8,11 +8,14 @@ vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
 
-vi.mock('react', () => ({
-  useEffect: vi.fn(),
-  useState: vi.fn(() => ''),
-}));
-
+vi.mock('react', async () => {
+  const actualReact = await import('react');
+  return {
+    ...actualReact,
+    useEffect: vi.fn(),
+    useState: vi.fn(() => ''),
+  };
+});
 vi.mock('firebase/auth', () => ({
   signInWithEmailAndPassword: vi.fn(),
   onAuthStateChanged: vi.fn(),
