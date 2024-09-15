@@ -16,7 +16,7 @@ const MainInform = () => {
       name: languageData.name1,
       role: languageData.role1,
       description: languageData.desc1,
-      imageSrc: '/photo.png',
+      imageSrc: '/nikita.png',
       githubLink: 'https://github.com/huntertigerx',
     },
     {
