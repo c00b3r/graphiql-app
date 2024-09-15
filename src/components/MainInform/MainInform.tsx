@@ -30,7 +30,7 @@ const MainInform = () => {
       name: languageData.name3,
       role: languageData.role2,
       description: languageData.desc3,
-      imageSrc: '/photo.png',
+      imageSrc: '/photo-lara.jpg',
       githubLink: 'https://github.com/LaraNU',
     },
   ];
