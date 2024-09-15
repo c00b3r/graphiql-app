@@ -43,7 +43,6 @@ export const Login = () => {
       if (error.code === 'auth/invalid-credential') {
         setError('Invalid credentials provided. Please check your input and try again.');
       } else {
-        console.log('catch x5');
         setError(error.message);
       }
     });

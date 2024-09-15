@@ -138,7 +138,6 @@ export default function GraphQL() {
         showAlert(errorData.message);
       }
     } catch {
-      console.log('alert 1');
       showAlert(errorData.message);
     }
   };
@@ -158,7 +157,6 @@ export default function GraphQL() {
     } catch (err) {
       brokenSubmit();
       const errorMessage = err as IErrors;
-      console.log('alert 2');
       showAlert(errorMessage.message);
     }
 
@@ -171,7 +169,6 @@ export default function GraphQL() {
       } catch (err) {
         const errorMessage = err as IErrors;
         brokenSubmit();
-        console.log('alert 3');
         showAlert(errorMessage.message);
       }
     }
@@ -187,7 +184,6 @@ export default function GraphQL() {
         saveHistory(currentUrl, 'GraphiQL', sdlUrl);
         stages += 1;
       } catch (err) {
-        console.log('catch x1', err);
         brokenSubmit();
         displayFetchErrors(err);
       }
@@ -212,7 +208,6 @@ export default function GraphQL() {
         const schemaSDL = printSchema(clientSchema);
         dispatch(saveDocumentation(schemaSDL));
       } catch (err) {
-        console.log('catch x2');
         brokenSubmit();
         displayFetchErrors(err);
       }
