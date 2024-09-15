@@ -14,6 +14,8 @@ import VariablesManager from '@/components/restfull/VariablesManager';
 import RequestBodyEditor from '@/components/restfull/RequestBodyEditor';
 import ResponseContainer from '@/components/restfull/ResponseContainer';
 import { saveHistory } from '@/methods/saveHistoryData';
+import { getPageRoute } from '@/methods/graphql/urlConverter';
+import NotFound from '@/app/not-found';
 
 export default function RestFull() {
   const [urlToSend, setUrlToSend] = useState<string>('');
@@ -28,6 +30,7 @@ export default function RestFull() {
   const router = useRouter();
   const [loginStatus, setLoginStatus] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [isNotFound, setIsNotFound] = useState(false);
   const [url, setUrl] = useState('');
 
   useEffect(() => {
@@ -83,15 +86,22 @@ export default function RestFull() {
   }, [method, headers, urlToSend]);
 
   const updateUrl = () => {
-    const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
-    const encodedBody = '/' + requestBody ? Buffer.from(requestBody).toString('base64') : '';
-    const queryString = new URLSearchParams(
-      headers.map(({ key, value }) => [key, encodeURIComponent(value)])
-    ).toString();
-    const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
-
-    setUrl(newUrl);
-    window.history.replaceState({}, '', newUrl);
+    const currentPathBasic = getPageRoute(window.location.href);
+    const currentPath = currentPathBasic.split('/')[1];
+    const validMethods = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH'];
+    if (!validMethods.includes(currentPath)) {
+      setIsNotFound(true);
+    } else {
+      setIsNotFound(false);
+      const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
+      const encodedBody = '/' + requestBody ? Buffer.from(requestBody).toString('base64') : '';
+      const queryString = new URLSearchParams(
+        headers.map(({ key, value }) => [key, encodeURIComponent(value)])
+      ).toString();
+      const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
+      setUrl(newUrl);
+      window.history.replaceState({}, '', newUrl);
+    }
   };
 
   const onChangeEndpointHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,49 +205,55 @@ export default function RestFull() {
   }
 
   return (
-    <main className="main">
-      <div className="container">
-        <Stack direction="column" justifyContent="center" alignItems="center" spacing={2} width={600}>
-          <Typography variant="h5" component="h2" fontWeight={600} gutterBottom>
-            {languageData.restfullClient}
-          </Typography>
-          <Stack direction="column" spacing={3} sx={{ width: '100%' }}>
-            <Box
-              component="form"
-              sx={{ display: 'flex', width: '100%', gap: 2, justifyContent: 'space-between' }}
-              onSubmit={onSubmitHandler}
-            >
-              <MethodSelect method={method} setMethod={setMethod} />
-              <UrlInput
-                urlToSend={urlToSend}
-                onChangeEndpointHandler={onChangeEndpointHandler}
-                languageData={languageData}
-              />
-              {loading && status !== 404 && (
+    <>
+      {isNotFound && <NotFound />}
+      {!isNotFound && <div>Mock true page</div>}
+      {!isNotFound && (
+        <main className="main">
+          <div className="container">
+            <Stack direction="column" justifyContent="center" alignItems="center" spacing={2} width={600}>
+              <Typography variant="h5" component="h2" fontWeight={600} gutterBottom>
+                {languageData.restfullClient}
+              </Typography>
+              <Stack direction="column" spacing={3} sx={{ width: '100%' }}>
                 <Box
-                  sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                  }}
+                  component="form"
+                  sx={{ display: 'flex', width: '100%', gap: 2, justifyContent: 'space-between' }}
+                  onSubmit={onSubmitHandler}
                 >
-                  <CircularProgress />
+                  <MethodSelect method={method} setMethod={setMethod} />
+                  <UrlInput
+                    urlToSend={urlToSend}
+                    onChangeEndpointHandler={onChangeEndpointHandler}
+                    languageData={languageData}
+                  />
+                  {loading && status !== 404 && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                      }}
+                    >
+                      <CircularProgress />
+                    </Box>
+                  )}
                 </Box>
-              )}
-            </Box>
-            <HeadersManager headers={headers} setHeaders={setHeaders} languageData={languageData} />
-            <VariablesManager variables={variables} setVariables={setVariables} languageData={languageData} />
-            <RequestBodyEditor
-              requestBody={requestBody}
-              onChangeRequestBody={onChangeRequestBody}
-              updateUrl={updateUrl}
-              languageData={languageData}
-            />
-          </Stack>
-          <ResponseContainer status={status} responseBody={responseBody} languageData={languageData} />
-        </Stack>
-      </div>
-    </main>
+                <HeadersManager headers={headers} setHeaders={setHeaders} languageData={languageData} />
+                <VariablesManager variables={variables} setVariables={setVariables} languageData={languageData} />
+                <RequestBodyEditor
+                  requestBody={requestBody}
+                  onChangeRequestBody={onChangeRequestBody}
+                  updateUrl={updateUrl}
+                  languageData={languageData}
+                />
+              </Stack>
+              <ResponseContainer status={status} responseBody={responseBody} languageData={languageData} />
+            </Stack>
+          </div>
+        </main>
+      )}
+    </>
   );
 }

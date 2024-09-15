@@ -66,19 +66,19 @@ export default function HeadersManager({ headers, setHeaders, languageData }: He
       </Typography>
       <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
         <TextField
-          label="Header Key"
+          label={languageData.headerKey}
           variant="standard"
           value={headerKey}
           onChange={(e) => setHeaderKey(e.target.value)}
         />
         <TextField
-          label="Header Value"
+          label={languageData.headerValue}
           variant="standard"
           value={headerValue}
           onChange={(e) => setHeaderValue(e.target.value)}
         />
         <Button variant="outlined" size="small" onClick={addHeader}>
-          {languageData.addHeader.toUpperCase()}
+          {languageData.addHeader ? languageData.addHeader.toUpperCase() : languageData.addHeader}
         </Button>
         {isEditHeader && (
           <Button variant="outlined" size="small" onClick={saveHeader}>
