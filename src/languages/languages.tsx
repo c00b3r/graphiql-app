@@ -81,7 +81,7 @@ export const enLanguage = {
   EN: 'EN',
   RU: 'RU',
   delete: 'Delete',
-  addVariable: "Add Variable"
+  addVariable: 'Add Variable',
 };
 
 export const ruLanguage = {
@@ -165,5 +165,5 @@ export const ruLanguage = {
   EN: 'Англ',
   RU: 'Ру',
   delete: 'Удалить',
-  addVariable: 'Добавить переменную'
+  addVariable: 'Добавить переменную',
 };
