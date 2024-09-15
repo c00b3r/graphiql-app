@@ -2,7 +2,7 @@ import { describe, it, vi } from 'vitest';
 import { act, render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import store from '@/reducers/root/rootReduces';
-import SignUpPage from './page';
+import SignUpPage from '@/app/signup/page';
 
 vi.mock('next/navigation', () => {
   const actual = vi.importActual('next/navigation');
