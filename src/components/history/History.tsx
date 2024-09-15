@@ -80,13 +80,11 @@ export default function HistoryModule() {
                 newHistoryArray.push(newElement);
               }
             } catch {
-              console.log('alert 7');
               showAlert('Wrong data in the url');
             }
           });
           setHistory(newHistoryArray);
         } catch {
-          console.log('alert 8');
           showAlert('invalid data in local storage');
         }
       }

@@ -36,17 +36,6 @@ describe('restfullReducer', () => {
     expect(result).toEqual(expectedState);
   });
 
-  //   it('should add multiple items to history when action type is ADD_TO_HISTORY', () => {
-  //     const historyItem1 = { method: 'GET', url: '/api/resource1', body: '', headers: {} };
-  //     const historyItem2 = { method: 'POST', url: '/api/resource2', body: '{"key":"value"}', headers: { 'Content-Type': 'application/json' } };
-
-  //     let state = restfullReducer(initialState, { type: 'ADD_TO_HISTORY', payload: historyItem1 });
-  //     state = restfullReducer(state, { type: 'ADD_TO_HISTORY', payload: historyItem2 });
-
-  //     const expectedState = { ...initialState, history: [historyItem1, historyItem2] };
-  //     expect(state).toEqual(expectedState);
-  //   });
-
   it('should clear history when action type is CLEAR_HISTORY', () => {
     const historyItem = { method: 'GET', url: '/api/resource', body: '', headers: {} };
     const stateWithHistory = { ...initialState, history: [historyItem] };

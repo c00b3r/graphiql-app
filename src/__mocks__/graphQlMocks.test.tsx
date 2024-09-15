@@ -114,12 +114,12 @@ describe('Mock Data Tests', () => {
   test('should have valid stats', () => {
     const stats = mockedResponsePoke.species[0].pokemon.nodes[0].stats;
     expect(stats.length).toBe(6);
-    expect(stats[0].base_stat).toBe(60); // HP
-    expect(stats[1].base_stat).toBe(75); // Attack
-    expect(stats[2].base_stat).toBe(85); // Defense
-    expect(stats[3].base_stat).toBe(100); // Special Attack
-    expect(stats[4].base_stat).toBe(85); // Special Defense
-    expect(stats[5].base_stat).toBe(115); // Speed
+    expect(stats[0].base_stat).toBe(60);
+    expect(stats[1].base_stat).toBe(75);
+    expect(stats[2].base_stat).toBe(85);
+    expect(stats[3].base_stat).toBe(100);
+    expect(stats[4].base_stat).toBe(85);
+    expect(stats[5].base_stat).toBe(115);
   });
 
   test('should not have a species name other than "starmie"', () => {

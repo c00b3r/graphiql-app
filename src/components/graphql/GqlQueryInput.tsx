@@ -27,7 +27,6 @@ export default function GqlQueryInput() {
     try {
       dispatch(updateQuery(gqlPrettier(query)));
     } catch {
-      console.log('alert 4');
       showAlert(languageData.wrongGqlError);
     }
   };
