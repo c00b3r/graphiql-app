@@ -53,9 +53,23 @@ export default function RestFull() {
     const queryString = window.location.search;
 
     if (method && encodedUrl) {
+      let decodedUrl = Buffer.from(encodedUrl, 'base64').toString('utf-8');
+
+      if (encodedBody) {
+        const decodedBody = Buffer.from(encodedBody, 'base64').toString('utf-8');
+
+        if (decodedBody.trim().startsWith('{')) {
+          setRequestBody(decodedBody);
+        } else {
+          decodedUrl = `${decodedUrl}?${decodedBody}`;
+          setRequestBody('');
+        }
+      } else {
+        setRequestBody('');
+      }
+
       setMethod(method);
-      setUrlToSend(Buffer.from(encodedUrl, 'base64').toString('utf-8'));
-      setRequestBody(encodedBody ? Buffer.from(encodedBody, 'base64').toString('utf-8') : '');
+      setUrlToSend(decodedUrl);
 
       const headersFromQuery = new URLSearchParams(queryString);
       const headersArray: Array<{ [key: string]: string }> = [];
@@ -93,12 +107,12 @@ export default function RestFull() {
       setIsNotFound(true);
     } else {
       setIsNotFound(false);
-      const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
-      const encodedBody = '/' + requestBody ? Buffer.from(requestBody).toString('base64') : '';
+      const encodedUrl = Buffer.from(urlToSend).toString('base64');
+      const encodedBody = requestBody ? Buffer.from(requestBody).toString('base64') : '';
       const queryString = new URLSearchParams(
         headers.map(({ key, value }) => [key, encodeURIComponent(value)])
       ).toString();
-      const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
+      const newUrl = `/${method}${encodedUrl ? `/${encodedUrl}` : ''}${encodedBody ? `/${encodedBody}` : ''}${queryString ? `?${queryString}` : ''}`;
       setUrl(newUrl);
       window.history.replaceState({}, '', newUrl);
     }
@@ -203,7 +217,6 @@ export default function RestFull() {
   if (!loginStatus) {
     return <Loader />;
   }
-
   return (
     <>
       {isNotFound && <NotFound />}

@@ -8,6 +8,8 @@ const mockLanguageData: ILanguage = {
   showVariables: 'Show Variables',
   hideVariables: 'Hide Variables',
   addVariable: 'Add Variable',
+  variableKey: 'Variable Key',
+  variableValue: 'Variable Value',
 };
 
 it('renders VariablesManager', () => {

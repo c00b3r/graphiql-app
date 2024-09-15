@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import store from '@/reducers/root/rootReduces';
 import { deleteCookie, setCookie } from 'cookies-next';
-import NotFound from './not-found';
+import HomePage from '@/app/page';
 
 vi.mock('next/navigation', () => ({
   useRouter() {
@@ -14,10 +14,10 @@ vi.mock('next/navigation', () => ({
   },
 }));
 
-const MockNotFound = () => {
+const MockHomePage = () => {
   return (
     <Provider store={store}>
-      <NotFound />
+      <HomePage />
     </Provider>
   );
 };
@@ -33,7 +33,7 @@ describe('Search Component', () => {
 
   it('renders without crashing', async () => {
     await act(async () => {
-      render(<MockNotFound />);
+      render(<MockHomePage />);
     });
   });
 });

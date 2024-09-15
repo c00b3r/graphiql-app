@@ -50,8 +50,9 @@ export const enLanguage = {
   role2: 'Frontend Developer',
   desc1:
     'I am from Minsk, BSUIR graduate. On the project I implemented a GraphiQL page with the required functionality, participated in the development of tests, styles, history page and translations.',
-  desc2: 'Lorem ipsum',
-  desc3: 'Lorem ipsum',
+  desc2: 'from Yekaterinburg, graduated from UrFU in Software Engineering, responsible for the RESTfull page.',
+  desc3:
+    'I implemented the Login, Sign Up, and Main pages with the necessary functionality. I used Firebase for user authentication and registration. I participated in the development of tests, styles, and the history page.',
   paragraph1:
     'Welcome to our project, developed as part of the React Course at RS School. This project reflects our commitment to learning and implementing cutting-edge web technologies, including Next.js, Firebase, and GraphQL. It has been designed as a multifunctional platform for working with APIs, providing users with the ability to utilize both the GraphQL Client and the REST Client.',
   paragraph2:
@@ -82,6 +83,8 @@ export const enLanguage = {
   RU: 'RU',
   delete: 'Delete',
   addVariable: 'Add Variable',
+  variableKey: 'Variable Key',
+  variableValue: 'Variable Value',
 };
 
 export const ruLanguage = {
@@ -134,8 +137,9 @@ export const ruLanguage = {
   role2: 'Разработчик интерфейса',
   desc1:
     'Я из Минска, выпускник БГУИР. На проекте реализовал страницу GraphiQL с необходимым функционалом, участвовал в разработке тестов, стилей, страницы истории и переводов.',
-  desc2: 'Лорем Ипсум',
-  desc3: 'Лорем Ипсум',
+  desc2: 'г. Екатеринбург, закончил УрФУ по направлению "Программная инженерия", отвечал за страницу RESTfull.',
+  desc3:
+    'На проекте реализовала страницу Login, Sign up, Main с необходимым функционалом. Использовала Firebase для авторизации и регистрации пользователя. Участвовала в разработке тестов, стилей, страницы истории.',
   paragraph1:
     'Добро пожаловать в наш проект, разработанный в рамках курса React в RS School. Этот проект отражает нашу приверженность изучению и внедрению передовых веб-технологий, включая Next.js, Firebase и GraphQL. Он был разработан как многофункциональная платформа для работы с API, предоставляя пользователям возможность использовать как GraphQL Client, так и REST Client.',
   paragraph2:
@@ -166,4 +170,6 @@ export const ruLanguage = {
   RU: 'Ру',
   delete: 'Удалить',
   addVariable: 'Добавить переменную',
+  variableKey: 'Ключ переменной',
+  variableValue: 'Значение переменной',
 };

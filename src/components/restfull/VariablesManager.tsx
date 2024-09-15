@@ -42,14 +42,14 @@ export default function VariablesManager({ variables, setVariables, languageData
         <Box sx={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
           <TextField
             type="text"
-            label="Variable Key"
+            label={languageData.variableKey}
             variant="standard"
             value={variableKey}
             onChange={(e) => setVariableKey(e.target.value)}
           />
           <TextField
             type="text"
-            label="Variable Value"
+            label={languageData.variableValue}
             variant="standard"
             value={variableValue}
             onChange={(e) => setVariableValue(e.target.value)}
