@@ -50,7 +50,7 @@ export const enLanguage = {
   role2: 'Frontend Developer',
   desc1:
     'I am from Minsk, BSUIR graduate. On the project I implemented a GraphiQL page with the required functionality, participated in the development of tests, styles, history page and translations.',
-  desc2: 'Lorem ipsum',
+  desc2: 'from Yekaterinburg, graduated from UrFU in Software Engineering, responsible for the RESTfull page.',
   desc3:
     'I implemented the Login, Sign Up, and Main pages with the necessary functionality. I used Firebase for user authentication and registration. I participated in the development of tests, styles, and the history page.',
   paragraph1:
@@ -137,7 +137,7 @@ export const ruLanguage = {
   role2: 'Разработчик интерфейса',
   desc1:
     'Я из Минска, выпускник БГУИР. На проекте реализовал страницу GraphiQL с необходимым функционалом, участвовал в разработке тестов, стилей, страницы истории и переводов.',
-  desc2: 'Лорем Ипсум',
+  desc2: 'г. Екатеринбург, закончил УрФУ по направлению "Программная инженерия", отвечал за страницу RESTfull.',
   desc3:
     'На проекте реализовала страницу Login, Sign up, Main с необходимым функционалом. Использовала Firebase для авторизации и регистрации пользователя. Участвовала в разработке тестов, стилей, страницы истории.',
   paragraph1:

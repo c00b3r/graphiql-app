@@ -54,8 +54,20 @@ export default function RestFull() {
 
     if (method && encodedUrl) {
       let decodedUrl = Buffer.from(encodedUrl, 'base64').toString('utf-8');
-      const decodedBody = encodedBody ? Buffer.from(encodedBody, 'base64').toString('utf-8') : '';
-      setRequestBody(decodedBody);
+
+      if (encodedBody) {
+        const decodedBody = Buffer.from(encodedBody, 'base64').toString('utf-8');
+
+        if (decodedBody.trim().startsWith('{')) {
+          setRequestBody(decodedBody);
+        } else {
+          decodedUrl = `${decodedUrl}?${decodedBody}`;
+          setRequestBody('');
+        }
+      } else {
+        setRequestBody('');
+      }
+
       setMethod(method);
       setUrlToSend(decodedUrl);
 
@@ -95,12 +107,12 @@ export default function RestFull() {
       setIsNotFound(true);
     } else {
       setIsNotFound(false);
-      const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
+      const encodedUrl = Buffer.from(urlToSend).toString('base64');
       const encodedBody = requestBody ? Buffer.from(requestBody).toString('base64') : '';
       const queryString = new URLSearchParams(
         headers.map(({ key, value }) => [key, encodeURIComponent(value)])
       ).toString();
-      const newUrl = `/${method}${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}${queryString ? `?${queryString}` : ''}`;
+      const newUrl = `/${method}${encodedUrl ? `/${encodedUrl}` : ''}${encodedBody ? `/${encodedBody}` : ''}${queryString ? `?${queryString}` : ''}`;
       setUrl(newUrl);
       window.history.replaceState({}, '', newUrl);
     }
