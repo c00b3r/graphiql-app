@@ -55,12 +55,7 @@ export default function RestFull() {
     if (method && encodedUrl) {
       let decodedUrl = Buffer.from(encodedUrl, 'base64').toString('utf-8');
       const decodedBody = encodedBody ? Buffer.from(encodedBody, 'base64').toString('utf-8') : '';
-      const bodyParams = new URLSearchParams(decodedBody);
-      if (bodyParams.size > 0) {
-        decodedUrl += `?${bodyParams}`;
-      } else {
-        setRequestBody(decodedBody);
-      }
+      setRequestBody(decodedBody);
       setMethod(method);
       setUrlToSend(decodedUrl);
 
@@ -101,11 +96,11 @@ export default function RestFull() {
     } else {
       setIsNotFound(false);
       const encodedUrl = '/' + Buffer.from(urlToSend).toString('base64');
-      const encodedBody = '/' + requestBody ? Buffer.from(requestBody).toString('base64') : '';
+      const encodedBody = requestBody ? Buffer.from(requestBody).toString('base64') : '';
       const queryString = new URLSearchParams(
         headers.map(({ key, value }) => [key, encodeURIComponent(value)])
       ).toString();
-      const newUrl = `/${method}${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
+      const newUrl = `/${method}${encodedUrl}${encodedBody ? `/${encodedBody}` : ''}${queryString ? `?${queryString}` : ''}`;
       setUrl(newUrl);
       window.history.replaceState({}, '', newUrl);
     }
@@ -210,8 +205,6 @@ export default function RestFull() {
   if (!loginStatus) {
     return <Loader />;
   }
-  console.log(requestBody);
-
   return (
     <>
       {isNotFound && <NotFound />}
