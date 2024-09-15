@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Loader from '@/components/Loader/Loader';
-import HistoryModule from '@/components/History/History';
-import NoHistory from '@/components/History/NoHistory';
+import HistoryModule from '../../components/history/History';
+import NoHistory from '../../components/history/NoHistory';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/firebase';
 
