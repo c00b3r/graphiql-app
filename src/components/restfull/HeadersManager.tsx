@@ -105,10 +105,10 @@ export default function HeadersManager({ headers, setHeaders, languageData }: He
             </Box>
             <Stack direction="row" spacing={2}>
               <Button variant="outlined" size="small" onClick={() => editHeader(key)}>
-                Edit
+                {languageData.edit}
               </Button>
               <Button variant="outlined" size="small" onClick={() => deleteHeader(key)}>
-                Delete
+                {languageData.delete}
               </Button>
             </Stack>
           </Typography>

@@ -62,9 +62,15 @@ export default function HeadersBlock() {
   };
 
   const changeHeader = (index: number) => {
-    const filterd = [...enabledEditButtons].filter((item) => item !== index);
-    setEditButtons(filterd);
-    changeUrlOnBlur(headers);
+    if (headers[index].key === '') {
+      showAlert('Headers key input is missing a value');
+    } else if (headers[index].value === '') {
+      showAlert('Headers value input is missing a value');
+    } else {
+      const filtered = [...enabledEditButtons].filter((item) => item !== index);
+      setEditButtons(filtered);
+      changeUrlOnBlur(headers);
+    }
   };
 
   const editHeader = (index: number) => {

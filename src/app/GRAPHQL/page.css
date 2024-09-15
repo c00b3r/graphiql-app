@@ -147,16 +147,17 @@
 
 .alert-wrapper-absolute {
   position: sticky !important;
-  bottom: 0;
+  top: -10px;
   width: 100vw;
   z-index: 9999999999999999999;
+  padding: 0;
 }
 
 .alert-wrapper-sticky {
   position: absolute !important;
-  bottom: 0;
   width: 100vw;
   z-index: 9999999999999999999;
+  padding: 0;
 }
 
 .graphiql-wrapper {

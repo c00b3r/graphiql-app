@@ -80,6 +80,7 @@ export const enLanguage = {
   enterUrl: 'Enter URL',
   EN: 'EN',
   RU: 'RU',
+  delete: 'Delete',
 };
 
 export const ruLanguage = {
@@ -162,4 +163,5 @@ export const ruLanguage = {
   enterUrl: 'Введите URL',
   EN: 'Англ',
   RU: 'Ру',
+  delete: 'Удалить',
 };

@@ -179,8 +179,7 @@ export default function GraphQL() {
         saveHistory(currentUrl, 'GraphiQL', sdlUrl);
         stages += 1;
       } catch (err) {
-        console.log('err', err);
-        console.log('catch x1');
+        console.log('catch x1', err);
         brokenSubmit();
         displayFetchErrors(err);
       }
@@ -226,6 +225,7 @@ export default function GraphQL() {
         <div className={styles.container}>
           {loginStatus && (
             <div className="graphql_page_wrapper">
+              <Alerts></Alerts>
               <div className="graphiql-wrapper">
                 <div className={`graphiql-wrapper-inner ${document ? 'graphiql_100' : 'graphiql_95'}`}>
                   <div className={`graphiql-block ${document ? 'graphiql_50' : ''}`}>
@@ -253,7 +253,6 @@ export default function GraphQL() {
                   <DocumentationGQL></DocumentationGQL>
                 </div>
               </div>
-              <Alerts></Alerts>
             </div>
           )}
 
