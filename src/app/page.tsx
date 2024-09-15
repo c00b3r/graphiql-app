@@ -34,7 +34,7 @@ const HomePage = () => {
               {languageData.welcomeBack}, {user}!
             </Typography>
             <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-              <Button variant="contained" size="large" component={Link} href="/restfull">
+              <Button variant="contained" size="large" component={Link} href="/GET">
                 {languageData.restHeader}
               </Button>
               <Button variant="contained" size="large" component={Link} href="/GRAPHQL">

@@ -88,7 +88,7 @@ export default function RestFull() {
   const updateUrl = () => {
     const currentPathBasic = getPageRoute(window.location.href);
     const currentPath = currentPathBasic.split('/')[1];
-    const validMethods = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH'];
+    const validMethods = ['restfull', 'GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS', 'PATCH'];
     if (!validMethods.includes(currentPath)) {
       setIsNotFound(true);
     } else {
@@ -207,7 +207,6 @@ export default function RestFull() {
   return (
     <>
       {isNotFound && <NotFound />}
-      {!isNotFound && <div>Mock true page</div>}
       {!isNotFound && (
         <main className="main">
           <div className="container">
