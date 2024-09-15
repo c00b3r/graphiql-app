@@ -55,7 +55,7 @@ export default function VariablesManager({ variables, setVariables, languageData
             onChange={(e) => setVariableValue(e.target.value)}
           />
           <Button variant="outlined" size="small" onClick={addVariable}>
-            Add Variable
+          {languageData.addVariable}
           </Button>
         </Box>
       )}
