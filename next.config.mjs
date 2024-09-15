@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -15,9 +14,9 @@ const nextConfig = {
         pathname: '**',
       },
     ],
-    basePath: "/graphiql-app", 
-    assetPrefix: "/graphiql-app/",
   },
+  basePath: '/graphiql-app',
+  assetPrefix: '/graphiql-app/',
   reactStrictMode: true,
 };
 
