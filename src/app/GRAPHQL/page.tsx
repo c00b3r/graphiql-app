@@ -222,8 +222,8 @@ export default function GraphQL() {
 
   return (
     <>
-      <main className="main">
-        <div className={styles.loaderContainer}>
+      <main className={`${styles.main} main`}>
+        <div className={styles.container}>
           {loginStatus && (
             <div className="graphql_page_wrapper">
               <div className="graphiql-wrapper">
@@ -238,11 +238,11 @@ export default function GraphQL() {
                     <GqlQueryInput></GqlQueryInput>
                     <VariablesBlock></VariablesBlock>
                     <div className={'submit_gql_buttons'}>
-                      <Button variant="contained" onClick={handleSubmitInput}>
-                        {languageData.submitInput}
-                      </Button>
                       <Button variant="outlined" onClick={handleSubmitPoke}>
                         {languageData.submitPoke}
+                      </Button>
+                      <Button variant="contained" onClick={handleSubmitInput}>
+                        {languageData.submitInput}
                       </Button>
                       <Button variant="outlined" onClick={handleSubmitSwapi}>
                         {languageData.submitSwapi}

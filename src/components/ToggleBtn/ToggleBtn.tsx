@@ -5,12 +5,14 @@ import { ToggleButtonGroup } from '@mui/material';
 import { enLanguage, ruLanguage } from '@/languages/languages';
 import { changeLanguage } from '@/reducers/actions/actions';
 import { AppDispatch } from '@/reducers/root/rootReduces';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { IState } from '@/interfaces/interfaces';
 
 export default function ColorToggleButton() {
   const [alignment, setAlignment] = React.useState('en');
   const dispatch = useDispatch<AppDispatch>();
+  const languageData = useSelector((state: IState) => state.main.languageData);
 
   useEffect(() => {
     const language = localStorage.getItem('language_data');
@@ -34,10 +36,10 @@ export default function ColorToggleButton() {
   return (
     <ToggleButtonGroup color="primary" value={alignment} exclusive onChange={handleChange} aria-label="Platform">
       <ToggleButton size="small" value="en">
-        EN
+        {languageData.EN}
       </ToggleButton>
       <ToggleButton size="small" value="ru">
-        RU
+        {languageData.RU}
       </ToggleButton>
     </ToggleButtonGroup>
   );

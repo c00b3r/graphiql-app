@@ -78,7 +78,7 @@ export default function HeadersManager({ headers, setHeaders, languageData }: He
           onChange={(e) => setHeaderValue(e.target.value)}
         />
         <Button variant="outlined" size="small" onClick={addHeader}>
-          Add Header
+          {languageData.addHeader.toUpperCase()}
         </Button>
         {isEditHeader && (
           <Button variant="outlined" size="small" onClick={saveHeader}>

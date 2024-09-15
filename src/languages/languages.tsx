@@ -78,6 +78,8 @@ export const enLanguage = {
   addHeader: 'Add Header',
   save: 'Save',
   enterUrl: 'Enter URL',
+  EN: 'EN',
+  RU: 'RU',
 };
 
 export const ruLanguage = {
@@ -158,4 +160,6 @@ export const ruLanguage = {
   addHeader: 'Добавить заголовок',
   save: 'Сохранить',
   enterUrl: 'Введите URL',
+  EN: 'Англ',
+  RU: 'Ру',
 };

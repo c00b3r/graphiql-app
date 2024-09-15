@@ -160,7 +160,7 @@ export default function HeadersBlock() {
                     <Input
                       className="header_keyvalue_entered"
                       type="text"
-                      placeholder="Header Key"
+                      placeholder={languageData.headerKey}
                       value={header.key}
                       onChange={(e) => handleHeaderChange(index, 'key', e.target.value)}
                       disabled={!enabledEditButtons.includes(index)}
@@ -168,7 +168,7 @@ export default function HeadersBlock() {
                     <Input
                       className="header_keyvalue_entered"
                       type="text"
-                      placeholder="Header Value"
+                      placeholder={languageData.headerValue}
                       value={header.value}
                       onChange={(e) => handleHeaderChange(index, 'value', e.target.value)}
                       disabled={!enabledEditButtons.includes(index)}

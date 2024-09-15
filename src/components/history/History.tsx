@@ -59,7 +59,7 @@ export default function HistoryModule() {
             const mockCopy = JSON.stringify(mockHistoryElement);
             const newElement: IHistoryData = JSON.parse(mockCopy);
             try {
-              if (element.client === 'GeaphiQL') {
+              if (element.client === 'GraphiQL') {
                 const partialData: IResults | false = dataFromUrl(element.url);
                 if (partialData) {
                   newElement.data.endpointUrl = partialData.endpointUrl;
