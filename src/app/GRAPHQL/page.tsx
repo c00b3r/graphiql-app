@@ -126,9 +126,17 @@ export default function GraphQL() {
     const errorData = err as IErrors;
 
     try {
-      const message = errorData.response.errors[0].message;
       const code = errorData.response.status;
-      dispatch(saveResponse(JSON.stringify(message), code, false));
+      if (+code >= 400 && +code <= 599) {
+        const message = errorData.message;
+        if (typeof message === 'string') {
+          dispatch(saveResponse(message, code, false));
+        } else if (typeof message === 'object') {
+          dispatch(saveResponse(JSON.stringify(message), code, false));
+        }
+      } else {
+        showAlert(errorData.message);
+      }
     } catch {
       console.log('alert 1');
       showAlert(errorData.message);

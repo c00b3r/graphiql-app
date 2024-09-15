@@ -35,7 +35,7 @@ export default function ResponseGQL() {
             )}
             {code !== 200 && code !== 0 && (
               <Typography variant="h6" component="p" fontWeight={600}>
-                {languageData.body}: <pre>{message as string}</pre>
+                {languageData.body}: <span>{message as string}</span>
               </Typography>
             )}
           </div>
