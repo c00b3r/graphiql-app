@@ -44,6 +44,7 @@ const HomePage = () => {
                 {languageData.history}
               </Button>
             </Stack>
+            <MainInform />
           </Stack>
         ) : (
           <>
