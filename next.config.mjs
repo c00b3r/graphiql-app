@@ -15,9 +15,8 @@ const nextConfig = {
         pathname: '**',
       },
     ],
-    basePath: '/graphiql-app',
-    assetPrefix: '/graphiql-app/',
   },
+  basePath: '/',
   reactStrictMode: true,
 };
 
