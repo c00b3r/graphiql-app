@@ -12,6 +12,16 @@ vi.mock('next/navigation', () => ({
 }));
 
 describe('ErrorBoundary tests', () => {
+  const originalConsoleError = console.error;
+
+  beforeAll(() => {
+    console.error = vi.fn();
+  });
+
+  afterAll(() => {
+    console.error = originalConsoleError;
+  });
+
   test('renders children when no error occurs', () => {
     render(
       <ErrorBoundary>
