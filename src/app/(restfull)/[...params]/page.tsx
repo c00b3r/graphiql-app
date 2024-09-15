@@ -53,9 +53,16 @@ export default function RestFull() {
     const queryString = window.location.search;
 
     if (method && encodedUrl) {
+      let decodedUrl = Buffer.from(encodedUrl, 'base64').toString('utf-8');
+      const decodedBody = encodedBody ? Buffer.from(encodedBody, 'base64').toString('utf-8') : '';
+      const bodyParams = new URLSearchParams(decodedBody);
+      if (bodyParams.size > 0) {
+        decodedUrl += `?${bodyParams}`;
+      } else {
+        setRequestBody(decodedBody);
+      }
       setMethod(method);
-      setUrlToSend(Buffer.from(encodedUrl, 'base64').toString('utf-8'));
-      setRequestBody(encodedBody ? Buffer.from(encodedBody, 'base64').toString('utf-8') : '');
+      setUrlToSend(decodedUrl);
 
       const headersFromQuery = new URLSearchParams(queryString);
       const headersArray: Array<{ [key: string]: string }> = [];
@@ -203,6 +210,7 @@ export default function RestFull() {
   if (!loginStatus) {
     return <Loader />;
   }
+  console.log(requestBody);
 
   return (
     <>
